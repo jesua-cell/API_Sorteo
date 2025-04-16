@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Funnel Sans';
+    background-color: var(--fondoContendor);
+    color: var(--colorTexto);
+}
+
+/* Variables */
+
+:root {
+    /* Fondos */
+    --fondoContendor: #07183f;
+    --fondoNavBar: #0d0d6f;
+    --fondoEnlaces: #06068b;
+    /* texto */
+    --colorTexto: #fafbfd;
+}
+
+/* //* NavBar */
+
+.NavBar {
+    background-color: var(--fondoNavBar);
+    display: flex;
+    padding: 20px 0;
+    justify-content: center;
+    width: 100%;
+    min-width: 400px;
+}
+
+.NavBar a {
+    color: var(--colorTexto);
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    background-color: var(--fondoEnlaces);
+}
+
+
+/* //* Inicio */
+
+
+/* //* Footer */
+
+.Footer {
+    font-size: 10px;
+}
