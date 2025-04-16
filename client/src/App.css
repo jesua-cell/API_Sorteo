@@ -17,8 +17,11 @@ body {
     --fondoNavBar: #0d0d6f;
     --fondoEnlaces: #06068b;
     --fondoTarjetaInicio: radial-gradient(circle, rgba(15, 24, 102, 1) 0%, rgba(24, 46, 120, 1) 50%, rgba(20, 21, 77, 1) 100%);
+    --fondoSorteo: #e5e1f0;
+    --fondoNumerosLista: #d0daff;
     /* texto */
     --colorTexto: #fafbfd;
+    --colorTextoOscuro: #191919;
 }
 
 /* //* NavBar */
@@ -129,4 +132,92 @@ a {
     border-radius: 8px;
     font-weight: 500;
     background-color: var(--fondoEnlaces);
+}
+
+
+/* //* Sorteo.jsx */
+
+.contSorteo {
+    display: flex;
+    flex-direction: column;
+    background: var(--fondoSorteo);
+    color: var(--colorTextoOscuro);
+}
+
+.contenidoSorteo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tituloSorteo {
+    font-size: 45px;
+    background: linear-gradient(90deg, #094293, #0000ff, #1519c0, #38a6d5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0;
+}
+
+.contenidoSorteo h3 {
+    margin: 15px 0px;
+}
+
+.btnBuscar {
+    text-decoration: none;
+    border-radius: 30px;
+    color: #094293;
+    background: var(--colorTexto);
+    border: 2px solid #094293;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 24px;
+}
+
+.lista {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 300px;
+    width: 100%;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+.listaNumero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--fondoNumerosLista);
+    margin: 2px;
+    padding: 5px;
+    width: 48px;
+    height: 32px;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.numerosSeleccionados {
+    padding: 5px;
+    margin: 15px 0px;
+    border-radius: 10px;
+    background-color: #b9b4e2;
+    color: var(--colorTexto);
+    display: flex;
+    align-items: center;
+}
+
+.numerosSeleccionados button {
+    text-decoration: none;
+    border: none;
+    margin: 0px 5px;
+    font-size: 25px;
+    border-radius: 100%;
+    padding: 5px 12px;
+    background-color: var(--fondoNumerosLista);
+    color: var(--colorTexto);
 }
