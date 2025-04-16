@@ -192,11 +192,12 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
     background: var(--fondoNumerosLista);
     margin: 2px;
     padding: 5px;
     width: 48px;
-    height: 32px;
+    height: 24px;
     border-radius: 5px;
     font-size: 18px;
     font-weight: 500;
@@ -211,16 +212,23 @@ a {
 }
 
 .numerosSeleccionados {
+    display: flex;
     padding: 5px;
     margin: 15px 0px;
     border-radius: 10px;
+    height: 80px;
     background-color: #b9b4e2;
     color: var(--colorTexto);
     display: flex;
     align-items: center;
 }
 
+.numerosSeleccionados h4 {
+    margin: 0;
+}
+
 .btnSeleccionar {
+    display: flex;
     cursor: pointer;
     text-decoration: none;
     border: none;
@@ -230,4 +238,9 @@ a {
     padding: 5px 12px;
     background-color: var(--fondoNumerosLista);
     color: var(--colorTexto);
+}
+
+.num_select {
+    display: flex;
+    margin: 5px 0;
 }

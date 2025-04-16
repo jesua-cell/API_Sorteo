@@ -1,14 +1,71 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 export const Sorteo = () => {
+
+    const [searchTerm, setSetsearchTerm] = useState('');
+    const [selectNumbers, setSelectNumbers] = useState([]);
+    const listaRef = useRef();
+
+    useEffect(() => {
+        
+        const handleClick = (e) => {
+
+            const numemeroElement = e.target.closest('.listaNumero');
+    
+            if(numemeroElement) {
+                const numero = numemeroElement.textContent;
+    
+                setSelectNumbers(prev => 
+                    prev.includes(numero) ? prev.filter(n => n !== numero) : [...prev, numero]
+                )
+            };
+
+        }
+
+
+        const lista = listaRef.current;
+        lista?.addEventListener('click', handleClick);
+
+        return () => lista?.removeEventListener('click', handleClick)
+
+    }, [])
+
+    const handleSearch = (e) => {
+        const inputValue = e.target.value;
+
+        const searchValue = inputValue === '' ? '' : String(inputValue).padStart(4, '0');
+
+        setSetsearchTerm(searchValue);
+
+        if (listaRef.current) {
+            Array.from(listaRef.current.children).forEach(child => {
+                const numero = child.textContent;
+                child.style.display = searchValue === '' || numero.includes(searchValue) ? 'block' : 'none';
+            })
+        }
+    };
+
     return (
         <>
             <div className='contSorteo'>
                 <div className='contenidoSorteo'>
+
                     <h1 className='tituloSorteo'>Lista de Boletos</h1>
+
                     <h3>Total: $00.00</h3>
+
+
                     <button className='btnBuscar'>Buscar</button>
-                    <div className="lista">
+                    <input
+                        type="number"
+                        placeholder='Buscar'
+                        className='btnBuscar'
+                        onChange={handleSearch}
+                        min="1"
+                        max="1000"
+                    />
+
+                    <div className="lista" ref={listaRef}>
                         <div className="listaNumero">0001</div>
                         <div className="listaNumero">0002</div>
                         <div className="listaNumero">0003</div>
@@ -1012,9 +1069,12 @@ export const Sorteo = () => {
                     </div>
                     <div className='numerosSeleccionados'>
                         <button className='btnSeleccionar'>«</button>
-                        <h4>
-                            Seleccionados:
-                        </h4>
+                        <div className='btnSeleccionado'>
+                            <h4>Seleccionados:</h4>
+                            <div className="num_select">
+                                {selectNumbers.join(', ')}
+                            </div>
+                        </div>
                         <button className='btnSeleccionar'>»</button>
                     </div>
 
