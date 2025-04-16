@@ -1011,11 +1011,11 @@ export const Sorteo = () => {
                         <div className="listaNumero">1000</div>
                     </div>
                     <div className='numerosSeleccionados'>
-                        <button>«</button>
+                        <button className='btnSeleccionar'>«</button>
                         <h4>
                             Seleccionados:
                         </h4>
-                        <button>»</button>
+                        <button className='btnSeleccionar'>»</button>
                     </div>
 
                 </div>

@@ -163,6 +163,7 @@ a {
 }
 
 .btnBuscar {
+    cursor: pointer;
     text-decoration: none;
     border-radius: 30px;
     color: #094293;
@@ -184,7 +185,7 @@ a {
     height: 300px;
     width: 100%;
     overflow-y: scroll;
-    overflow-x: scroll;
+    overflow-x: hidden;
 }
 
 .listaNumero {
@@ -199,6 +200,14 @@ a {
     border-radius: 5px;
     font-size: 18px;
     font-weight: 500;
+    cursor: pointer;
+    transition: ease-in-out 200ms;
+
+    &:hover {
+        background: var(--fondoEnlaces);
+        color: var(--colorTexto);
+        font-weight: 900;
+    }
 }
 
 .numerosSeleccionados {
@@ -211,7 +220,8 @@ a {
     align-items: center;
 }
 
-.numerosSeleccionados button {
+.btnSeleccionar {
+    cursor: pointer;
     text-decoration: none;
     border: none;
     margin: 0px 5px;
