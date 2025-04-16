@@ -5,8 +5,8 @@ export const Navbar = () => {
         <>
             <nav className='NavBar'>
                 <Link to={"/"}>Inicio</Link>
-                <Link to={"/login"}>Login</Link>
                 <Link to={"/sorteo"}>Sorteo</Link>
+                <Link to={"/login"}>Login</Link>
             </nav>
         </>
     )

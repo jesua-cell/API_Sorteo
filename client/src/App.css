@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Funnel Sans';
+    font-family: var(--FunnelSans);
     background-color: var(--fondoContendor);
     color: var(--colorTexto);
 }
@@ -9,10 +9,14 @@ body {
 /* Variables */
 
 :root {
+    /* Fuentes */
+    --FunnelSans: 'Funnel Sans';
+
     /* Fondos */
     --fondoContendor: #07183f;
     --fondoNavBar: #0d0d6f;
     --fondoEnlaces: #06068b;
+    --fondoTarjetaInicio: radial-gradient(circle, rgba(15, 24, 102, 1) 0%, rgba(24, 46, 120, 1) 50%, rgba(20, 21, 77, 1) 100%);
     /* texto */
     --colorTexto: #fafbfd;
 }
@@ -22,6 +26,8 @@ body {
 .NavBar {
     background-color: var(--fondoNavBar);
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     padding: 20px 0;
     justify-content: center;
     width: 100%;
@@ -32,7 +38,7 @@ body {
     color: var(--colorTexto);
     text-decoration: none;
     padding: 10px 20px;
-    margin: 0 10px;
+    margin: 5px 10px;
     border-radius: 8px;
     font-weight: bold;
     background-color: var(--fondoEnlaces);
@@ -42,8 +48,85 @@ body {
 /* //* Inicio */
 
 
+.contTarjeta {
+    display: flex;
+    width: 95%;
+    min-width: 400px;
+    margin: 15px;
+    background: var(--fondoTarjetaInicio);
+    border-radius: 10px;
+    border: 2px solid #9d95b0;
+    box-sizing: border-box;
+}
+
+.contContendido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.contContendido p {
+    text-align: center;
+}
+
+.titulo_sorteo {
+    margin: 8px 0;
+    font-size: 75px;
+    background: linear-gradient(90deg, #c5cbf9, #9966ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.contContendido h2 {
+    margin: 0;
+}
+
+.contContendido p {
+    width: 90%;
+}
+
+.contContendido img {
+    height: 220px;
+    width: 400px;
+    object-fit: contain;
+}
+
+.contContendido button {
+    border: none;
+    text-decoration: none;
+    border-radius: 23px;
+    margin-bottom: 20px;
+}
+
+.contContendido button,
+a {
+    text-decoration: none;
+    padding: 10px;
+    font-family: var(--FunnelSans);
+    font-size: 25px;
+    font-weight: bold;
+}
+
+
 /* //* Footer */
 
 .Footer {
     font-size: 10px;
+    background-color: var(--fondoNavBar);
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px 0;
+    width: 100%;
+    min-width: 400px;
+}
+
+.Footer a {
+    font-size: 18px;
+    color: var(--colorTexto);
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 5px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    background-color: var(--fondoEnlaces);
 }
