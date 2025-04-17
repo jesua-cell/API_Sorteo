@@ -4,6 +4,7 @@ export const Sorteo = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [selectNumbers, setSelectNumbers] = useState([]);
+    const [previewImage, setPreviewImage] = useState(null);
     const listaRef = useRef();
 
     useEffect(() => {
@@ -42,6 +43,21 @@ export const Sorteo = () => {
             })
         }
     };
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const removeImage = () => {
+        setPreviewImage(null);
+    }
 
     return (
         <>
@@ -1074,7 +1090,7 @@ export const Sorteo = () => {
                         </div>
                         <div className='btnSeleccionado'>
                             <div className="num_select">
-                                {selectNumbers.map((numero, index) =>(
+                                {selectNumbers.map((numero, index) => (
                                     <span key={index} className='num-item'>
                                         {numero}
                                     </span>
@@ -1082,6 +1098,44 @@ export const Sorteo = () => {
                             </div>
                         </div>
                     </div>
+
+                    <form className='formDatos'>
+                        <label className='labelForm'>Nombres y Apellidos:</label>
+                        <input type="text" placeholder='Nombres y Apellidos' />
+                        <label className='labelForm'>Celular:</label>
+                        <input type="number" placeholder='Celular' />
+                        <label className='labelForm'>País o Estado:</label>
+                        <input type="text" placeholder='País o Estados' />
+                        <label className='labelForm'>Referencia de Pago:</label>
+                        <input type="number" placeholder='(Ulitmos cuatro digítos)' />
+                        <label className='labelForm'>Comprobante de Pago:</label>
+                        <div className='input_comprobatePago'>
+                            <input
+                                id='comprobantePago'
+                                type="file"
+                                accept='image/png, image/jpeg'
+                                onChange={handleImageUpload}
+                                className='fileImage'
+                                style={{ display: 'none' }}
+                            />
+                            <label 
+                            className='input_seleccionarFile'
+                            htmlFor='comprobantePago'
+                            >Seleccionar: foto/captura de pantalla</label>
+                            {previewImage && (
+                                <div className='image_comprobante'>
+                                    <img src={previewImage} alt='Comprobante' />
+                                    <button
+                                        type='button'
+                                        className='remove-btn'
+                                        onClick={removeImage}
+                                    >x</button>
+                                </div>
+                            )}
+                        </div>
+
+                        <input type="submit" />
+                    </form>
 
                 </div>
             </div>

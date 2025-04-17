@@ -181,8 +181,9 @@ a {
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none; /* Chrome, Safari, Edge */
-  margin: 0;
+    -webkit-appearance: none;
+    /* Chrome, Safari, Edge */
+    margin: 0;
 }
 
 
@@ -322,4 +323,52 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: 500;
     width: 48px;
     cursor: pointer;
+}
+
+/* //* Formulario Sorteo */
+
+.formDatos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--FunnelSans);
+    border: 2px solid #a6a6b9;
+    border-radius: 10px;
+    color: var(--fondoEnlaces);
+    font-weight: 500;
+}
+
+.formDatos label {
+    margin-top: 3px;
+    margin-bottom: 10px;
+}
+
+.formDatos input{
+    border: none;
+    padding: 7px;
+    opacity: 0.7;
+    border-radius: 5px;
+    border: 1px solid #094293;
+}
+
+.input_comprobatePago {
+    display: flex;
+    flex-direction: column;
+}
+
+.input_seleccionarFile {
+    background-color: var(--colorTexto);
+    opacity: 0.7;
+    padding: 7px;
+    margin: 0px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #094293;
+}
+
+.image_comprobante img {
+    height: 80px;
+    width: 120px;
+    object-fit: cover;
 }
