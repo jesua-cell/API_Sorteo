@@ -1134,7 +1134,10 @@ export const Sorteo = () => {
                             )}
                         </div>
 
-                        <input type="submit" />
+                        <input 
+                        type="submit"
+                        className='btnEnviar'
+                        />
                     </form>
 
                 </div>

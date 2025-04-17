@@ -330,25 +330,32 @@ input[type="number"]::-webkit-outer-spin-button {
 .formDatos {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     font-family: var(--FunnelSans);
     border: 2px solid #a6a6b9;
     border-radius: 10px;
     color: var(--fondoEnlaces);
     font-weight: 500;
+    margin-bottom: 30px;
+    width: 95%;
+
 }
 
-.formDatos label {
+.labelForm {
     margin-top: 3px;
+    margin-left: 10px;
     margin-bottom: 10px;
 }
 
-.formDatos input{
+
+.formDatos input {
     border: none;
     padding: 7px;
     opacity: 0.7;
     border-radius: 5px;
     border: 1px solid #094293;
+    width: 94%;
+    margin-left: 6px;
 }
 
 .input_comprobatePago {
@@ -360,6 +367,7 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: var(--colorTexto);
     opacity: 0.7;
     padding: 7px;
+    cursor: pointer;
     margin: 0px 15px;
     margin-bottom: 10px;
     border-radius: 8px;
@@ -368,7 +376,33 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .image_comprobante img {
-    height: 80px;
-    width: 120px;
+    height: 180px;
+    width: 320px;
     object-fit: cover;
+}
+
+.image_comprobante {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-items: flex-start;
+    z-index: 1;
+    margin-top: 12px;
+}
+
+.remove-btn {
+    position: absolute;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #e9493f;
+    color: var(--colorTexto);
+    z-index: 0;
+    margin-left: 320px;
+    margin-top: -7px;
+}
+
+.btnEnviar {
+    margin: 15px 0px;
 }
