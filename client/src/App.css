@@ -173,10 +173,18 @@ a {
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: 500;
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 23px;
+    font-weight: 550;
     margin-bottom: 24px;
+    width: 80px;
 }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Chrome, Safari, Edge */
+  margin: 0;
+}
+
 
 .lista {
     display: flex;
@@ -186,7 +194,28 @@ a {
     width: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
+
 }
+
+.lista::-webkit-scrollbar {
+    width: 8px;
+}
+
+.lista::-webkit-scrollbar-track {
+    opacity: 0.8;
+    border-radius: 10px;
+    background: #e3d8d8;
+}
+
+.lista::-webkit-scrollbar-thumb {
+    background: #8c8585;
+    border-radius: 10px;
+}
+
+.lista::-webkit-scrollbar-button {
+    display: none;
+}
+
 
 .listaNumero {
     display: flex;
@@ -213,6 +242,7 @@ a {
 
 .numerosSeleccionados {
     display: flex;
+    flex-direction: column;
     padding: 5px;
     margin: 15px 0px;
     border-radius: 10px;
@@ -221,11 +251,44 @@ a {
     color: var(--colorTexto);
     display: flex;
     align-items: center;
+    max-width: 320px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .numerosSeleccionados h4 {
     margin: 0;
 }
+
+.numerosSeleccionados::-webkit-scrollbar {
+    width: 8px;
+}
+
+.numerosSeleccionados::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: #e3d8d8;
+    opacity: 1.0;
+}
+
+.numerosSeleccionados::-webkit-scrollbar-thumb {
+    background: #8c8585;
+    border-radius: 10px;
+}
+
+.numerosSeleccionados::-webkit-scrollbar-button {
+    display: none;
+}
+
+
+
+.contentSeleccionados {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+}
+
 
 .btnSeleccionar {
     display: flex;
@@ -242,5 +305,21 @@ a {
 
 .num_select {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     margin: 5px 0;
+}
+
+
+.num-item {
+    text-align: center;
+    background: var(--fondoEnlaces);
+    color: var(--colorTexto);
+    margin: 2px;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 500;
+    width: 48px;
+    cursor: pointer;
 }

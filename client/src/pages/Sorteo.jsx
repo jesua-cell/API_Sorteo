@@ -2,40 +2,38 @@ import React, { useState, useRef, useEffect } from 'react'
 
 export const Sorteo = () => {
 
-    const [searchTerm, setSetsearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
     const [selectNumbers, setSelectNumbers] = useState([]);
     const listaRef = useRef();
 
     useEffect(() => {
-        
+
         const handleClick = (e) => {
 
             const numemeroElement = e.target.closest('.listaNumero');
-    
-            if(numemeroElement) {
+
+            if (numemeroElement) {
                 const numero = numemeroElement.textContent;
-    
-                setSelectNumbers(prev => 
+
+                setSelectNumbers(prev =>
                     prev.includes(numero) ? prev.filter(n => n !== numero) : [...prev, numero]
                 )
             };
 
         }
-
-
         const lista = listaRef.current;
         lista?.addEventListener('click', handleClick);
 
         return () => lista?.removeEventListener('click', handleClick)
-
     }, [])
 
     const handleSearch = (e) => {
+
         const inputValue = e.target.value;
 
         const searchValue = inputValue === '' ? '' : String(inputValue).padStart(4, '0');
 
-        setSetsearchTerm(searchValue);
+        setSearchTerm(searchValue);
 
         if (listaRef.current) {
             Array.from(listaRef.current.children).forEach(child => {
@@ -55,7 +53,7 @@ export const Sorteo = () => {
                     <h3>Total: $00.00</h3>
 
 
-                    <button className='btnBuscar'>Buscar</button>
+                    {/* <button className='btnBuscar'>Buscar</button> */}
                     <input
                         type="number"
                         placeholder='Buscar'
@@ -63,6 +61,7 @@ export const Sorteo = () => {
                         onChange={handleSearch}
                         min="1"
                         max="1000"
+                        onWheel={(e) => e.target.blur()}
                     />
 
                     <div className="lista" ref={listaRef}>
@@ -1068,14 +1067,20 @@ export const Sorteo = () => {
                         <div className="listaNumero">1000</div>
                     </div>
                     <div className='numerosSeleccionados'>
-                        <button className='btnSeleccionar'>«</button>
-                        <div className='btnSeleccionado'>
+                        <div className='contentSeleccionados'>
+                            {/* <button className='btnSeleccionar'>«</button> */}
                             <h4>Seleccionados:</h4>
+                            {/* <button className='btnSeleccionar'>»</button> */}
+                        </div>
+                        <div className='btnSeleccionado'>
                             <div className="num_select">
-                                {selectNumbers.join(', ')}
+                                {selectNumbers.map((numero, index) =>(
+                                    <span key={index} className='num-item'>
+                                        {numero}
+                                    </span>
+                                ))}
                             </div>
                         </div>
-                        <button className='btnSeleccionar'>»</button>
                     </div>
 
                 </div>
