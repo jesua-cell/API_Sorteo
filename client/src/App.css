@@ -19,6 +19,7 @@ body {
     --fondoTarjetaInicio: radial-gradient(circle, rgba(15, 24, 102, 1) 0%, rgba(24, 46, 120, 1) 50%, rgba(20, 21, 77, 1) 100%);
     --fondoSorteo: #e5e1f0;
     --fondoNumerosLista: #d0daff;
+    --fondoBtnEnviar: linear-gradient(90deg, rgba(30, 43, 166, 1) 0%, rgba(57, 95, 219, 1) 50%, rgba(104, 106, 222, 1) 100%);
     /* texto */
     --colorTexto: #fafbfd;
     --colorTextoOscuro: #191919;
@@ -34,7 +35,7 @@ body {
     padding: 20px 0;
     justify-content: center;
     width: 100%;
-    min-width: 400px;
+    min-width: 375px;
 }
 
 .NavBar a {
@@ -44,6 +45,7 @@ body {
     margin: 5px 10px;
     border-radius: 8px;
     font-weight: bold;
+    font-size: 21px;
     background-color: var(--fondoEnlaces);
 }
 
@@ -120,7 +122,7 @@ a {
     justify-content: space-evenly;
     padding: 20px 0;
     width: 100%;
-    min-width: 400px;
+    min-width: 375px;
 }
 
 .Footer a {
@@ -361,6 +363,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .input_comprobatePago {
     display: flex;
     flex-direction: column;
+    width: 95%;
 }
 
 .input_seleccionarFile {
@@ -389,6 +392,7 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: flex-start;
     z-index: 1;
     margin-top: 12px;
+    width: 105%;
 }
 
 .remove-btn {
@@ -405,4 +409,88 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .btnEnviar {
     margin: 15px 0px;
+    font-family: var(--FunnelSans);
+    font-size: 23px;
+    font-weight: 600;
+    border: none;
+    background: var(--fondoBtnEnviar);
+    color: var(--colorTexto);
+}
+
+
+/* //* Modo de pagos */
+
+.medioPago {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 23px;
+    margin-bottom: 23px;
+    background-color: #edf9f9;
+    border: 1px solid #094293;
+    width: 99%;
+    border-radius: 10px;
+}
+
+.modoPago {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.imgPago {
+    height: 60px;
+    width: 60px;
+    object-fit: cover;
+    margin: 5px;
+    background-color: #e5f1f1;
+    border-radius: 5px;
+}
+
+.nombrePago {
+    background-color: #e5f1f1;
+    width: 80%;
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+    margin: 8  px 0px;
+}
+
+.cuenta {
+    background-color: #e5f1f1;
+    width: 80%;
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+    margin: 8px 0px;
+}
+
+.numeroCuenta {
+    background-color: #e5f1f1;
+    width: 80%;
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+    margin: 8px 0px;
+}
+
+.titular {
+    background-color: #e5f1f1;
+    width: 80%;
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+    margin: 8px 0px;
+}
+
+.remitente {
+    background-color: #e5f1f1;
+    width: 80%;
+    padding: 8px;
+    text-align: center;
+    border-radius: 5px;
+    margin: 8px 0px;
 }

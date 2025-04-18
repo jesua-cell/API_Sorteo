@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
+import zelle from '../assets/zelle.png'
+import nequi from '../assets/nequi.png'
 
 export const Sorteo = () => {
 
@@ -59,6 +61,8 @@ export const Sorteo = () => {
         setPreviewImage(null);
     }
 
+    
+
     return (
         <>
             <div className='contSorteo'>
@@ -66,7 +70,7 @@ export const Sorteo = () => {
 
                     <h1 className='tituloSorteo'>Lista de Boletos</h1>
 
-                    <h3>Total: $00.00</h3>
+                    <h3>Numeros de Boletos: </h3>
 
 
                     {/* <button className='btnBuscar'>Buscar</button> */}
@@ -1109,6 +1113,28 @@ export const Sorteo = () => {
                         <label className='labelForm'>Referencia de Pago:</label>
                         <input type="number" placeholder='(Ulitmos cuatro digítos)' />
                         <label className='labelForm'>Comprobante de Pago:</label>
+
+                        <h3 className='titulo_medioPago'>Modo de Pago:</h3>
+                        <span className='span_medioPago'>Elige una opcion</span>
+                        <div className='medioPago'>
+                            <img className='imgPago' src={zelle} alt="Zelle" />
+                            <img className='imgPago' src={nequi} alt="Nequi" />
+                            <div className="modoPago">
+                                <h4 className='nombrePago'>Zelle</h4>
+                                <h4 className='cuenta'>Cuenta:</h4>
+                                <h4 className='numeroCuenta'>6153625428</h4>
+                                <h4 className='titular'>Titular:</h4>
+                                <h4 className='remitente'>Francisco Javier Caicedo</h4>
+                            </div>
+                            <div className="modoPago">
+                                <h4 className='nombrePago'>Nequi</h4>
+                                <h4 className='cuenta'>Cuenta:</h4>
+                                <h4 className='numeroCuenta'>3154854020</h4>
+                                <h4 className='titular'>Titular:</h4>
+                                <h4 className='remitente'>Donney Caicedo</h4>
+                            </div>
+                        </div>
+
                         <div className='input_comprobatePago'>
                             <input
                                 id='comprobantePago'
@@ -1118,9 +1144,9 @@ export const Sorteo = () => {
                                 className='fileImage'
                                 style={{ display: 'none' }}
                             />
-                            <label 
-                            className='input_seleccionarFile'
-                            htmlFor='comprobantePago'
+                            <label
+                                className='input_seleccionarFile'
+                                htmlFor='comprobantePago'
                             >Seleccionar: foto/captura de pantalla</label>
                             {previewImage && (
                                 <div className='image_comprobante'>
@@ -1133,10 +1159,9 @@ export const Sorteo = () => {
                                 </div>
                             )}
                         </div>
-
-                        <input 
-                        type="submit"
-                        className='btnEnviar'
+                        <input
+                            type="submit"
+                            className='btnEnviar'
                         />
                     </form>
 
