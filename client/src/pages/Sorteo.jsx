@@ -1117,26 +1117,8 @@ export const Sorteo = () => {
                         <input type="number" placeholder='(Ulitmos cuatro digítos)' />
                         <label className='labelForm'>Comprobante de Pago:</label>
 
-                        <h3 className='titulo_medioPago'>Modo de Pago:</h3>
+                        <span className='titulo_medioPago'>Modos de Pago:</span>
                         <span className='span_medioPago'>Elige una opcion</span>
-                        <div className='medioPago'>
-                            {/* <img className='imgPago' src={zelle} alt="Zelle" />
-                            <img className='imgPago' src={nequi} alt="Nequi" /> */}
-                            {/* <div className="modoPago">
-                                <h4 className='nombrePago'>Zelle</h4>
-                                <h4 className='cuenta'>Cuenta:</h4>
-                                <h4 className='numeroCuenta'>6153625428</h4>
-                                <h4 className='titular'>Titular:</h4>
-                                <h4 className='remitente'>Francisco Javier Caicedo</h4>
-                            </div>
-                            <div className="modoPago">
-                                <h4 className='nombrePago'>Nequi</h4>
-                                <h4 className='cuenta'>Cuenta:</h4>
-                                <h4 className='numeroCuenta'>3154854020</h4>
-                                <h4 className='titular'>Titular:</h4>
-                                <h4 className='remitente'>Donney Caicedo</h4>
-                            </div> */}
-                        </div>
 
                         <ul className="tabs">
                             <li className={activeTab == 0 ? "active" : ""} onClick={() => seleccionar(0)}>
