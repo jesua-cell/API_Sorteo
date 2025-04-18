@@ -427,10 +427,10 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-top: 23px;
     margin-bottom: 23px;
     background-color: #edf9f9;
-    border: 1px solid #094293;
     width: 99%;
     border-radius: 10px;
 }
+
 
 .modoPago {
     display: flex;
@@ -438,7 +438,7 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     margin: 10px;
     margin-bottom: 20px;
-    width: 100%;
+    width: 97%;
 }
 
 .imgPago {
@@ -456,7 +456,7 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 5px;
     text-align: center;
     border-radius: 5px;
-    margin: 8  px 0px;
+    margin: 8px 0px;
 }
 
 .cuenta {
@@ -494,3 +494,34 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 5px;
     margin: 8px 0px;
 }
+
+.tabs {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    width: 75%;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.tab_content {
+    width: 99%;
+}
+
+.active {
+    list-style: none;
+}
+
+/* .indicador {
+    position: absolute;
+    display: flex;
+    height: 69px;
+    width: 70px;
+    opacity: 0.4;
+    background-color: #8c8585;
+    z-index: 1;
+    border-radius: 15px;
+    transform: translateX(${(props) => props.activeTab});
+} */
+

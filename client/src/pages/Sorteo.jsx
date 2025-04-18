@@ -7,6 +7,7 @@ export const Sorteo = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectNumbers, setSelectNumbers] = useState([]);
     const [previewImage, setPreviewImage] = useState(null);
+    const [activeTab, setActiveTab] = useState(0);
     const listaRef = useRef();
 
     useEffect(() => {
@@ -59,9 +60,11 @@ export const Sorteo = () => {
 
     const removeImage = () => {
         setPreviewImage(null);
-    }
+    };
 
-    
+    const seleccionar = (index) => {
+        setActiveTab(index);
+    };
 
     return (
         <>
@@ -1117,9 +1120,9 @@ export const Sorteo = () => {
                         <h3 className='titulo_medioPago'>Modo de Pago:</h3>
                         <span className='span_medioPago'>Elige una opcion</span>
                         <div className='medioPago'>
-                            <img className='imgPago' src={zelle} alt="Zelle" />
-                            <img className='imgPago' src={nequi} alt="Nequi" />
-                            <div className="modoPago">
+                            {/* <img className='imgPago' src={zelle} alt="Zelle" />
+                            <img className='imgPago' src={nequi} alt="Nequi" /> */}
+                            {/* <div className="modoPago">
                                 <h4 className='nombrePago'>Zelle</h4>
                                 <h4 className='cuenta'>Cuenta:</h4>
                                 <h4 className='numeroCuenta'>6153625428</h4>
@@ -1132,7 +1135,39 @@ export const Sorteo = () => {
                                 <h4 className='numeroCuenta'>3154854020</h4>
                                 <h4 className='titular'>Titular:</h4>
                                 <h4 className='remitente'>Donney Caicedo</h4>
-                            </div>
+                            </div> */}
+                        </div>
+
+                        <ul className="tabs">
+                            <li className={activeTab == 0 ? "active" : ""} onClick={() => seleccionar(0)}>
+                                <img className='imgPago' src={zelle} alt="Zelle" />
+                            </li>
+                            <li className={activeTab == 1 ? "active" : ""} onClick={() => seleccionar(1)}>
+                                <img className='imgPago' src={nequi} alt="Nequi" />
+                            </li>
+                            <span className='indicador'></span>
+                        </ul>
+                        
+                        <div className="tab_content">
+                            {activeTab === 0 &&
+                                <div className="modoPago">
+                                    <h4 className='nombrePago'>Zelle</h4>
+                                    <h4 className='cuenta'>Cuenta:</h4>
+                                    <h4 className='numeroCuenta'>6153625428</h4>
+                                    <h4 className='titular'>Titular:</h4>
+                                    <h4 className='remitente'>Francisco Javier Caicedo</h4>
+                                </div>
+                            }
+                            {activeTab === 1 &&
+                                <div className="modoPago">
+                                    <h4 className='nombrePago'>Nequi</h4>
+                                    <h4 className='cuenta'>Cuenta:</h4>
+                                    <h4 className='numeroCuenta'>3154854020</h4>
+                                    <h4 className='titular'>Titular:</h4>
+                                    <h4 className='remitente'>Donney Caicedo</h4>
+                                </div>
+                            }
+                            {activeTab === 2 && <h1>Tab 3</h1>}
                         </div>
 
                         <div className='input_comprobatePago'>
