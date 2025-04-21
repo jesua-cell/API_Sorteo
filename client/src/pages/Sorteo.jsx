@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react'
+//Imagenes:
 import zelle from '../assets/zelle.png'
 import nequi from '../assets/nequi.png'
+import bancolombia from '../assets/bancolombia.png'
+import paypal from '../assets/paypal.png'
 
 export const Sorteo = () => {
 
@@ -50,6 +53,7 @@ export const Sorteo = () => {
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
+            setSelectedFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImage(reader.result);
@@ -65,6 +69,34 @@ export const Sorteo = () => {
     const seleccionar = (index) => {
         setActiveTab(index);
     };
+
+    /**
+     * Obentener los valores y enviarlos al servidor
+     */
+
+    const [nombre, setNombre] = useState('');
+    const [celular, setCelular] = useState('')
+    const [paisEstado, setPaisEstado] = useState('')
+    const [referenciaPago, setReferenciaPago] = useState('')
+    const [selectedFile, setSelectedFile] = useState(null)
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        const metodoPago = activeTab === 0 ? "Zelle" : "Nequi"
+
+        console.log({
+            jugador: {
+                username: nombre,
+                celular: celular,
+                pais_estado: paisEstado,
+                referenciaPago: referenciaPago,
+                numerosSeleccionados: selectNumbers,
+                metodo_pago: metodoPago,
+                comprobante_pago: selectedFile
+            }
+        });
+    }
 
     return (
         <>
@@ -1091,7 +1123,6 @@ export const Sorteo = () => {
                     </div>
                     <div className='numerosSeleccionados'>
                         <div className='contentSeleccionados'>
-                            {/* <button className='btnSeleccionar'>«</button> */}
                             <h4>Seleccionados:</h4>
                             {/* <button className='btnSeleccionar'>»</button> */}
                         </div>
@@ -1108,18 +1139,35 @@ export const Sorteo = () => {
 
                     <form className='formDatos'>
                         <label className='labelForm'>Nombres y Apellidos:</label>
-                        <input type="text" placeholder='Nombres y Apellidos' />
+                        <input
+                            type="text"
+                            placeholder='Nombres y Apellidos'
+                            onChange={(e) => setNombre(e.target.value)}
+                        />
+
                         <label className='labelForm'>Celular:</label>
-                        <input type="number" placeholder='Celular' />
+                        <input
+                            type="number"
+                            placeholder='Celular'
+                            onChange={(e) => setCelular(e.target.value)}
+                        />
+
                         <label className='labelForm'>País o Estado:</label>
-                        <input type="text" placeholder='País o Estados' />
+                        <input
+                            type="text"
+                            placeholder='País o Estados'
+                            onChange={(e) => setPaisEstado(e.target.value)}
+                        />
+
                         <label className='labelForm'>Referencia de Pago:</label>
-                        <input type="number" placeholder='(Ulitmos cuatro digítos)' />
-                        <label className='labelForm'>Comprobante de Pago:</label>
+                        <input
+                            type="number"
+                            placeholder='(Ulitmos cuatro digítos)'
+                            onChange={(e) => setReferenciaPago(e.target.value)}
+                        />
 
                         <span className='titulo_medioPago'>Modos de Pago:</span>
                         <span className='span_medioPago'>Elige una opcion</span>
-
                         <ul className="tabs">
                             <li className={activeTab == 0 ? "active" : ""} onClick={() => seleccionar(0)}>
                                 <img className='imgPago' src={zelle} alt="Zelle" />
@@ -1127,9 +1175,15 @@ export const Sorteo = () => {
                             <li className={activeTab == 1 ? "active" : ""} onClick={() => seleccionar(1)}>
                                 <img className='imgPago' src={nequi} alt="Nequi" />
                             </li>
+                            <li className={activeTab == 2 ? "active" : ""} onClick={() => seleccionar(2)}>
+                                <img className='imgPago' src={bancolombia} alt="Bancolombia" />
+                            </li>
+                            <li className={activeTab == 3 ? "active" : ""} onClick={() => seleccionar(3)}>
+                                <img className='imgPago' src={paypal} alt="Bancolombia" />
+                            </li>
                             <span className='indicador'></span>
                         </ul>
-                        
+
                         <div className="tab_content">
                             {activeTab === 0 &&
                                 <div className="modoPago">
@@ -1149,9 +1203,27 @@ export const Sorteo = () => {
                                     <h4 className='remitente'>Donney Caicedo</h4>
                                 </div>
                             }
-                            {activeTab === 2 && <h1>Tab 3</h1>}
+                            {activeTab === 2 &&
+                                <div className="modoPago">
+                                    <h4 className='nombrePago'>Bancolombia</h4>
+                                    <h4 className='cuenta'>Cuenta Ahorro:</h4>
+                                    <h4 className='numeroCuenta'>82000002819</h4>
+                                    <h4 className='titular'>Titular:</h4>
+                                    <h4 className='remitente'>Donney Caicedo</h4>
+                                </div>
+                            }
+                            {activeTab === 3 &&
+                                <div className="modoPago">
+                                    <h4 className='nombrePago'>PayPal</h4>
+                                    <h4 className='cuenta'>Cuenta:</h4>
+                                    <h4 className='numeroCuenta'>tonny1620@gmail.com</h4>
+                                    <h4 className='titular'>Titular:</h4>
+                                    <h4 className='remitente'>Donney Caicedo</h4>
+                                </div>
+                            }
                         </div>
 
+                        <label className='labelForm'>Comprobante de Pago:</label>
                         <div className='input_comprobatePago'>
                             <input
                                 id='comprobantePago'
@@ -1179,6 +1251,7 @@ export const Sorteo = () => {
                         <input
                             type="submit"
                             className='btnEnviar'
+                            onClick={handleLogin}
                         />
                     </form>
 
