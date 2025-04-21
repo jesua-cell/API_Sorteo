@@ -4,6 +4,8 @@ import zelle from '../assets/zelle.png'
 import nequi from '../assets/nequi.png'
 import bancolombia from '../assets/bancolombia.png'
 import paypal from '../assets/paypal.png'
+import pagomovil from '../assets/pagomovil.png'
+import bancovenezuela from '../assets/bancovenezuela.png'
 
 export const Sorteo = () => {
 
@@ -66,8 +68,13 @@ export const Sorteo = () => {
         setPreviewImage(null);
     };
 
+    
     const seleccionar = (index) => {
         setActiveTab(index);
+    };
+
+    const removeNumSelect = () => {
+        setSelectNumbers([]);
     };
 
     /**
@@ -79,11 +86,14 @@ export const Sorteo = () => {
     const [paisEstado, setPaisEstado] = useState('')
     const [referenciaPago, setReferenciaPago] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
+    const [cedula, setCedula] = useState('')
 
     const handleLogin = (e) => {
         e.preventDefault();
 
-        const metodoPago = activeTab === 0 ? "Zelle" : "Nequi"
+        const metodosPago = ["Zelle", "Nequi", "Bancolombia", "PayPal", "PagoMovil", "BancoVenezuela"];
+
+        const metodoPago = metodosPago[activeTab] || "Desconocido";
 
         console.log({
             jugador: {
@@ -93,7 +103,8 @@ export const Sorteo = () => {
                 referenciaPago: referenciaPago,
                 numerosSeleccionados: selectNumbers,
                 metodo_pago: metodoPago,
-                comprobante_pago: selectedFile
+                comprobante_pago: selectedFile,
+                cedula: cedula
             }
         });
     }
@@ -1124,8 +1135,16 @@ export const Sorteo = () => {
                     <div className='numerosSeleccionados'>
                         <div className='contentSeleccionados'>
                             <h4>Seleccionados:</h4>
-                            {/* <button className='btnSeleccionar'>»</button> */}
+                                                        
                         </div>
+                            {selectNumbers.length > 0 && (
+                                <button
+                                onClick={removeNumSelect}
+                                className='btnRemoveNum'
+                                >
+                                x
+                                </button>
+                            )}
                         <div className='btnSeleccionado'>
                             <div className="num_select">
                                 {selectNumbers.map((numero, index) => (
@@ -1143,6 +1162,7 @@ export const Sorteo = () => {
                             type="text"
                             placeholder='Nombres y Apellidos'
                             onChange={(e) => setNombre(e.target.value)}
+                            required
                         />
 
                         <label className='labelForm'>Celular:</label>
@@ -1150,6 +1170,15 @@ export const Sorteo = () => {
                             type="number"
                             placeholder='Celular'
                             onChange={(e) => setCelular(e.target.value)}
+                            required
+                        />
+
+                        <label className='labelForm'>Cédula:</label>
+                        <input
+                            type="number"
+                            placeholder='Cédula'
+                            onChange={(e) => setCedula(e.target.value)}
+                            required
                         />
 
                         <label className='labelForm'>País o Estado:</label>
@@ -1157,6 +1186,7 @@ export const Sorteo = () => {
                             type="text"
                             placeholder='País o Estados'
                             onChange={(e) => setPaisEstado(e.target.value)}
+                            required
                         />
 
                         <label className='labelForm'>Referencia de Pago:</label>
@@ -1164,6 +1194,7 @@ export const Sorteo = () => {
                             type="number"
                             placeholder='(Ulitmos cuatro digítos)'
                             onChange={(e) => setReferenciaPago(e.target.value)}
+                            required
                         />
 
                         <span className='titulo_medioPago'>Modos de Pago:</span>
@@ -1179,7 +1210,13 @@ export const Sorteo = () => {
                                 <img className='imgPago' src={bancolombia} alt="Bancolombia" />
                             </li>
                             <li className={activeTab == 3 ? "active" : ""} onClick={() => seleccionar(3)}>
-                                <img className='imgPago' src={paypal} alt="Bancolombia" />
+                                <img className='imgPago' src={paypal} alt="PayPal" />
+                            </li>
+                            <li className={activeTab == 4 ? "active" : ""} onClick={() => seleccionar(4)}>
+                                <img className='imgPago' src={pagomovil} alt="Pagomovil" />
+                            </li>
+                            <li className={activeTab == 5 ? "active" : ""} onClick={() => seleccionar(5)}>
+                                <img className='imgPago' src={bancovenezuela} alt="BancoVenezuela" />
                             </li>
                             <span className='indicador'></span>
                         </ul>
@@ -1217,6 +1254,23 @@ export const Sorteo = () => {
                                     <h4 className='nombrePago'>PayPal</h4>
                                     <h4 className='cuenta'>Cuenta:</h4>
                                     <h4 className='numeroCuenta'>tonny1620@gmail.com</h4>
+                                    <h4 className='titular'>Titular:</h4>
+                                    <h4 className='remitente'>Donney Caicedo</h4>
+                                </div>
+                            }{activeTab === 4 &&
+                                <div className="modoPago">
+                                    <h4 className='nombrePago'>Pagomovil</h4>
+                                    <h4 className='cuenta'>Cuenta:</h4>
+                                    <h4 className='numeroCuenta'>04147014646</h4>
+                                    <h4 className='titular'>Titular:</h4>
+                                    <h4 className='remitente'>Donney Caicedo</h4>
+                                </div>
+                            }
+                            {activeTab === 5 &&
+                                <div className="modoPago">
+                                    <h4 className='nombrePago'>Banco de Venezuela</h4>
+                                    <h4 className='cuenta'>Cuenta:</h4>
+                                    <h4 className='numeroCuenta'>21453387</h4>
                                     <h4 className='titular'>Titular:</h4>
                                     <h4 className='remitente'>Donney Caicedo</h4>
                                 </div>
@@ -1260,3 +1314,9 @@ export const Sorteo = () => {
         </>
     )
 }
+
+/**
+ * TODO: Colocar en un contenedor la cantidad de numeros seleccionados.
+ * TODO: Configurar el precio total por cada numero elegido dependiendo la modena de la entidad de pago
+ * TODO: Considerar guardar el total del pago en un string en el servidor
+ */
