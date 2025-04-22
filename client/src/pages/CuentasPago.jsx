@@ -8,7 +8,6 @@ import paypal from '../assets/paypal.png'
 import pagomovil from '../assets/pagomovil.png'
 import bancovenezuela from '../assets/bancovenezuela.png'
 import icon_copy from '../assets/icon-copy.svg'
-import { useState } from "react";
 
 
 export const CuentasPago = () => {
