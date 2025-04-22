@@ -56,7 +56,8 @@ body {
 .contTarjeta {
     display: flex;
     width: 95%;
-    min-width: 400px;
+    min-width: 335px;
+    height: 100vh;
     margin: 15px;
     background: var(--fondoTarjetaInicio);
     border-radius: 10px;
@@ -67,7 +68,7 @@ body {
 .contContendido {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; 
 }
 
 .contContendido p {
@@ -87,12 +88,12 @@ body {
 }
 
 .contContendido p {
-    width: 90%;
+    width: 80%;
 }
 
 .contContendido img {
     height: 220px;
-    width: 400px;
+    width: 335px;
     object-fit: contain;
 }
 
@@ -134,6 +135,71 @@ a {
     border-radius: 8px;
     font-weight: 500;
     background-color: var(--fondoEnlaces);
+}
+
+
+/* //*Cuentas de Pago */
+
+.contCuentasPago {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.h1_cuentaPago {
+    background: linear-gradient(64deg,rgb(193, 212, 247) 7%, rgba(184, 159, 252, 1) 44%, rgba(188, 169, 245, 1) 90%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    font-size: 45px;
+}
+ 
+.cuentaPago {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    background: linear-gradient(64deg,rgb(193, 212, 247) 7%, rgba(184, 159, 252, 1) 44%, rgba(188, 169, 245, 1) 90%);
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+
+.img_cuentaPago {
+    height: 100px;
+    width: 100px;
+    object-fit: contain;
+    margin: 15px 0px;
+}
+
+.img_cuentaPago:nth-child(7){
+    height: 50px;
+    width: 50px;
+    object-fit: contain;
+    margin: 15px 0px;
+}
+
+.titl_CuentaPago {
+    font-size: 40px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    text-align: center;
+}
+
+.text_cuentaPago {
+    margin: 5px;
+    font-size: 20px;
+    background-color: #eefafa;
+    opacity: 0.5;
+    color: #191919;
+    padding: 5px;
+    border-radius: 5px;
+    width: 90%;
+    text-align: center;
+}
+
+.text_cuentaPago:nth-child(6) {
+    margin-bottom: 15px;
 }
 
 

@@ -1319,4 +1319,5 @@ export const Sorteo = () => {
  * TODO: Colocar en un contenedor la cantidad de numeros seleccionados.
  * TODO: Configurar el precio total por cada numero elegido dependiendo la modena de la entidad de pago
  * TODO: Considerar guardar el total del pago en un string en el servidor
+ * TODO: Colocar un contenedor para que el usuario verifique su juego
  */
