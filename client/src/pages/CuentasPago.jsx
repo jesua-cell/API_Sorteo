@@ -12,7 +12,6 @@ import icon_copy from '../assets/icon-copy.svg'
 
 export const CuentasPago = () => {
 
-    // const [copyText, setCopyText] = useState(null);
 
     const cuentas = {
         zelle: "6153625428\nFrancisco Javier Caicedo",
