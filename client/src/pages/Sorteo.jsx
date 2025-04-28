@@ -28,13 +28,24 @@ export const Sorteo = () => {
                     prev.includes(numero) ? prev.filter(n => n !== numero) : [...prev, numero]
                 )
             };
-
         }
         const lista = listaRef.current;
         lista?.addEventListener('click', handleClick);
 
         return () => lista?.removeEventListener('click', handleClick)
     }, [])
+
+
+    useEffect(() => {
+        if (selectNumbers.length){
+            setSearchTerm('');
+            listaRef.current.scrollTop = 0;
+            Array.from(listaRef.current.children).forEach(child => 
+                child.style.display = 'block'
+            );
+        }
+    }, [selectNumbers])
+
 
     const handleSearch = (e) => {
 
@@ -68,7 +79,7 @@ export const Sorteo = () => {
         setPreviewImage(null);
     };
 
-    
+
     const seleccionar = (index) => {
         setActiveTab(index);
     };
@@ -101,12 +112,22 @@ export const Sorteo = () => {
                 celular: celular,
                 pais_estado: paisEstado,
                 referenciaPago: referenciaPago,
-                numerosSeleccionados: selectNumbers,
+                numerosBoletos: selectNumbers,
                 metodo_pago: metodoPago,
                 comprobante_pago: selectedFile,
                 cedula: cedula
             }
         });
+
+        const formData = new FormData();
+        formData.append("username", nombre);
+        formData.append("celular", celular);
+        formData.append("cedula", cedula);
+        formData.append("pais_estado", paisEstado);
+        formData.append("referenciaPago", referenciaPago);
+        formData.append("metodo_pago", metodoPago);
+        formData.append("comprobante", selectedFile);
+        formData.append("numerosBoletos", JSON.stringify(selectNumbers));
     }
 
     return (
@@ -118,8 +139,6 @@ export const Sorteo = () => {
 
                     <h3>Numeros de Boletos: </h3>
 
-
-                    {/* <button className='btnBuscar'>Buscar</button> */}
                     <input
                         type="number"
                         placeholder='Buscar'
@@ -130,7 +149,7 @@ export const Sorteo = () => {
                         onWheel={(e) => e.target.blur()}
                     />
 
-                    <div className="lista" ref={listaRef}>
+                    <div className="lista" ref={listaRef} >
                         <div className="listaNumero">0001</div>
                         <div className="listaNumero">0002</div>
                         <div className="listaNumero">0003</div>
@@ -1135,16 +1154,16 @@ export const Sorteo = () => {
                     <div className='numerosSeleccionados'>
                         <div className='contentSeleccionados'>
                             <h4>Seleccionados:</h4>
-                                                        
+
                         </div>
-                            {selectNumbers.length > 0 && (
-                                <button
+                        {selectNumbers.length > 0 && (
+                            <button
                                 onClick={removeNumSelect}
                                 className='btnRemoveNum'
-                                >
+                            >
                                 x
-                                </button>
-                            )}
+                            </button>
+                        )}
                         <div className='btnSeleccionado'>
                             <div className="num_select">
                                 {selectNumbers.map((numero, index) => (
@@ -1167,7 +1186,7 @@ export const Sorteo = () => {
 
                         <label className='labelForm'>Celular:</label>
                         <input
-                            type="number"
+                            type="text"
                             placeholder='Celular'
                             onChange={(e) => setCelular(e.target.value)}
                             required
@@ -1191,7 +1210,7 @@ export const Sorteo = () => {
 
                         <label className='labelForm'>Referencia de Pago:</label>
                         <input
-                            type="number"
+                            type="text"
                             placeholder='(Ulitmos cuatro digítos)'
                             onChange={(e) => setReferenciaPago(e.target.value)}
                             required
@@ -1320,4 +1339,7 @@ export const Sorteo = () => {
  * TODO: Configurar el precio total por cada numero elegido dependiendo la modena de la entidad de pago
  * TODO: Considerar guardar el total del pago en un string en el servidor
  * TODO: Colocar un contenedor para que el usuario verifique su juego
+ * TODO: Validación de formulario y feedback
+ * //* TODO: Sistema de paginación para los números
+ * //* TODO: Persistencia en LocalStorage
  */
