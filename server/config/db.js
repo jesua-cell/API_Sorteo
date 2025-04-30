@@ -6,4 +6,6 @@ export const pool = createPool({
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "",
     port: process.env.DB_PORT || 3306
-})
+});
+
+export default pool;
