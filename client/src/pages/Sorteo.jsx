@@ -7,6 +7,8 @@ import paypal from '../assets/paypal.png'
 import pagomovil from '../assets/pagomovil.png'
 import bancovenezuela from '../assets/bancovenezuela.png'
 
+import { createJugador } from "../api/submit.server.js";
+
 export const Sorteo = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -99,7 +101,7 @@ export const Sorteo = () => {
     const [selectedFile, setSelectedFile] = useState(null)
     const [cedula, setCedula] = useState('')
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
         const metodosPago = ["Zelle", "Nequi", "Bancolombia", "PayPal", "PagoMovil", "BancoVenezuela"];
@@ -117,18 +119,41 @@ export const Sorteo = () => {
                 comprobante_pago: selectedFile,
                 cedula: cedula
             }
+
         });
 
-        const formData = new FormData();
-        formData.append("username", nombre);
-        formData.append("celular", celular);
-        formData.append("cedula", cedula);
-        formData.append("pais_estado", paisEstado);
-        formData.append("referenciaPago", referenciaPago);
-        formData.append("metodo_pago", metodoPago);
-        formData.append("comprobante", selectedFile);
-        formData.append("numerosBoletos", JSON.stringify(selectNumbers));
-    }
+        if(selectNumbers.length === 0) {
+            alert('Selecciona un numero')
+        };
+
+        try {
+            
+            const formData = new FormData();
+            formData.append("nombres_apellidos", nombre);
+            formData.append("celular", celular);
+            formData.append("cedula", cedula);
+            formData.append("pais_estado", paisEstado);
+            formData.append("referenciaPago", referenciaPago);
+            formData.append("metodo_pago", metodoPago);
+            formData.append("comprobante_pago", selectedFile);
+            formData.append("numeros", JSON.stringify(selectNumbers));
+
+            const response = await createJugador(formData);
+
+            if(response.success) {
+                alert("Registro Exitoso");
+                setNombre('');
+                setCelular('');
+                setCedula('');
+                setPaisEstado('');
+                setReferenciaPago('');
+                setSelectedFile('');
+            };
+
+        } catch (error) {
+            console.error("Error en el envio", error);
+        };
+    };
 
     return (
         <>
