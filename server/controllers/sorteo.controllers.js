@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import pool from '../config/db.js';
 
 export const mainSorteo = (req, res) => {
@@ -14,14 +15,24 @@ export const getJugadores = async (req, res) => {
     }
 };
 
+
+function saveImage(file) {
+    const newPath = `./uploads${file.originalname}`;
+    fs.renameSync(file.path, newPath);
+    return newPath;
+}
+
 //POST(Jugadores)
 export const addJugadores = async (req, res) => {
+
+    /**
+     * 
     const { cedula, celular, comprobante_pago, metodo_pago, pais_estado, referenciaPago, nombres_apellidos } = req.body;
     if (
         !cedula ||
         !celular ||
         !metodo_pago ||
-        !pais_estado ||
+        !pais_estado || 
         !referenciaPago ||
         !nombres_apellidos
     ) {
@@ -53,6 +64,58 @@ export const addJugadores = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al registrar Jugador' });
+    }
+     */
+
+    try {
+        const {
+            nombres_apellidos,
+            cedula,
+            celular,
+            pais_estado,
+            referenciaPago,
+            metodo_pago,
+            numeros
+        } = req.body;
+
+        const comprobante_pago = req.file ? saveImage(req.file) : null;
+
+        //Validacion
+        if (!nombres_apellidos || !cedula || !celular || !numeros) {
+            return res.status(400).json({ error: "Faltan datos obligatorios" });
+        };
+
+        //Insertar valorres (jugador)
+        const [jugadorResult] = await pool.query(
+            'INSERT INTO jugador SET ?', 
+            {
+                nombres_apellidos,
+                cedula,
+                celular,
+                pais_estado,
+                referenciaPago,
+                metodo_pago,
+                comprobante_pago
+            }
+        );
+
+        //Insertat boletos
+        const numerosArray = JSON.parse(numeros);
+        const valoresBoletos = numerosArray.map(num => [num.padStart(4, '0'), jugadorResult.insertId]);
+
+        await pool.query(
+            'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
+            [valoresBoletos]
+        );
+
+        res.status(201).json({
+            success: true,
+            message: "Registro Exitoso",
+            jugadorID: jugadorResult.insertId
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error: "Error en el envio de datos desde el servidor"})
     }
 };
 
