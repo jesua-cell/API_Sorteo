@@ -18,12 +18,6 @@ router.get('/', mainSorteo);
 router.get('/jugadores', getJugadores);
 
 router.post('/nuevo_jugador', upload.single('comprobante_pago'), addJugadores);
-
-function saveImage(file) {
-    const newPath = `./uploads${file.originalname}`;
-    fs.renameSync(file.path, newPath);
-    return newPath;
-}
  
 router.post('/nuevo_boletos', addBoletos);
 

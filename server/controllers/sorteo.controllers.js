@@ -16,56 +16,9 @@ export const getJugadores = async (req, res) => {
 };
 
 
-function saveImage(file) {
-    const newPath = `./uploads${file.originalname}`;
-    fs.renameSync(file.path, newPath);
-    return newPath;
-}
 
 //POST(Jugadores)
 export const addJugadores = async (req, res) => {
-
-    /**
-     * 
-    const { cedula, celular, comprobante_pago, metodo_pago, pais_estado, referenciaPago, nombres_apellidos } = req.body;
-    if (
-        !cedula ||
-        !celular ||
-        !metodo_pago ||
-        !pais_estado || 
-        !referenciaPago ||
-        !nombres_apellidos
-    ) {
-        return res.status(400).json({ error: 'Faltan completar campos obligatorios' });
-    };
-
-    try {
-        const [result] = await pool.query(`INSERT INTO jugador (cedula, celular, comprobante_pago, metodo_pago, pais_estado, referenciaPago, nombres_apellidos) VALUES (?, ?, ?, ?, ?, ?, ?)`, [
-            cedula,
-            celular,
-            comprobante_pago || null,
-            metodo_pago,
-            pais_estado,
-            referenciaPago,
-            nombres_apellidos
-        ]);
-        res.status(201).json({
-            id: result.insertId,
-            cedula,
-            nombres_apellidos,
-            cedula,
-            celular,
-            comprobante_pago,
-            metodo_pago,
-            pais_estado,
-            referenciaPago,
-            nombres_apellidos
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al registrar Jugador' });
-    }
-     */
 
     try {
         const {
@@ -87,10 +40,10 @@ export const addJugadores = async (req, res) => {
 
         //Insertar valorres (jugador)
         const [jugadorResult] = await pool.query(
-            'INSERT INTO jugador SET ?', 
+            'INSERT INTO jugador SET ?',
             {
                 nombres_apellidos,
-                cedula,
+                cedula, 
                 celular,
                 pais_estado,
                 referenciaPago,
@@ -115,14 +68,21 @@ export const addJugadores = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: "Error en el envio de datos desde el servidor"})
+        res.status(500).json({ error: "Error en el envio de datos desde el servidor" })
     }
 };
+
+function saveImage(file) {
+    const newPath = `./uploads${file.originalname}`;
+    fs.renameSync(file.path, newPath);
+    return newPath;
+}
 
 
 //POST(Boletos)
 
 export const addBoletos = async (req, res) => {
+
     let { numero_boleto, jugador_id } = req.body;
 
     if (!numero_boleto || !jugador_id) {
@@ -158,9 +118,11 @@ export const addBoletos = async (req, res) => {
 export const getBoletos = async (req, res) => {
 
     try {
-        const [rows] = await pool.query('SELECT * FROM numeros_boletos');
-        res.json(rows);
+        const [rows] = await pool.query('SELECT numero_boleto FROM numeros_boletos');
+        const usedNumbers = rows.map(row => row.numero_boleto)
+        res.json(usedNumbers);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Error al Obtener los Datos de los Boletos" })
     }
 };
