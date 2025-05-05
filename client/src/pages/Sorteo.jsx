@@ -8,6 +8,7 @@ import pagomovil from '../assets/pagomovil.png'
 import bancovenezuela from '../assets/bancovenezuela.png'
 
 import { createJugador } from "../api/submit.server.js";
+import { Modal } from '../components/Modal.jsx'
 
 export const Sorteo = () => {
 
@@ -16,6 +17,13 @@ export const Sorteo = () => {
     const [previewImage, setPreviewImage] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
     const listaRef = useRef();
+
+    const [showModal, setShowModal] = useState(false);
+    // const [modalMessList, setModalMessList] = useState('')
+    const [nameJugador, setNameJugador] = useState('')
+    const [numerosElegidos, setNumerosElegidos] = useState([])
+    const [modalMessage, setModalMessage] = useState('');
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
 
@@ -39,10 +47,10 @@ export const Sorteo = () => {
 
 
     useEffect(() => {
-        if (selectNumbers.length){
+        if (selectNumbers.length) {
             setSearchTerm('');
             listaRef.current.scrollTop = 0;
-            Array.from(listaRef.current.children).forEach(child => 
+            Array.from(listaRef.current.children).forEach(child =>
                 child.style.display = 'block'
             );
         }
@@ -101,12 +109,54 @@ export const Sorteo = () => {
     const [selectedFile, setSelectedFile] = useState(null)
     const [cedula, setCedula] = useState('')
 
+    // useEffect(() => {
+    //     let timer;
+    //     if (showModal) {
+    //         timer = setTimeout(() => setShowModal(false), 3000)
+    //     }
+    //     return () => clearTimeout(timer);
+    // }, [showModal])
+
+
     const handleLogin = async (e) => {
         e.preventDefault();
 
         const metodosPago = ["Zelle", "Nequi", "Bancolombia", "PayPal", "PagoMovil", "BancoVenezuela"];
 
         const metodoPago = metodosPago[activeTab] || "Desconocido";
+
+        if (selectNumbers.length === 0) {
+            setModalMessage('Selecciona un numero');
+            setIsError(true)
+            return setShowModal(true);
+        };
+
+        try {
+
+            const formData = new FormData();
+            formData.append("nombres_apellidos", nombre);
+            formData.append("celular", celular);
+            formData.append("cedula", cedula);
+            formData.append("pais_estado", paisEstado);
+            formData.append("referenciaPago", referenciaPago);
+            formData.append("metodo_pago", metodoPago);
+            formData.append("comprobante_pago", selectedFile);
+            formData.append("numeros", JSON.stringify(selectNumbers));
+
+            const response = await createJugador(formData);
+
+            if (response.success) {
+                setModalMessage("Registro Exitoso!");
+                setNameJugador(nombre);
+                setNumerosElegidos([...selectNumbers]);
+                resetForm()
+                setIsError(false);
+                setShowModal(true)
+            };
+
+        } catch (error) {
+            console.error("Error en el envio", error);
+        };
 
         console.log({
             jugador: {
@@ -122,37 +172,17 @@ export const Sorteo = () => {
 
         });
 
-        if(selectNumbers.length === 0) {
-            alert('Selecciona un numero')
-        };
+    };
 
-        try {
-            
-            const formData = new FormData();
-            formData.append("nombres_apellidos", nombre);
-            formData.append("celular", celular);
-            formData.append("cedula", cedula);
-            formData.append("pais_estado", paisEstado);
-            formData.append("referenciaPago", referenciaPago);
-            formData.append("metodo_pago", metodoPago);
-            formData.append("comprobante_pago", selectedFile);
-            formData.append("numeros", JSON.stringify(selectNumbers));
-
-            const response = await createJugador(formData);
-
-            if(response.success) {
-                alert("Registro Exitoso");
-                setNombre('');
-                setCelular('');
-                setCedula('');
-                setPaisEstado('');
-                setReferenciaPago('');
-                setSelectedFile('');
-            };
-
-        } catch (error) {
-            console.error("Error en el envio", error);
-        };
+    const resetForm = () => {
+        setNombre('');
+        setCelular('');
+        setCedula('');
+        setPaisEstado('');
+        setReferenciaPago('');
+        setSelectedFile(null);
+        setPreviewImage(null);
+        setSelectNumbers([]);
     };
 
     return (
@@ -1205,6 +1235,7 @@ export const Sorteo = () => {
                         <input
                             type="text"
                             placeholder='Nombres y Apellidos'
+                            value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
                             required
                         />
@@ -1213,6 +1244,7 @@ export const Sorteo = () => {
                         <input
                             type="text"
                             placeholder='Celular'
+                            value={celular}
                             onChange={(e) => setCelular(e.target.value)}
                             required
                         />
@@ -1221,6 +1253,7 @@ export const Sorteo = () => {
                         <input
                             type="number"
                             placeholder='Cédula'
+                            value={cedula}
                             onChange={(e) => setCedula(e.target.value)}
                             required
                         />
@@ -1229,6 +1262,7 @@ export const Sorteo = () => {
                         <input
                             type="text"
                             placeholder='País o Estados'
+                            value={paisEstado}
                             onChange={(e) => setPaisEstado(e.target.value)}
                             required
                         />
@@ -1354,7 +1388,19 @@ export const Sorteo = () => {
                     </form>
 
                 </div>
+
             </div>
+
+            {showModal && (
+                <Modal
+                    nombre={nameJugador}
+                    numerosBoletos={numerosElegidos.join(', ')}
+                    message={modalMessage}
+                    isError={isError}
+                    onClose={() => setShowModal(false)}
+                    //TODO: Agregarle la fecha de creacion y la fecha de juego
+                />
+            )}
         </>
     )
 }
