@@ -7,7 +7,7 @@ import paypal from '../assets/paypal.png'
 import pagomovil from '../assets/pagomovil.png'
 import bancovenezuela from '../assets/bancovenezuela.png'
 
-import { createJugador } from "../api/submit.server.js";
+import { createJugador, getUsedNumbers } from "../api/submit.server.js";
 import { Modal } from '../components/Modal.jsx'
 
 export const Sorteo = () => {
@@ -25,6 +25,8 @@ export const Sorteo = () => {
     const [modalMessage, setModalMessage] = useState('');
     const [isError, setIsError] = useState(false);
 
+    const [usedNumbers, setUsedNumbers] = useState([]);
+
     useEffect(() => {
 
         const handleClick = (e) => {
@@ -32,6 +34,9 @@ export const Sorteo = () => {
             const numemeroElement = e.target.closest('.listaNumero');
 
             if (numemeroElement) {
+
+                if(numemeroElement.dataset.used === 'true') return
+
                 const numero = numemeroElement.textContent;
 
                 setSelectNumbers(prev =>
@@ -44,6 +49,31 @@ export const Sorteo = () => {
 
         return () => lista?.removeEventListener('click', handleClick)
     }, [])
+
+
+    useEffect(() => {
+        const fetchUsedNumbers = async () => {
+            try {
+                const usedNumbers = await getUsedNumbers();
+                setUsedNumbers(usedNumbers);
+
+                if (listaRef.current) {
+                    Array.from(listaRef.current.children).forEach(child => {
+                        const numero = child.textContent;
+                        if(usedNumbers.includes(numero)){
+                            child.classList.add('used')
+                            child.dataset.used = true
+                        }
+                    })
+                };
+            } catch (error) {
+                console.log("error obteniedo los numeros usados", error);
+                setUsedNumbers([]);
+            }
+        };
+        fetchUsedNumbers();
+    }, [])
+
 
 
     useEffect(() => {
@@ -1398,7 +1428,7 @@ export const Sorteo = () => {
                     message={modalMessage}
                     isError={isError}
                     onClose={() => setShowModal(false)}
-                    //TODO: Agregarle la fecha de creacion y la fecha de juego
+                //TODO: Agregarle la fecha de creacion y la fecha de juego
                 />
             )}
         </>

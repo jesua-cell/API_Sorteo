@@ -13,3 +13,13 @@ export const createJugador = async (formData) => {
         }
     }
 };
+
+export const getUsedNumbers = async ()  => {
+    try {
+        const response = await axios.get("http://localhost:3000/boletos")
+        return response.data
+    } catch (error) {
+        console.log("error en la obtencion de los numeros usados", error);
+        return [];
+    }
+};
