@@ -2,6 +2,8 @@ import { config } from "dotenv";
 import express from 'express';
 import cors from 'cors';
 import sorteoRoutes from './routes/enlaces.sorteo.js';
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 
@@ -17,10 +19,16 @@ app.use(cors({
     credentials: true
 }));
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const PUERTO = process.env.PORT || 3000
 
 // Rutas
 app.use('/', sorteoRoutes)
+
+//Subir imagenes
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 
 app.listen(PUERTO, () => {
     console.log(`Servidor Ejecutandose en: http://localhost:${PUERTO}`);

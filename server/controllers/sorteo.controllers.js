@@ -31,7 +31,7 @@ export const addJugadores = async (req, res) => {
             numeros
         } = req.body;
 
-        const comprobante_pago = req.file ? saveImage(req.file) : null;
+        const comprobante_pago = req.file ? req.file.filename : null;
 
         //Validacion
         if (!nombres_apellidos || !cedula || !celular || !numeros) {
@@ -72,11 +72,11 @@ export const addJugadores = async (req, res) => {
     }
 };
 
-function saveImage(file) {
-    const newPath = `./uploads${file.originalname}`;
-    fs.renameSync(file.path, newPath);
-    return newPath;
-}
+// function saveImage(file) {
+//     const newPath = `./uploads${file.originalname}`;
+//     fs.renameSync(file.path, newPath);
+//     return newPath;
+// }
 
 
 //POST(Boletos)
