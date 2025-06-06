@@ -6,7 +6,7 @@ import bancolombia from '../assets/bancolombia.png'
 import paypal from '../assets/paypal.png'
 import pagomovil from '../assets/pagomovil.png'
 import bancovenezuela from '../assets/bancovenezuela.png'
-
+ 
 import { createJugador, getUsedNumbers } from "../api/submit.server.js";
 import { Modal } from '../components/Modal.jsx'
 
@@ -139,13 +139,13 @@ export const Sorteo = () => {
     const [selectedFile, setSelectedFile] = useState(null)
     const [cedula, setCedula] = useState('')
 
-    // useEffect(() => {
-    //     let timer;
-    //     if (showModal) {
-    //         timer = setTimeout(() => setShowModal(false), 3000)
-    //     }
-    //     return () => clearTimeout(timer);
-    // }, [showModal])
+    useEffect(() => {
+        let timer;
+        if (showModal) {
+            timer = setTimeout(() => setShowModal(false), 3000)
+        }
+        return () => clearTimeout(timer);
+    }, [showModal])
 
 
     const handleLogin = async (e) => {
@@ -1300,6 +1300,7 @@ export const Sorteo = () => {
                         <label className='labelForm'>Referencia de Pago:</label>
                         <input
                             type="text"
+                            value={referenciaPago}
                             placeholder='(Ulitmos cuatro digítos)'
                             onChange={(e) => setReferenciaPago(e.target.value)}
                             required
