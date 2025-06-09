@@ -19,13 +19,14 @@ body {
     --fondoTarjetaInicio: radial-gradient(circle, rgba(15, 24, 102, 1) 0%, rgba(24, 46, 120, 1) 50%, rgba(20, 21, 77, 1) 100%);
     --fondoSorteo: #e5e1f0;
     --fondoNumerosLista: #d0daff;
+    --fondoSesion: #fafbfd;
     --fondoBtnEnviar: linear-gradient(90deg, rgba(30, 43, 166, 1) 0%, rgba(57, 95, 219, 1) 50%, rgba(104, 106, 222, 1) 100%);
     /* texto */
     --colorTexto: #fafbfd;
     --colorTextoOscuro: #191919;
-    --fondoModalSuccess: linear-gradient(77deg,rgba(67, 224, 70, 1) 7%, rgba(90, 232, 77, 1) 45%, rgba(42, 219, 95, 1) 90%);
-    --fondoModalSucces_2: linear-gradient(1deg,rgba(27, 87, 27, 1) 31%, rgba(39, 145, 28, 1) 69%, rgba(12, 171, 60, 1) 99%);
-    --fondoModalError: linear-gradient(64deg,rgba(217, 142, 139, 1) 7%, rgba(232, 113, 77, 1) 45%, rgba(204, 126, 108, 1) 90%);
+    --fondoModalSuccess: linear-gradient(77deg, rgba(67, 224, 70, 1) 7%, rgba(90, 232, 77, 1) 45%, rgba(42, 219, 95, 1) 90%);
+    --fondoModalSucces_2: linear-gradient(1deg, rgba(27, 87, 27, 1) 31%, rgba(39, 145, 28, 1) 69%, rgba(12, 171, 60, 1) 99%);
+    --fondoModalError: linear-gradient(64deg, rgba(217, 142, 139, 1) 7%, rgba(232, 113, 77, 1) 45%, rgba(204, 126, 108, 1) 90%);
 }
 
 /* //* NavBar */
@@ -863,6 +864,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-top: 10px;
 
 }
+
 /* 
 .value_modal p {
     margin-bottom: 0;
@@ -875,7 +877,7 @@ input[type="number"]::-webkit-outer-spin-button {
 */
 
 .modal-content.error {
-    background: linear-gradient(64deg,rgb(188, 119, 119) 7%, rgb(227, 37, 37) 45%, rgb(199, 25, 25) 90%);
+    background: linear-gradient(64deg, rgb(188, 119, 119) 7%, rgb(227, 37, 37) 45%, rgb(199, 25, 25) 90%);
     color: var(--colorTexto);
     font-size: 37px;
     font-weight: 700;
@@ -908,4 +910,57 @@ input[type="number"]::-webkit-outer-spin-button {
         transform: translateY(0);
         opacity: 1;
     }
+}
+
+/* Sesion Admins */
+.cont_admins {
+    background: var(--fondoSesion);
+    color: var(--colorTextoOscuro);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+.box_jugador {
+    width: 95%;
+    display: grid;
+    justify-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 8px;
+}
+
+.lista-datos {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 5px;
+    width: 300px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    border: 1px solid var(--fondoNumerosLista);
+    box-shadow: 0px 0px 10px #b2b5be;
+
+}
+
+.fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 3px;
+    width: 100%;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.fila:nth-child(odd){
+    background: var(--fondoSorteo);
+}
+
+.fila_num {
+    margin: 4px 0px;
+    background-color: #c5cbf9;
+    border: 1px solid #c5cbf9;
+    border-radius: 5px;
+    text-align: center;
 }
