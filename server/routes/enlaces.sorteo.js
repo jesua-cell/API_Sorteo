@@ -9,7 +9,9 @@ import {
     addJugadores,
     addBoletos,
     getBoletos,
-    getAdmin
+    getAdmin,
+    loginAdmins,
+    authToken
 } from '../controllers/sorteo.controllers.js';
 
 //obtner las rutas de los archivos
@@ -21,8 +23,8 @@ const UPLOADS_DIR = path.join(__dirname, '../uploads');
 console.log("Ruta de uploads", UPLOADS_DIR);
 
 //Comprobar la existencia de la carpeta
-if(!fs.existsSync(UPLOADS_DIR)) { 
-    fs.mkdirSync(UPLOADS_DIR, {recursive: true});
+if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
     console.log('Carpeta de "uploads/" creada');
 } else {
     console.log('Ya existe la carpeta "/uploads"');
@@ -54,6 +56,8 @@ router.post('/nuevo_boletos', addBoletos);
 
 router.get('/boletos', getBoletos);
 
-router.get('/admins', getAdmin)
+router.get('/admins', getAdmin);
+
+router.post('/admin/login', loginAdmins);
 
 export default router;

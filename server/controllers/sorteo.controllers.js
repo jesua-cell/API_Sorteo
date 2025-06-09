@@ -1,5 +1,11 @@
 import fs from 'node:fs';
 import pool from '../config/db.js';
+import { generateToken } from "../utils/jwtUtils.js";
+import bcrypt from "bcryptjs";
+import jwt from 'jsonwebtoken'
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const mainSorteo = (req, res) => {
     res.send("Mondongo Mondongo Mondongo Mondongo Mondongo Mondongo ")
@@ -43,7 +49,7 @@ export const addJugadores = async (req, res) => {
             'INSERT INTO jugador SET ?',
             {
                 nombres_apellidos,
-                cedula, 
+                cedula,
                 celular,
                 pais_estado,
                 referenciaPago,
@@ -128,7 +134,7 @@ export const getBoletos = async (req, res) => {
 };
 
 
-//Get(Admin)
+// Get(Admin)
 export const getAdmin = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM admin');
@@ -136,4 +142,64 @@ export const getAdmin = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Error al Obtener los Datos de los Admins" })
     }
+};
+
+
+//Login(admins)
+export const loginAdmins = async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+
+        console.log(`Admin: ${username}`);
+
+        //Buscar admins
+        const [rows] = await pool.query(`SELECT id, nombre, contrasenia FROM admin WHERE nombre = ?`, [username]);
+
+        console.log('Quey results', rows);
+
+        if (rows.length === 0) { 
+            return res.status(401).json({error: "Usuario no encontrado"})
+        };
+
+        const admin = rows[0];
+        console.log('Admin:', admin);
+        console.log('Pass hash from DB', admin.contrasenia);
+
+        console.log(`Resultados Encontrados: ${rows.length}`);
+
+        if (!admin) {
+            return res.status(401).json({ error: "Credencial Invalida de Usuario" });
+        };
+
+        const validPassssword = await bcrypt.compare(password, admin.contrasenia);
+        if (!validPassssword) {
+            return res.status(401).json({ error: "Credenciales Invalidas de la Contraseña" });
+        };
+
+        const token = jwt.sign(
+            { id: admin.id, username: admin.username },
+            process.env.JWT_SECRET,
+            { expiresIn: '365d' }
+        );
+
+        res.json({ token });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error en el servidor(Validacion JWT)" });
+    }
+};
+
+//middleware de autenticacion:
+export const authToken = (req, res, next) => {
+    const authHeader = req.headers['autorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    })
 };
