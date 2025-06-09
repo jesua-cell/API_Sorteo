@@ -6,6 +6,7 @@ import { Sorteo } from '../Pages/Sorteo.jsx'
 import { NotFound } from '../pages/NotFound.jsx'
 import { Contacto } from '../pages/Contacto.jsx'
 import { CuentasPago } from '../pages/CuentasPago.jsx'
+import { Sesion } from "../sesion/Sesion.jsx";
 
 export const Rutas = () => {
     return (
@@ -16,7 +17,8 @@ export const Rutas = () => {
                 <Route path='/sorteo' element={<Sorteo />} />
                 <Route path='/contacto' element={<Contacto />} />
                 <Route path='/cuentas_de_pago' element={<CuentasPago />} />
-                
+                <Route path='/sesion' element={<Sesion />} />
+
                 <Route path='*' element={<NotFound />} />
             </Routes>
         </>

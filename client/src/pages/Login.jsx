@@ -1,11 +1,15 @@
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
 
     const [username, setUsernmae] = useState('');
     const [password, setPassword] = useState('')
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         console.log({
             usuario: {
@@ -13,6 +17,20 @@ export const Login = () => {
                 contraseña: password
             }
         });
+
+        try {
+            const response = await axios.post('http://localhost:3000/admin/login', {
+                username,
+                password
+            });
+
+            localStorage.setItem('jwtToken', response.data.token);
+
+            navigate('/sesion');
+        } catch (error) {
+            setError('Credenciales Incorrectas');
+            console.error("Error en el Login", error)
+        }
     }
 
     return (
@@ -26,6 +44,7 @@ export const Login = () => {
                         className='inputLogin'
                         name="Usuario"
                         placeholder='Usuario'
+                        value={username}
                         onChange={(e) => setUsernmae(e.target.value)}
                     />
                     {/* <label className='labelLogin'>Contraseña:</label> */}
@@ -34,8 +53,10 @@ export const Login = () => {
                         className='inputLogin'
                         name="Contraseña"
                         placeholder='Contraseña'
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    {error && <p>{error}</p>}
                     <button type='submit' className='btnLogin'>Ingresar</button>
                 </form>
             </div>
