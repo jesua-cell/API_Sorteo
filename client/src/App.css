@@ -35,22 +35,108 @@ body {
     background-color: var(--fondoNavBar);
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     padding: 20px 0;
-    justify-content: center;
+    justify-content: flex-end;
     width: 100%;
+    height: 45px;
     min-width: 375px;
+    position: relative;
+    z-index: 10;
 }
 
 .NavBar a {
     color: var(--colorTexto);
     text-decoration: none;
     padding: 10px 20px;
-    margin: 5px 10px;
+    margin: 5px 15px 5px 15px;
     border-radius: 8px;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 25px;
     background-color: var(--fondoEnlaces);
+}
+
+
+/* Menu Hamburguesa */
+
+.nav_logo {
+    display: flex;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 15px;
+    color: #fff;
+}
+
+.nav_item {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: var(--fondoNavBar);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    margin-top: 25px;
+    transform: translateX(-100%);
+    transition: 0.3s ease all;
+}
+
+.nav_item.open {
+    transform: translateX(0);
+}
+
+.nav_item a {
+    background: var(--fondoEnlaces);
+    opacity: 1;
+}
+
+.nav_toggle {
+    display: flex !important;
+    flex-direction: column;
+    margin: 8px 30px;
+    padding: 7px;
+    border-radius: 3px;
+
+}
+
+.nav_toggle span {
+    width: 30px;
+    height: 4px;
+    background-color: #fff;
+    margin-bottom: 5px;
+    border-radius: 2px;
+    transform-origin: 5px 0px;
+    transition: all 0.2s linear;
+}
+
+.nav_toggle.open>span {
+    transform: rotate(45deg) translate(0px, 0px);
+}
+
+.nav_toggle.open>span:nth-child(2) {
+    display: none;
+}
+
+.nav_toggle.open>span:nth-child(3) {
+    transform: rotate(-45deg) translate(-5px, 1px);
+}
+
+.nav_backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.nav_backdrop.open {
+    opacity: 1;
+    visibility: visible;
 }
 
 
