@@ -1,12 +1,15 @@
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 import express from "express";
 import multer from "multer";
 import path from "path";
-import { fileURLToPath } from "url";
+
 import fs from "fs";
 import {
     mainSorteo,
     getJugadores,
     addJugadores,
+    deleteJugador,
     addBoletos,
     getBoletos,
     getAdmin,
@@ -16,10 +19,10 @@ import {
 
 //obtner las rutas de los archivos
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
 //definir la ruta absoluta
-const UPLOADS_DIR = path.join(__dirname, '../uploads');
+const UPLOADS_DIR = path.resolve(__dirname, '../uploads');
 console.log("Ruta de uploads", UPLOADS_DIR);
 
 //Comprobar la existencia de la carpeta
@@ -52,10 +55,12 @@ router.get('/jugadores', getJugadores);
 
 router.post('/nuevo_jugador', upload.single('comprobante_pago'), addJugadores);
 
+router.delete('/jugador/:id', deleteJugador);
+
 router.post('/nuevo_boletos', addBoletos);
 
 router.get('/boletos', getBoletos);
-
+ 
 router.get('/admins', getAdmin);
 
 router.post('/admin/login', loginAdmins);

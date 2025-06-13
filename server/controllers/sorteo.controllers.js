@@ -1,9 +1,15 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import fs from 'node:fs';
 import pool from '../config/db.js';
-import { generateToken } from "../utils/jwtUtils.js";
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken'
 import dotenv from "dotenv";
+
+//Configuracion del archivo UOLOADS_DIR:
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename)
+const UPLOADS_DIR = path.resolve(__dirname, '../uploads')
 
 dotenv.config();
 
@@ -14,10 +20,31 @@ export const mainSorteo = (req, res) => {
 //GET(Jugadores)
 export const getJugadores = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM jugador');
-        res.json(rows);
+        const [jugadores] = await pool.query(`
+            SELECT 
+                j.*,
+                MIN(nb.fecha_asignacion) AS fecha_registro
+            FROM jugador j
+            LEFT JOIN numeros_boletos nb ON j.id = nb.jugador_id
+            GROUP BY j.id
+        `);
+
+        for (const jugador of jugadores) {
+            const [boletos] = await pool.query(
+                'SELECT numero_boleto FROM numeros_boletos WHERE jugador_id = ?',
+                [jugador.id]
+            );
+            jugador.boletos = boletos.map(b => b.numero_boleto)
+
+            if (jugador.comprobante_pago) {
+                jugador.comprobante_url = `http://localhost:3000/uploads/${jugador.comprobante_pago}`
+            }
+        };
+
+        res.json(jugadores);
     } catch (error) {
-        res.status(500).json({ error: "Error al Obtener los Datos de los Juegadores" })
+        console.error(error);
+        res.status(500).json({ error: "Error al Obtener los Datos de los Jugadores" })
     }
 };
 
@@ -158,8 +185,8 @@ export const loginAdmins = async (req, res) => {
 
         console.log('Quey results', rows);
 
-        if (rows.length === 0) { 
-            return res.status(401).json({error: "Usuario no encontrado"})
+        if (rows.length === 0) {
+            return res.status(401).json({ error: "Usuario no encontrado" })
         };
 
         const admin = rows[0];
@@ -203,3 +230,46 @@ export const authToken = (req, res, next) => {
         next();
     })
 };
+
+export const deleteJugador = async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+        const [jugadorRows] = await pool.query('SELECT comprobante_pago FROM jugador WHERE id = ?', [id]);
+
+        if (jugadorRows.length === 0) {
+            return res.status(404).json({ error: "Jugador no encontrado" });
+        }
+
+        const jugador = jugadorRows[0];
+
+        await pool.query('DELETE FROM numeros_boletos WHERE jugador_id = ?', [id]);
+
+        const [result] = await pool.query('DELETE FROM jugador WHERE id = ?', [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Jugador no Encontrado" });
+        }
+
+        //Manejo de errores de la peticion:
+        if(jugador.comprobante_pago && UPLOADS_DIR) {
+            try {
+                const comprobante = String(jugador.compare);
+                const filePath = path.join(UPLOADS_DIR, comprobante);
+            } catch (fileError) {
+                console.error("Error al eliminar el archivo", fileError);
+            } 
+        } else if(jugador.comprobante_pago) {
+            console.error("UPLOADS_DIR no existe")
+        }
+
+        res.json({success: true, message:"Jugador Eliminado"})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: "Error al eliminar al jugador",
+            details: error.message
+        });
+    }
+}
