@@ -12,6 +12,8 @@ export const Sesion = () => {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [adminName, setAdminName] = useState('');
+    const [search, setSearch] = useState(""); //Valor de Filtro()
+    const [filterJugadores, setFilterJugadores] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -60,10 +62,33 @@ export const Sesion = () => {
         fetchJugadores();
     }, [navigate])
 
+    //Filtro:
+    const searcher = (e) => {
+        setSearch(e.target.value);
+    }
+
+    useEffect(() => {
+    
+        //Funcion del filtro:
+        if (!search.trim()) {
+              setFilterJugadores(jugadores);
+        } else {
+            const term = search.toLowerCase();
+            const result = jugadores.filter((jugador) => 
+                jugador.nombres_apellidos.toLowerCase().includes(term)
+            )
+            setFilterJugadores(result)
+        };
+    
+    }, [search, jugadores])
+
+
     const handleEliminar = async (id) => {
         try {
             await axios.delete(`http://localhost:3000/jugador/${id}`);
-            setJugadores(jugadores.filter(jugador => jugador.id !== id));
+            const deleteJugador = jugadores.filter(jugador => jugador.id !== id);
+            setJugadores(deleteJugador);
+            setFilterJugadores(deleteJugador);
             toast.success("Jugador eliminado");
         } catch (error) {
             console.error("Error al eliminar el jugador");
@@ -111,14 +136,16 @@ export const Sesion = () => {
                 </div>
 
                 <h2 className="title_inventario">Inventario</h2>
-                <input type="text"
+                <input
+                    type="text"
                     placeholder="Buscador..."
                     className="buscador_sesion"
-                    key="buscador"
+                    value={search}
+                    onChange={searcher}
                 />
 
 
-                {jugadores.map(jugador => (
+                {filterJugadores.map(jugador => (
 
                     <div className="box_jugador" key={`jugador-${jugador.id}`}>
                         <dl className="lista-datos" key={`lista-datos-${jugador.id}`}>
