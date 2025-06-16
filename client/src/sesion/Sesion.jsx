@@ -106,11 +106,11 @@ export const Sesion = () => {
                 <div className="session-header">
                     <h2>Admin:</h2>
                     <div className="admin-info">
-                        <span>{adminName}</span>
+                        <span className="name-admin">{adminName}</span>
                     </div>
                 </div>
 
-                <h2>Inventario</h2>
+                <h2 className="title_inventario">Inventario</h2>
                 <input type="text"
                     placeholder="Buscador..."
                     className="buscador_sesion"
