@@ -4,20 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
 
-    const [username, setUsernmae] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('')
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        console.log({
-            usuario: {
-                usuario: username,
-                contraseña: password
-            }
-        });
-
         try {
             const response = await axios.post('http://localhost:3000/admin/login', {
                 username,
@@ -26,12 +19,15 @@ export const Login = () => {
 
             localStorage.setItem('jwtToken', response.data.token);
 
+            localStorage.setItem('adminSession', JSON.stringify({
+                nombre: response.data.nombre
+            }));
             navigate('/sesion');
         } catch (error) {
             setError('Credenciales Incorrectas');
             console.error("Error en el Login", error)
-        }
-    }
+        };
+    };
 
     return (
         <>
@@ -45,7 +41,7 @@ export const Login = () => {
                         name="Usuario"
                         placeholder='Usuario'
                         value={username}
-                        onChange={(e) => setUsernmae(e.target.value)}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                     {/* <label className='labelLogin'>Contraseña:</label> */}
                     <input
