@@ -5,6 +5,7 @@ import zoom from "../assets/zoom.png";
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
+import Select from 'react-select'
 
 export const Sesion = () => {
 
@@ -14,6 +15,9 @@ export const Sesion = () => {
     const [adminName, setAdminName] = useState('');
     const [search, setSearch] = useState(""); //Valor de Filtro()
     const [filterJugadores, setFilterJugadores] = useState([]);
+
+    const [select, setSelect] = useState();
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -47,6 +51,7 @@ export const Sesion = () => {
                 });
                 console.log("datos recibidos", response.data);
                 setJugadores(response.data);
+                setFilterJugadores(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error("Error al obtener jugadores en el Admin", error);
@@ -66,22 +71,49 @@ export const Sesion = () => {
     const searcher = (e) => {
         setSearch(e.target.value);
     }
-
+    /*TOFO: Agregar valores numericos */
     useEffect(() => {
-    
+
         //Funcion del filtro:
         if (!search.trim()) {
-              setFilterJugadores(jugadores);
+            setFilterJugadores(jugadores);
         } else {
             const term = search.toLowerCase();
-            const result = jugadores.filter((jugador) => 
-                jugador.nombres_apellidos.toLowerCase().includes(term)
-            )
+            const result = jugadores.filter((jugador) => {
+                return (
+                    jugador.nombres_apellidos?.toLowerCase().includes(term) ||
+                    jugador.celular?.toString().toLowerCase().includes(term) ||
+                    jugador.cedula?.toString().toLowerCase().includes(term) ||
+                    jugador.pais_estado?.toLowerCase().includes(term) ||
+                    jugador.metodo_pago?.toLowerCase().includes(term) ||
+                    jugador.referenciaPago?.toLowerCase().includes(term) ||
+                    (jugador.boletos && jugador.boletos.some(boleto =>
+                        boleto.toString().includes(term)
+                    )) ||
+                    new Date(jugador.fecha_registro).toLocaleDateString().toLowerCase().includes(term) ||
+                    new Date(jugador.fecha_registro).toLocaleTimeString().toLowerCase().includes(term)
+                );
+            });
             setFilterJugadores(result)
         };
-    
+
     }, [search, jugadores])
 
+    // Filter: React-Select
+    const categorias = [
+        { label: 'Nombres', value: 'Nombres' },
+        { label: 'Ciudad-Estado', value: 'Ciudad-Estado' },
+        { label: 'Metodo-Pago', value: 'Metodo-Pago' },
+        { label: 'Comprobante', value: 'Comprobante' },
+        { label: 'Referencia', value: 'Referencia' },
+        { label: 'Numero-Boletos', value: 'Numero-Boletos' },
+        { label: 'Fecha', value: 'Fecha' },
+    ];
+
+    const handleSelect = ({ value }) => {
+        console.log(value);
+        setSelect(value)
+    };
 
     const handleEliminar = async (id) => {
         try {
@@ -144,112 +176,131 @@ export const Sesion = () => {
                     onChange={searcher}
                 />
 
+                <div className="select_component">
+                    <Select
+                        defaultValue={{ label: 'Seleccionar una Categoria:', value: 'vacio' }}
+                        options={categorias}
+                        onChange={handleSelect}
+                    />
+                    <p>Seleccion: {select}</p>
+                </div>
 
-                {filterJugadores.map(jugador => (
-
-                    <div className="box_jugador" key={`jugador-${jugador.id}`}>
-                        <dl className="lista-datos" key={`lista-datos-${jugador.id}`}>
-                            <div className="fila" key={`${jugador.id}-id`}>
-                                <dt>ID:</dt>
-                                <dd>{jugador.id}</dd>
-                            </div>
-                            <div className="fila" key={`${jugador.id}-nombres`}>
-                                <dt>Nombres:</dt>
-                                <dd><strong>{jugador.nombres_apellidos}</strong></dd>
-                            </div>
-                            <div className="fila" key={`${jugador.id}-celular`}>
-                                <dt>Celular:</dt>
-                                <dd>{jugador.celular}</dd>
-                            </div>
-                            <div className="fila" key={`${jugador.id}-cedula`}>
-                                <dt>Cédula:</dt>
-                                <dd>{jugador.cedula}</dd>
-                            </div>
-                            <div className="fila" key={`${jugador.id}-ciudad`}>
-                                <dt>Ciudad y Estado:</dt>
-                                <dd>{jugador.pais_estado}</dd>
-                            </div>
-                            <div className="fila" key={`${jugador.id}-metodo`}>
-                                <dt>Método de Pago:</dt>
-                                <dd>{jugador.metodo_pago}</dd>
-                            </div>
-                            <div className="fila" key={`${jugador.id}-comprobante`}>
-                                <dt>Comprobante:</dt>
-                                <dd>
-                                    {jugador.comprobante_url ? (
-                                        <div className="cont_comprobante_img">
-                                            <a
-                                                className="targe_comprobante"
-                                                href={jugador.comprobante_url}
-                                                target="_blank"
-                                                rel="moopener noreferrer"
-                                                key={`comprobante-link${jugador.id}`}
-                                            >
-                                                <img
-                                                    src={zoom}
-                                                    className="zoom_comprobante"
-                                                    key={`comprobante-link-zoom-${jugador.id}`}
-                                                />
-                                                <img
-                                                    className="comprobante_img"
-                                                    src={jugador.comprobante_url}
-                                                    alt="Comprobante de pago"
-                                                    key={`comprobante-img-${jugador.id}`}
-                                                />
-                                            </a>
-                                        </div>
-                                    ) : (
-                                        "Comprobante de pago"
-                                    )}
-                                </dd>
-                            </div>
-                            <div className="fila" key={`${jugador.id}-referencia`}>
-                                <dt>Referencia:</dt>
-                                <dd>{jugador.referenciaPago}</dd>
-                            </div>
-                            <div className="fila" key={`${jugador.id}-boletos`}>
-                                <dt>Numeros de Boletos:</dt>
-                                <dd>
-                                    {jugador.boletos && jugador.boletos.map((boleto, index) => (
-                                        <p className="fila_num" key={`${jugador.id}-${index}`}>{boleto}</p>
-                                    ))}
-                                </dd>
-                            </div>
-                            <div className="fila" key={`${jugador.id}-fecha`}>
-                                <dt>Fecha:</dt>
-                                <dd><strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
-                                    <br />
-                                    {new Date(jugador.fecha_registro).toLocaleTimeString()}
-                                </dd>
-                            </div>
-                            <div className="lista_btns" key={`${jugador.id}-botones`}>
-                                <button
-                                    className="btn_eliminar_sesion"
-                                    onClick={() => handleEliminar(jugador.id)}
-                                    key={`$btn-eliminar-${jugador.id}`}
-                                >
-                                    <img
-                                        src={borrar}
-                                        alt="Borrar"
-                                        key={`img-eliminar-${jugador.id}`}
-                                    />
-                                </button>
-
-                                <button
-                                    className="btn_editar_sesion"
-                                    key={`btn-editar-${jugador.id}`}
-                                >
-                                    <img
-                                        src={editar}
-                                        alt="Borrar"
-                                        key={`img-editar-${jugador.id}`}
-                                    />
-                                </button>
-                            </div>
-                        </dl>
+                {filterJugadores.length === 0 ? (
+                    <div className="no_result">
+                        <p>No se encontrador jugadores con "{search}"</p>
+                        <button
+                            onClick={() => { () => setSearch('') }}
+                        >
+                            Limpiar Busquedad
+                        </button>
                     </div>
-                ))}
+                ) : (
+                    filterJugadores.map(jugador => (
+                        <div className="box_jugador" key={`jugador-${jugador.id}`}>
+                            <dl className="lista-datos" key={`lista-datos-${jugador.id}`}>
+                                <div className="fila" key={`${jugador.id}-id`}>
+                                    <dt>ID:</dt>
+                                    <dd>{jugador.id}</dd>
+                                </div>
+                                <div className="fila" key={`${jugador.id}-nombres`}>
+                                    <dt>Nombres:</dt>
+                                    <dd><strong>{jugador.nombres_apellidos}</strong></dd>
+                                </div>
+                                <div className="fila" key={`${jugador.id}-celular`}>
+                                    <dt>Celular:</dt>
+                                    <dd>{jugador.celular}</dd>
+                                </div>
+                                <div className="fila" key={`${jugador.id}-cedula`}>
+                                    <dt>Cédula:</dt>
+                                    <dd>{jugador.cedula}</dd>
+                                </div>
+                                <div className="fila" key={`${jugador.id}-ciudad`}>
+                                    <dt>Ciudad y Estado:</dt>
+                                    <dd>{jugador.pais_estado}</dd>
+                                </div>
+                                <div className="fila" key={`${jugador.id}-metodo`}>
+                                    <dt>Método de Pago:</dt>
+                                    <dd>{jugador.metodo_pago}</dd>
+                                </div>
+                                <div className="fila" key={`${jugador.id}-comprobante`}>
+                                    <dt>Comprobante:</dt>
+                                    <dd>
+                                        {jugador.comprobante_url ? (
+                                            <div className="cont_comprobante_img">
+                                                <a
+                                                    className="targe_comprobante"
+                                                    href={jugador.comprobante_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    key={`comprobante-link${jugador.id}`}
+                                                >
+                                                    <img
+                                                        src={zoom}
+                                                        className="zoom_comprobante"
+                                                        key={`comprobante-link-zoom-${jugador.id}`}
+                                                    />
+                                                    <img
+                                                        className="comprobante_img"
+                                                        src={jugador.comprobante_url}
+                                                        alt="Comprobante de pago"
+                                                        key={`comprobante-img-${jugador.id}`}
+                                                    />
+                                                </a>
+                                            </div>
+                                        ) : (
+                                            "Comprobante de pago"
+                                        )}
+                                    </dd>
+                                </div>
+                                <div className="fila" key={`${jugador.id}-referencia`}>
+                                    <dt>Referencia:</dt>
+                                    <dd>{jugador.referenciaPago}</dd>
+                                </div>
+                                <div className="fila" key={`${jugador.id}-boletos`}>
+                                    <dt>Numeros de Boletos:</dt>
+                                    <dd>
+                                        {jugador.boletos && jugador.boletos.map((boleto, index) => (
+                                            <p className="fila_num" key={`${jugador.id}-${index}`}>{boleto}</p>
+                                        ))}
+                                    </dd>
+                                </div>
+                                <div className="fila" key={`${jugador.id}-fecha`}>
+                                    <dt>Fecha:</dt>
+                                    <dd><strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
+                                        <br />
+                                        {new Date(jugador.fecha_registro).toLocaleTimeString()}
+                                    </dd>
+                                </div>
+                                <div className="lista_btns" key={`${jugador.id}-botones`}>
+                                    <button
+                                        className="btn_eliminar_sesion"
+                                        onClick={() => handleEliminar(jugador.id)}
+                                        key={`$btn-eliminar-${jugador.id}`}
+                                    >
+                                        <img
+                                            src={borrar}
+                                            alt="Borrar"
+                                            key={`img-eliminar-${jugador.id}`}
+                                        />
+                                    </button>
+
+                                    <button
+                                        className="btn_editar_sesion"
+                                        key={`btn-editar-${jugador.id}`}
+                                    >
+                                        <img
+                                            src={editar}
+                                            alt="Borrar"
+                                            key={`img-editar-${jugador.id}`}
+                                        />
+                                    </button>
+                                </div>
+                            </dl>
+                        </div>
+                    ))
+                )}
             </div>
+
         </>
     )
 }
