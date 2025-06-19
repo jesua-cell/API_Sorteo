@@ -6,7 +6,7 @@ import instagram from "../assets/instagram.png"
 export const Contacto = () => {
     return (
         <>
-            <h3 className="titlFooter">Contactos:</h3>
+            {/* <h3 className="titlFooter">Contactos:</h3> */}
             <div className="contFooter">
                 <div className="nameFooter">
                     <h5>Sitio Web </h5>

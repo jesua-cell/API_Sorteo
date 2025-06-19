@@ -6,7 +6,7 @@ export const Inicio = () => {
         <>
             <div className='contTarjeta'>
                 <div className='contContendido'>
-                    <h1 className='titulo_sorteo'>Sorteo</h1>
+                    <h1 className='titulo_sorteo'>Sorteo</h1> 
                     <img src={carro2} alt='Carro' />
                     <h2>Toyota</h2>
                     <p>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import borrar from "../assets/borrar.png";
 import editar from "../assets/editar.png";
+import buscar from "../assets/buscar.png";
 import zoom from "../assets/zoom.png";
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
@@ -175,21 +176,21 @@ export const Sesion = () => {
                     value={search}
                     onChange={searcher}
                 />
-
-                <div className="select_component">
+                {/* <div>
                     <Select
                         defaultValue={{ label: 'Seleccionar una Categoria:', value: 'vacio' }}
                         options={categorias}
                         onChange={handleSelect}
                     />
                     <p>Seleccion: {select}</p>
-                </div>
+                </div> */}
 
                 {filterJugadores.length === 0 ? (
                     <div className="no_result">
-                        <p>No se encontrador jugadores con "{search}"</p>
+                        <p className="text_no_result">No existe el jugador con estos caracteres:  <span>"{search}"</span></p>
                         <button
-                            onClick={() => { () => setSearch('') }}
+                            className="btn_no_result"
+                            onClick={() => setSearch('')}
                         >
                             Limpiar Busquedad
                         </button>

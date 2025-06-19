@@ -14,12 +14,16 @@ body {
 
     /* Fondos */
     --fondoContendor: #07183f;
-    --fondoNavBar: #0d0d6f;
-    --fondoEnlaces: #06068b;
-    --fondoTarjetaInicio: radial-gradient(circle, rgba(15, 24, 102, 1) 0%, rgba(24, 46, 120, 1) 50%, rgba(20, 21, 77, 1) 100%);
+    --fondoNavBar: #03100d;
+    --fondoEnlaces: #923992;
+    --fondoContenedorTarjeta: linear-gradient(45deg, rgba(61, 34, 61, 1) 0%, rgba(128, 41, 128, 1) 100%);
+    --fondoTarjetaInicio: radial-gradient(circle, rgb(69, 71, 89) 0%, rgb(13, 23, 55) 50%, rgb(5, 5, 31) 100%);
     --fondoSorteo: #e5e1f0;
-    --fondoNumerosLista: #d0daff;
+    --fondoCuentasPago: linear-gradient(97deg, rgba(102, 57, 102, 1) 18%, rgba(138, 44, 138, 1) 84%);
+    --fondoNumerosLista: #f6c7f6;
+    --fondoNumerosSeleccionados: linear-gradient(166deg, rgb(199, 106, 199) 0%, rgba(214, 137, 214, 1) 100%);
     --fondoSesion: #fafbfd;
+    --fondoTarjeraCuentasPago: linear-gradient(64deg, rgb(47, 49, 54) 7%, rgb(16, 16, 20) 50%, rgb(64, 60, 78) 90%);
     --fondoBtnEnviar: linear-gradient(90deg, rgba(30, 43, 166, 1) 0%, rgba(57, 95, 219, 1) 50%, rgba(104, 106, 222, 1) 100%);
     /* texto */
     --colorTexto: #fafbfd;
@@ -27,7 +31,7 @@ body {
     --fondoModalSuccess: linear-gradient(77deg, rgba(67, 224, 70, 1) 7%, rgba(90, 232, 77, 1) 45%, rgba(42, 219, 95, 1) 90%);
     --fondoModalSucces_2: linear-gradient(1deg, rgba(27, 87, 27, 1) 31%, rgba(39, 145, 28, 1) 69%, rgba(12, 171, 60, 1) 99%);
     --fondoModalError: linear-gradient(64deg, rgba(217, 142, 139, 1) 7%, rgba(232, 113, 77, 1) 45%, rgba(204, 126, 108, 1) 90%);
-    --fondoRosadoAzul: linear-gradient(45deg,rgba(235, 174, 238, 1) 0%, rgba(148, 187, 233, 1) 100%);
+    --fondoRosadoAzul: linear-gradient(45deg, rgba(235, 174, 238, 1) 0%, rgba(148, 187, 233, 1) 100%);
 }
 
 /* //* NavBar */
@@ -38,6 +42,8 @@ body {
     flex-wrap: wrap;
     padding: 20px 0;
     justify-content: space-between;
+    align-content: center;
+    align-items: center;
     width: 100%;
     height: 45px;
     min-width: 375px;
@@ -55,6 +61,13 @@ body {
     font-weight: bold;
     font-size: 25px;
     background-color: var(--fondoEnlaces);
+}
+
+.logo_orquidea {
+    height: 75px;
+    width: 120px;
+    margin-top: 6px;
+    object-fit: cover;
 }
 
 
@@ -79,7 +92,7 @@ body {
     align-items: center;
     width: 100%;
     height: 100vh;
-    margin-top: 25px;
+    margin-top: 30px;
     transform: translateX(-100%);
     transition: 0.3s ease all;
 }
@@ -126,7 +139,7 @@ body {
 
 .nav_backdrop {
     position: fixed;
-    top: 82px;
+    top: 78px;
     left: 0;
     width: 100%;
     height: 100vh;
@@ -150,6 +163,7 @@ body {
     display: flex;
     justify-content: center;
     height: 100vh;
+    background: var(--fondoContenedorTarjeta);
 }
 
 .contContendido {
@@ -173,7 +187,7 @@ body {
 .titulo_sorteo {
     margin: 8px 0;
     font-size: 75px;
-    background: linear-gradient(90deg, #c5cbf9, #9966ff);
+    background: linear-gradient(90deg, #cd6bed, #ff66f0, #cd6bed);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -240,6 +254,7 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: var(--fondoCuentasPago);
 }
 
 .h1_cuentaPago {
@@ -255,7 +270,7 @@ a {
     flex-direction: column;
     align-items: center;
     width: 80%;
-    background: linear-gradient(64deg, rgb(193, 212, 247) 7%, rgba(184, 159, 252, 1) 44%, rgba(188, 169, 245, 1) 90%);
+    background: var(--fondoTarjeraCuentasPago);
     border-radius: 10px;
     margin-bottom: 30px;
 }
@@ -285,9 +300,9 @@ a {
 .text_cuentaPago {
     margin: 5px;
     font-size: 20px;
-    background-color: #eefafa;
-    opacity: 0.5;
-    color: #191919;
+    background-color: #ffffff;
+    opacity: 0.8;
+    color: #373737;
     padding: 5px;
     border-radius: 5px;
     width: 90%;
@@ -331,6 +346,7 @@ a {
     display: flex;
     flex-wrap: nowrap;
     height: 100%;
+    background: var(--fondoContenedorTarjeta);
 }
 
 .titlFooter {
@@ -344,12 +360,16 @@ a {
     flex-direction: column;
     margin-left: 57px;
     height: 100vh;
+    margin-top: 200px;
+    margin-left: 45px;
 }
 
 .nameFooter {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
+    margin-top: 200px;
+    margin-left: 45px;
 }
 
 .nameFooter h5 {
@@ -462,7 +482,7 @@ a {
 
 .tituloSorteo {
     font-size: 45px;
-    background: linear-gradient(90deg, #094293, #0000ff, #1519c0, #38a6d5);
+    background: linear-gradient(90deg, #db63db, #de5dde, #b261b2, #e088e0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0;
@@ -478,7 +498,7 @@ a {
     border-radius: 30px;
     color: #094293;
     background: var(--colorTexto);
-    border: 2px solid #094293;
+    border: 2px solid #755675;
     text-decoration: none;
     padding: 10px 20px;
     border-radius: 8px;
@@ -564,7 +584,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin: 15px 0px;
     border-radius: 10px;
     height: 80px;
-    background-color: #b9b4e2;
+    background: var(--fondoNumerosSeleccionados);
     color: var(--colorTexto);
     display: flex;
     align-items: center;
@@ -640,9 +660,9 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: column;
     align-items: flex-start;
     font-family: var(--FunnelSans);
-    border: 2px solid #a6a6b9;
+    border: 2px solid #755675;
     border-radius: 10px;
-    color: var(--fondoEnlaces);
+    color: #000;
     font-weight: 500;
     margin-bottom: 30px;
     width: 95%;
@@ -681,7 +701,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-bottom: 10px;
     border-radius: 8px;
     text-align: center;
-    border: 1px solid #094293;
+    border: 1px solid #602860;
     width: 92%;
 }
 
@@ -851,6 +871,7 @@ input[type="number"]::-webkit-outer-spin-button {
     height: 100vh;
     display: flex;
     align-items: center;
+    background: var(--fondoContenedorTarjeta);
 }
 
 .formLogin {
@@ -862,7 +883,7 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: #fbfbfb;
     color: #07183f;
     border-radius: 10px;
-    background: linear-gradient(16deg, rgb(183, 165, 231) 11%, rgba(95, 136, 207, 1) 34%, rgba(54, 99, 191, 1) 65%, rgb(25, 57, 133) 100%);
+    background: linear-gradient(16deg, rgb(40, 36, 50) 11%, rgb(75, 36, 77) 34%, rgb(87, 46, 87) 65%, rgb(19, 17, 19) 100%);
     height: 68%;
     width: 90%;
 }
@@ -893,8 +914,8 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: bold;
     border-radius: 5px;
     border: none;
-    background: #07183f;
-    color: rgba(184, 159, 252, 1);
+    background: #3355a5;
+    color: rgb(247, 244, 255);
     width: 120px;
 
 }
@@ -1017,6 +1038,7 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     justify-content: center;
     gap: 8px;
+    border-top: 1px solid #191919;
 }
 
 .lista-datos {
@@ -1107,14 +1129,17 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .buscador_sesion {
-    border: none;
     padding: 10px;
     font-size: 20px;
     background-color: #f4f4fa;
+    border: 2px solid #00030f;
     font-weight: 600;
     opacity: 0.8;
-    margin: 15px 0px;
+    margin: 5px 0px;
+    margin-bottom: 25px;
+    border-radius: 9px;
 }
+
 
 .targe_comprobante a {
     background-color: #e3e8fd;
@@ -1150,7 +1175,7 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #1b3ca1;
+    background-color: #623467;
     border: none;
     color: var(--colorTexto);
     padding: 10px;
@@ -1165,7 +1190,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .admin-name {
     font-size: 30px;
-    background: linear-gradient(45deg,rgba(181, 154, 181, 1) 1%, rgba(255, 240, 241, 1) 100%);
+    background: linear-gradient(45deg, rgba(181, 154, 181, 1) 1%, rgba(255, 240, 241, 1) 100%);
     padding: 10px 20px;
     border-radius: 5px;
     color: var(--colorTextoOscuro);
@@ -1202,4 +1227,31 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .select_component {
     width: 300px;
+}
+
+/* Contenedor del boton del filter */
+
+.no_result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.text_no_result {
+    margin: 10px 50px;
+}
+
+.text_no_result span {
+    font-weight: 700;
+}
+
+.btn_no_result {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 10px;
+    border: 3px solid #6c83f1;
+    color: #6c83f1;
+    background: var(--colorTexto);
+    margin-top: 10px;
 }

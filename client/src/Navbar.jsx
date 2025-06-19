@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import  logoutIcon  from "./assets/cerrar-sesion.png";
+import logoutIcon from "./assets/cerrar-sesion.png";
+import logo from "./assets/logo_or.png";
 
 export const Navbar = () => {
 
@@ -44,26 +45,31 @@ export const Navbar = () => {
   return (
     <>
       <nav className='NavBar'>
+        <div className="cont_logo">
+          <img src={logo} className='logo_orquidea' />
+        </div>
+        <div className="nav_logo">
+          
+        </div>
 
-        <div className="nav_logo">Sorteo La Rosa</div>
 
         <div className={`nav_backdrop ${isOpen && "open"}`} onClick={closeMenu} />
 
         <div className={`nav_item ${isOpen && "open"}`}>
 
-              <Link to={"/"} onClick={closeMenu}>Inicio</Link>
-              <Link to={"/sorteo"} onClick={closeMenu}>Sorteo</Link>
-              <Link to={"/cuentas_de_pago"} onClick={closeMenu}>Cuentas de Pago</Link>
+          <Link to={"/"} onClick={closeMenu}>Inicio</Link>
+          <Link to={"/sorteo"} onClick={closeMenu}>Sorteo</Link>
+          <Link to={"/cuentas_de_pago"} onClick={closeMenu}>Cuentas de Pago</Link>
 
           {adminName && (
             <>
               <button onClick={handleLogout} className='logout-btn'>
-                <img className='icon-logout' src={logoutIcon}/
+                <img className='icon-logout' src={logoutIcon} /
                 > Cerrar sesion</button>
               <span className='admin-name'>{adminName}</span>
             </>
           )}
-        
+
         </div>
 
         <div className={`nav_toggle ${isOpen && "open"}`} onClick={() => setIsOpen(!isOpen)}>
