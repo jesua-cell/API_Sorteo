@@ -1312,10 +1312,12 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 10px;
     box-sizing: border-box;
     border: 2px solid #9d95b0;
+    overflow-y: scroll;
 }
 
 .title_card_post {
     font-size: 35px;
+    color: #c1becb;
     text-align: center;
     margin: 0px 15px;
 }
@@ -1339,7 +1341,7 @@ input[type="number"]::-webkit-outer-spin-button {
     border: 2px solid #8c418c;
 }
 
-.input_card::placeholder{
+.input_card::placeholder {
     color: #8c418c;
     font-weight: 600;
 }
@@ -1348,14 +1350,34 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-bottom: 20px;
 }
 
+.cont_inputs_card {
+    display: flex;
+    gap: 12px;
+}
+
 .btn-cardPost {
     border: none;
-    font-size: 21px;
-    border-radius: 5px;
+    font-size: 19px;
+    border-radius: 18px;
     padding: 8px 15px;
     font-weight: bold;
-    background-color: #3355a5;
-    color: var(--colorTexto);
+    color: #3355a5;
+    border: 1px solid #3355a5;
+    background-color: #191919;
+}
+
+.btn-cardPost:nth-child(2) {
+    color: #bda51e;
+    border: 1px solid #bda51e;
+    background-color: #191919;
+
+}
+
+.btn-cardPost:nth-child(3) {
+    color: #c33963;
+    border: 1px solid #c33963;
+    background-color: #191919;
+
 }
 
 .img_ejemplo_card {
