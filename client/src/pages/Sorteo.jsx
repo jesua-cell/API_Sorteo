@@ -9,6 +9,7 @@ import bancovenezuela from '../assets/bancovenezuela.png'
  
 import { createJugador, getUsedNumbers } from "../api/submit.server.js";
 import { Modal } from '../components/Modal.jsx'
+import  SelectImage  from "../components/SelectImage.jsx";
 
 export const Sorteo = () => {
 
@@ -103,20 +104,21 @@ export const Sorteo = () => {
         }
     };
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
+    const handleImageUpload = (file) => {
+        if(file && file instanceof Blob){
             setSelectedFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
-                setPreviewImage(reader.result);
+                setPreviewImage(reader.result)
             };
             reader.readAsDataURL(file);
         }
     };
 
     const removeImage = () => {
+        if(previewImage) URL.revokeObjectURL(previewImage);
         setPreviewImage(null);
+        setSelectedFile(null);
     };
 
 
@@ -1387,30 +1389,12 @@ export const Sorteo = () => {
                         </div>
 
                         <label className='labelForm'>Comprobante de Pago:</label>
-                        <div className='input_comprobatePago'>
-                            <input
-                                id='comprobantePago'
-                                type="file"
-                                accept='image/png, image/jpeg'
-                                onChange={handleImageUpload}
-                                className='fileImage'
-                                style={{ display: 'none' }}
-                            />
-                            <label
-                                className='input_seleccionarFile'
-                                htmlFor='comprobantePago'
-                            >Seleccionar: foto/captura de pantalla</label>
-                            {previewImage && (
-                                <div className='image_comprobante'>
-                                    <img src={previewImage} alt='Comprobante' />
-                                    <button
-                                        type='button'
-                                        className='remove-btn'
-                                        onClick={removeImage}
-                                    >x</button>
-                                </div>
-                            )}
-                        </div>
+                        <SelectImage
+                            previewImage={previewImage}
+                            onFileChange={handleImageUpload}
+                            onRemoveImage={removeImage}
+                            buttonLabel='Subir: Foto / Captura de Pantalla'
+                        />
                         <input
                             type="submit"
                             className='btnEnviar'

@@ -39,7 +39,7 @@ export const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('adminSession');
     localStorage.removeItem('jwtToken')
-    window.location.href = '/';
+    setAdminName('');
   };
 
   return (
@@ -49,7 +49,7 @@ export const Navbar = () => {
           <img src={logo} className='logo_orquidea' />
         </div>
         <div className="nav_logo">
-          
+
         </div>
 
 
@@ -57,15 +57,39 @@ export const Navbar = () => {
 
         <div className={`nav_item ${isOpen && "open"}`}>
 
-          <Link to={"/"} onClick={closeMenu}>Inicio</Link>
-          <Link to={"/sorteo"} onClick={closeMenu}>Sorteo</Link>
-          <Link to={"/cuentas_de_pago"} onClick={closeMenu}>Cuentas de Pago</Link>
+          <Link 
+          to={"/"} 
+          onClick={()=>{
+            closeMenu();
+            if(adminName) handleLogout();
+          }}
+          
+          >Inicio</Link>
+          <Link 
+          to={"/sorteo"} 
+          onClick={()=>{
+            closeMenu();
+            if(adminName) handleLogout();
+          }}
+          
+          >Sorteo</Link>
+          <Link 
+          to={"/cuentas_de_pago"} 
+          onClick={()=>{
+            closeMenu();
+            if(adminName) handleLogout();
+          }}
+          
+          >Cuentas de Pago</Link>
 
           {adminName && (
             <>
+              <Link className='enlaces_admin' to={"/card_post"} onClick={closeMenu}>Publicación de Sorteo</Link>
+              <Link className='enlaces_admin' to={"/sesion"} onClick={closeMenu}>Sesion Admin</Link>
               <button onClick={handleLogout} className='logout-btn'>
-                <img className='icon-logout' src={logoutIcon} /
-                > Cerrar sesion</button>
+                <img className='icon-logout' src={logoutIcon} />
+                Cerrar sesion
+              </button>
               <span className='admin-name'>{adminName}</span>
             </>
           )}

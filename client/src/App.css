@@ -55,7 +55,7 @@ body {
     color: var(--colorTexto);
     text-decoration: none;
     padding: 10px 20px;
-    margin: 5px 15px 5px 15px;
+    margin: 5px 5px 5px 15px;
     width: 310px;
     border-radius: 8px;
     font-weight: bold;
@@ -170,7 +170,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 450px;
+    justify-content: center;
+    height: 85vh;
     width: 90%;
     min-width: 335px;
     margin: 15px;
@@ -208,7 +209,7 @@ body {
 }
 
 .contContendido button {
-    border: none;
+    border: 2px solid #793072;
     text-decoration: none;
     border-radius: 23px;
     margin-bottom: 20px;
@@ -217,10 +218,11 @@ body {
 .contContendido button,
 a {
     text-decoration: none;
-    padding: 10px;
     font-family: var(--FunnelSans);
     font-size: 25px;
-    font-weight: bold;
+    font-weight: 700;
+    padding: 5px;
+    color: #793072;
 }
 
 
@@ -689,11 +691,14 @@ input[type="number"]::-webkit-outer-spin-button {
 .input_comprobatePago {
     display: flex;
     flex-direction: column;
+    align-items: center;
     width: 95%;
+    margin-left: 15px;
 }
 
 .input_seleccionarFile {
-    background-color: var(--colorTexto);
+    background-color: var(--colorTexto) !important;
+    color: var(--colorTextoOscuro) !important;
     opacity: 0.7;
     padding: 7px;
     cursor: pointer;
@@ -719,20 +724,25 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: flex-start;
     z-index: 1;
     margin-top: 12px;
-    width: 105%;
+    max-width: 325px;
 }
 
 .remove-btn {
     position: absolute;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
+    top: 8px;
+    right: 10px;
     background-color: #e9493f;
-    color: var(--colorTexto);
-    z-index: 0;
-    margin-left: 320px;
-    margin-top: -7px;
-    width: 25px;
+    color: white !important;
+    border: none;
+    border-radius: 10px !important;
+    width: 30px;
+    height: 30px;
+    font-weight: bold !important;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btnEnviar {
@@ -1182,9 +1192,9 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 20px;
     font-weight: 520;
     border-radius: 10px;
-    width: 350px;
+    width: 371px;
     margin-top: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     cursor: pointer;
 }
 
@@ -1195,6 +1205,7 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 5px;
     color: var(--colorTextoOscuro);
     font-weight: bold;
+    margin-top: 20px;
 }
 
 .icon-logout {
@@ -1254,4 +1265,102 @@ input[type="number"]::-webkit-outer-spin-button {
     color: #6c83f1;
     background: var(--colorTexto);
     margin-top: 10px;
+}
+
+.enlaces_admin {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background-color: #623467 !important;
+    border: none !important;
+    color: var(--colorTexto) !important;
+    padding: 10px !important;
+    font-size: 20px !important;
+    font-weight: 520 !important;
+    border-radius: 10px !important;
+    width: 350px !important;
+    cursor: pointer !important;
+}
+
+/* Contenedor de Publicaicon del Sorteo */
+
+.contentCard {
+    margin-right: 15px;
+}
+
+.card {
+    background: var(--fondoContenedorTarjeta);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+
+.contContendidoCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    height: 80vh;
+    width: 90%;
+    min-width: 335px;
+    margin: 15px;
+    background: var(--fondoTarjetaInicio);
+    border-radius: 10px;
+    box-sizing: border-box;
+    border: 2px solid #9d95b0;
+}
+
+.title_card_post {
+    font-size: 35px;
+    text-align: center;
+    margin: 0px 15px;
+}
+
+.SelectFileCard {
+    background: var(--colorTexto);
+    color: var(--colorTextoOscuro);
+    margin: 15px;
+    padding: 5px 20px;
+    border-radius: 8px;
+}
+
+.input_card {
+    border: none;
+    border-radius: 7px;
+    font-size: 17px;
+    padding: 6px;
+    font-size: 22px;
+    margin-bottom: 7px;
+    opacity: 0.9;
+    border: 2px solid #8c418c;
+}
+
+.input_card::placeholder{
+    color: #8c418c;
+    font-weight: 600;
+}
+
+.input_card:nth-child(2) {
+    margin-bottom: 20px;
+}
+
+.btn-cardPost {
+    border: none;
+    font-size: 21px;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-weight: bold;
+    background-color: #3355a5;
+    color: var(--colorTexto);
+}
+
+.img_ejemplo_card {
+    height: 218px;
+    width: 130px;
+    object-fit: cover;
+    border-radius: 5px;
 }

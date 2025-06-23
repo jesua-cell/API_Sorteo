@@ -12,7 +12,7 @@ export const Inicio = () => {
                     <p>
                         23, Marzo del 2025
                     </p>
-                    <button type="button"><Link to={"/sorteo"}>Lista de Boletos</Link></button>
+                    <button className='btn-inicio' type="button"><Link to={"/sorteo"}>Lista de Boletos</Link></button>
                 </div>
             </div>
         </>
