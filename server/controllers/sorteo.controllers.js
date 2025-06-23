@@ -13,9 +13,9 @@ const UPLOADS_DIR = path.resolve(__dirname, '../uploads')
 
 dotenv.config();
 
-export const mainSorteo = (req, res) => {
-    res.send("Mondongo Mondongo Mondongo Mondongo Mondongo Mondongo ")
-};
+export const mainSorteo = async (req, res) => {
+    res.send('Mondogo')
+}
 
 //GET(Jugadores)
 export const getJugadores = async (req, res) => {
@@ -210,7 +210,10 @@ export const loginAdmins = async (req, res) => {
             { expiresIn: '365d' }
         );
 
-        res.json({ token });
+        res.json({
+            token,
+            nombre: admin.nombre
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error en el servidor(Validacion JWT)" });
@@ -253,23 +256,72 @@ export const deleteJugador = async (req, res) => {
         }
 
         //Manejo de errores de la peticion:
-        if(jugador.comprobante_pago && UPLOADS_DIR) {
+        if (jugador.comprobante_pago && UPLOADS_DIR) {
             try {
                 const comprobante = String(jugador.compare);
                 const filePath = path.join(UPLOADS_DIR, comprobante);
             } catch (fileError) {
                 console.error("Error al eliminar el archivo", fileError);
-            } 
-        } else if(jugador.comprobante_pago) {
+            }
+        } else if (jugador.comprobante_pago) {
             console.error("UPLOADS_DIR no existe")
         }
 
-        res.json({success: true, message:"Jugador Eliminado"})
+        res.json({ success: true, message: "Jugador Eliminado" })
     } catch (error) {
         console.error(error);
         res.status(500).json({
             error: "Error al eliminar al jugador",
             details: error.message
         });
+    }
+}
+
+export const postCardPub = async (req, res) => {
+    try {
+        const { titulo_p, subtitulo_p, descripcion_p } = req.body;
+        const imagen_pub = req.file;
+
+        if (!titulo_p || !subtitulo_p || !descripcion_p || !imagen_pub) { 
+            return res.status(404).json({error: 'Error en los campos del CardPub'});
+        };
+
+        const imageBuffer = fs.readFileSync(imagen_pub.path);
+
+        const [result] = await pool.query(
+            'INSERT INTO card_pub (titulo_p, subtitulo_p, descripcion_p, imagen_pub) VALUES (?, ?, ?, ?)',
+            [titulo_p, subtitulo_p, descripcion_p, imageBuffer]
+        );
+
+        res.status(201).json({
+            success: true,
+            message: 'Publicacion Guardada',
+            id: result.insertId,
+        });
+
+    } catch (error) {
+        console.error("Error en peticion del CardPub");
+        res.status(500).json({error: 'Error al guardar la publicacion'});
+    }
+};
+
+export const getCardPub = async (req, res) => {
+    try {
+        const {id} = req-params;
+        const {rows} = await pool.query(
+            'SELECT imagen_pub FROM card_pub WHERE id = ?',
+            [id]
+        );
+
+        if(!rows.length === 0 || !rows[0].imagen_pub) {
+            return res.status(404).json({error: 'Imagen no encontrada'});
+        };
+
+        const imageBuffer = rows[0].imagen_pub;
+        
+        res.set(imageBuffer);
+    } catch (error) {
+        console.error('Error al obtener la imagen');
+        res.status(500).json({error: "Error al obneneter la imagen"});
     }
 }
