@@ -162,8 +162,10 @@ body {
 .contTarjeta {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     height: 100vh;
     background: var(--fondoContenedorTarjeta);
+    overflow-y: scroll;
 }
 
 .contContendido {
@@ -179,6 +181,9 @@ body {
     border-radius: 10px;
     box-sizing: border-box;
     border: 2px solid #9d95b0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: center;
 }
 
 .contContendido p {
@@ -194,18 +199,20 @@ body {
 }
 
 .contContendido h2 {
-    margin: 0;
+    margin: 15px 1px 5px 0px;
 }
 
 .contContendido p {
     width: 80%;
     font-size: 17px;
+    margin-bottom: 20px;
 }
 
 .contContendido img {
-    height: 170px;
-    width: 330px;
+    height: 190px;
+    width: 210px;
     object-fit: cover;
+    border-radius: 5px;
 }
 
 .contContendido button {
@@ -1339,6 +1346,8 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-bottom: 7px;
     opacity: 0.9;
     border: 2px solid #8c418c;
+    width: 286px;
+    overflow-y: auto;
 }
 
 .input_card::placeholder {
