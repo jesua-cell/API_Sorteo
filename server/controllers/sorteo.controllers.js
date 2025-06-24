@@ -341,14 +341,10 @@ export const getAllCardPub = async (req, res) => {
             'SELECT id ,titulo_p, subtitulo_p, descripcion_p, imagen_pub FROM card_pub'
         );
 
-        if (rows.length === 0) {
-            return res.status(404).json({ error: 'No se encontraron publicaciones' })
-        };
-
         const cards = rows.map(card => {
 
             let imageBase64 = null;
-            if(card.imagen_pub){
+            if (card.imagen_pub) {
                 const buffer = Buffer.from(card.imagen_pub);
                 imageBase64 = buffer.toString('base64')
             };
@@ -366,6 +362,35 @@ export const getAllCardPub = async (req, res) => {
 
     } catch (error) {
         console.error('Error al obtener las publicaciones', error);
-        res.status(500).json({error: 'Error al obtener las publicaciones'})
+        res.status(500).json({ error: 'Error al obtener las publicaciones' })
     }
 }
+
+export const deleteCardPub = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [checkResult] = await pool.query(
+            'SELECT * FROM card_pub WHERE id = ?',
+            [id]
+        );
+        
+        if (checkResult.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron publicaciones' })
+        };
+
+        await pool.query(
+            'DELETE FROM card_pub WHERE id = ?',
+            [id]
+        );
+
+        res.json({
+            success: true,
+            message: 'Publicacion Eliminada'
+        })
+
+    } catch (error) {
+        console.error('Error al eliminar publicacion', error);
+        res.status(500).json({error: 'Error al eliminar la publicaicon'})
+    }
+};
