@@ -282,8 +282,8 @@ export const postCardPub = async (req, res) => {
         const { titulo_p, subtitulo_p, descripcion_p } = req.body;
         const imagen_pub = req.file;
 
-        if (!titulo_p || !subtitulo_p || !descripcion_p || !imagen_pub) { 
-            return res.status(404).json({error: 'Error en los campos del CardPub'});
+        if (!titulo_p || !subtitulo_p || !descripcion_p || !imagen_pub) {
+            return res.status(404).json({ error: 'Error en los campos del CardPub' });
         };
 
         const imageBuffer = fs.readFileSync(imagen_pub.path);
@@ -301,27 +301,71 @@ export const postCardPub = async (req, res) => {
 
     } catch (error) {
         console.error("Error en peticion del CardPub");
-        res.status(500).json({error: 'Error al guardar la publicacion'});
+        res.status(500).json({ error: 'Error al guardar la publicacion' });
     }
 };
 
 export const getCardPub = async (req, res) => {
     try {
-        const {id} = req-params;
-        const {rows} = await pool.query(
-            'SELECT imagen_pub FROM card_pub WHERE id = ?',
+        const { id } = req.params;
+        const [rows] = await pool.query(
+            'SELECT titulo_p, subtitulo_p, descripcion_p, imagen_pub FROM card_pub WHERE id = ?',
             [id]
         );
 
-        if(!rows.length === 0 || !rows[0].imagen_pub) {
-            return res.status(404).json({error: 'Imagen no encontrada'});
+        if (!rows.length === 0 || !rows[0].imagen_pub) {
+            return res.status(404).json({ error: 'Imagen no encontrada' });
         };
 
-        const imageBuffer = rows[0].imagen_pub;
-        
-        res.set(imageBuffer);
+        const cardData = rows[0];
+
+        // const imageBuffer = rows[0].imagen_pub;
+        const imageBase64 = rows[0].imagen_pub.toString('base64');
+
+        res.json({
+            titulo_p: cardData.titulo_p,
+            subtitulo_p: cardData.subtitulo_p,
+            descripcion_p: cardData.descripcion_p,
+            imagen_pub: imageBase64
+        });
+
     } catch (error) {
         console.error('Error al obtener la imagen');
-        res.status(500).json({error: "Error al obneneter la imagen"});
+        res.status(500).json({ error: "Error al obneneter la imagen" });
+    }
+}
+
+export const getAllCardPub = async (req, res) => {
+    try {
+        const [rows] = await pool.query(
+            'SELECT id ,titulo_p, subtitulo_p, descripcion_p, imagen_pub FROM card_pub'
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron publicaciones' })
+        };
+
+        const cards = rows.map(card => {
+
+            let imageBase64 = null;
+            if(card.imagen_pub){
+                const buffer = Buffer.from(card.imagen_pub);
+                imageBase64 = buffer.toString('base64')
+            };
+
+            return {
+                id: card.id,
+                titulo_p: card.titulo_p,
+                subtitulo_p: card.subtitulo_p,
+                descripcion_p: card.descripcion_p,
+                imagen_pub: imageBase64
+            };
+        });
+
+        res.json(cards);
+
+    } catch (error) {
+        console.error('Error al obtener las publicaciones', error);
+        res.status(500).json({error: 'Error al obtener las publicaciones'})
     }
 }

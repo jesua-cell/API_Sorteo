@@ -16,7 +16,8 @@ import {
     loginAdmins,
     authToken,
     postCardPub,
-    getCardPub
+    getCardPub,
+    getAllCardPub
 } from '../controllers/sorteo.controllers.js';
 
 
@@ -103,5 +104,7 @@ router.post('/admin/login', loginAdmins);
 router.post('/cardpub', uploadCardPub.single('imagen'), postCardPub);
 
 router.get('/cardpub/:id/image', getCardPub);
+
+router.get('/cardpub', getAllCardPub);
 
 export default router;
