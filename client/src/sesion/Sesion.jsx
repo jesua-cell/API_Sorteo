@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
+//imagenes
 import borrar from "../assets/borrar.png";
 import editar from "../assets/editar.png";
+import sav from "../assets/sav.png";
+import error from "../assets/error.png";
 import buscar from "../assets/buscar.png";
 import zoom from "../assets/zoom.png";
+
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
@@ -19,8 +23,13 @@ export const Sesion = () => {
 
     const [select, setSelect] = useState();
 
+    //estados de actualizacion
+    const [editingID, setEditingID] = useState(null);
+    const [tempData, setTempData] = useState({});
+
     const navigate = useNavigate();
 
+    //Estado de acceso al Admin
     useEffect(() => {
         const savedAdmin = localStorage.getItem('adminSession');
         const token = localStorage.getItem('jwtToken');
@@ -42,6 +51,7 @@ export const Sesion = () => {
 
         setIsAuthenticated(true)
 
+        //Estado para obtener los datos de los jugadores de la BD
         const fetchJugadores = async () => {
 
             try {
@@ -111,11 +121,76 @@ export const Sesion = () => {
         { label: 'Fecha', value: 'Fecha' },
     ];
 
-    const handleSelect = ({ value }) => {
-        console.log(value);
-        setSelect(value)
+    // const handleSelect = ({ value }) => {
+    //     console.log(value);
+    //     setSelect(value)
+    // };
+
+    //Funcion para activar Edicion
+    const handleActivarEdicion = (jugador) => {
+        setEditingID(jugador.id);
+        setTempData({
+            nombres_apellidos: jugador.nombres_apellidos,
+            celular: jugador.celular,
+            cedula: jugador.cedula.toString(),
+            pais_estado: jugador.pais_estado,
+            metodo_pago: jugador.metodo_pago,
+            referenciaPago: jugador.referenciaPago,
+            boletos: jugador.boletos.join(", ")
+        });
     };
 
+    //Funcion para guardar cambios
+    const handleguardarCambios = async (id) => {
+        try {
+            const token = localStorage.getItem('jwtToken');
+            await axios.put(`http://localhost:3000/jugador/${id}`, tempData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            //actualizar estado local
+            const updateJugadores = jugadores.map(j => {
+                if (j.id === id) {
+
+                    return {
+                        ...j,
+                        ...tempData,
+                        boletos: tempData.boletos
+                            ? tempData.boletos.split(",")
+                                .map(b => b.trim())
+                                .filter(b => b !== "")
+                            : []
+                    };
+                }
+                return j;
+            });
+
+            setJugadores(updateJugadores);
+            setFilterJugadores(updateJugadores);
+            setEditingID(null);
+            toast('Cambios Guardados',
+                {
+                    icon: '💾',
+                    style: {
+                        borderRadius: '20px',
+                        background: '#9fb3ff',
+                        color: '#000467',
+                        padding: '8px'
+                    },
+                }
+            );
+
+        } catch (error) {
+            console.error("Error en la actualizacion", error);
+            toast.error("Error al guardar los cambios");
+        }
+    };
+
+    const handleCancelEditar = () => {
+        setEditingID(null)
+    };
+
+    //Funcion de eliminar jugadores
     const handleEliminar = async (id) => {
         try {
             await axios.delete(`http://localhost:3000/jugador/${id}`);
@@ -205,23 +280,78 @@ export const Sesion = () => {
                                 </div>
                                 <div className="fila" key={`${jugador.id}-nombres`}>
                                     <dt>Nombres:</dt>
-                                    <dd><strong>{jugador.nombres_apellidos}</strong></dd>
+                                    <dd>
+                                        {editingID === jugador.id ? (
+                                            <input
+                                                type="text"
+                                                className="input_edicion"
+                                                value={tempData.nombres_apellidos}
+                                                onChange={(e) => setTempData({ ...tempData, nombres_apellidos: e.target.value })}
+                                            />
+                                        ) : (
+                                            <strong>{jugador.nombres_apellidos}</strong>
+                                        )}
+                                    </dd>
                                 </div>
                                 <div className="fila" key={`${jugador.id}-celular`}>
                                     <dt>Celular:</dt>
-                                    <dd>{jugador.celular}</dd>
+                                    <dd>
+                                        {editingID === jugador.id ? (
+                                            <input
+                                                type="text"
+                                                className="input_edicion"
+                                                value={tempData.celular}
+                                                onChange={(e) => setTempData({ ...tempData, celular: e.target.value })}
+                                            />
+                                        ) : (
+                                            jugador.celular
+                                        )}
+                                    </dd>
                                 </div>
                                 <div className="fila" key={`${jugador.id}-cedula`}>
                                     <dt>Cédula:</dt>
-                                    <dd>{jugador.cedula}</dd>
+                                    <dd>
+                                        {editingID === jugador.id ? (
+                                            <input
+                                                type="text"
+                                                className="input_edicion"
+                                                value={tempData.cedula}
+                                                onChange={(e) => setTempData({ ...tempData, cedula: e.target.value })}
+                                            />
+                                        ) : (
+                                            jugador.cedula
+                                        )}
+                                    </dd>
                                 </div>
                                 <div className="fila" key={`${jugador.id}-ciudad`}>
                                     <dt>Ciudad y Estado:</dt>
-                                    <dd>{jugador.pais_estado}</dd>
+                                    <dd>
+                                        {editingID === jugador.id ? (
+                                            <input
+                                                type="text"
+                                                value={tempData.pais_estado}
+                                                className="input_edicion"
+                                                onChange={(e) => setTempData({ ...tempData, pais_estado: e.target.value })}
+                                            />
+                                        ) : (
+                                            jugador.pais_estado
+                                        )}
+                                    </dd>
                                 </div>
                                 <div className="fila" key={`${jugador.id}-metodo`}>
                                     <dt>Método de Pago:</dt>
-                                    <dd>{jugador.metodo_pago}</dd>
+                                    <dd>
+                                        {editingID === jugador.id ? (
+                                            <input
+                                                type="text"
+                                                className="input_edicion"
+                                                value={tempData.metodo_pago}
+                                                onChange={(e) => setTempData({ ...tempData, metodo_pago: e.target.value })}
+                                            />
+                                        ) : (
+                                            jugador.metodo_pago
+                                        )}
+                                    </dd>
                                 </div>
                                 <div className="fila" key={`${jugador.id}-comprobante`}>
                                     <dt>Comprobante:</dt>
@@ -255,14 +385,36 @@ export const Sesion = () => {
                                 </div>
                                 <div className="fila" key={`${jugador.id}-referencia`}>
                                     <dt>Referencia:</dt>
-                                    <dd>{jugador.referenciaPago}</dd>
+                                    <dd>
+                                        {editingID === jugador.id ? (
+                                            <input
+                                                type="text"
+                                                className="input_edicion"
+                                                value={tempData.referenciaPago}
+                                                onChange={(e) => setTempData({ ...tempData, referenciaPago: e.target.value })}
+                                            />
+                                        ) : (
+                                            jugador.referenciaPago
+                                        )}
+                                    </dd>
                                 </div>
                                 <div className="fila" key={`${jugador.id}-boletos`}>
                                     <dt>Numeros de Boletos:</dt>
                                     <dd>
-                                        {jugador.boletos && jugador.boletos.map((boleto, index) => (
-                                            <p className="fila_num" key={`${jugador.id}-${index}`}>{boleto}</p>
-                                        ))}
+                                        {editingID === jugador.id ? (
+                                            <textarea
+                                                type="text"
+                                                key={`${jugador.id}-textarea${editingID === jugador.id}`}
+                                                className="input_edicion_area"
+                                                value={tempData.boletos}
+                                                onChange={(e) => setTempData({ ...tempData, boletos: e.target.value })}
+                                                placeholder="Separar por comas (ej: 0123, 0789)"
+                                            />
+                                        ) : (
+                                            jugador.boletos && jugador.boletos.map((boleto, index) => (
+                                                <p className="fila_num" key={`${jugador.id}-${index}`}>{boleto}</p>
+                                            ))
+                                        )}
                                     </dd>
                                 </div>
                                 <div className="fila" key={`${jugador.id}-fecha`}>
@@ -272,6 +424,7 @@ export const Sesion = () => {
                                         {new Date(jugador.fecha_registro).toLocaleTimeString()}
                                     </dd>
                                 </div>
+
                                 <div className="lista_btns" key={`${jugador.id}-botones`}>
                                     <button
                                         className="btn_eliminar_sesion"
@@ -284,17 +437,33 @@ export const Sesion = () => {
                                             key={`img-eliminar-${jugador.id}`}
                                         />
                                     </button>
+                                    {editingID === jugador.id ? (
+                                        <>
+                                            <button
+                                                className="btn_guardar_sesion"
+                                                onClick={() => handleguardarCambios(jugador.id)}
+                                            >
+                                                <img src={sav} />
+                                            </button>
 
-                                    <button
-                                        className="btn_editar_sesion"
-                                        key={`btn-editar-${jugador.id}`}
-                                    >
-                                        <img
-                                            src={editar}
-                                            alt="Borrar"
-                                            key={`img-editar-${jugador.id}`}
-                                        />
-                                    </button>
+                                            <button
+                                                className="btn_cancel_sesion"
+                                                onClick={handleCancelEditar}
+                                            >
+                                                <img src={error} />
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <button
+                                            className="btn_editar_sesion"
+                                            onClick={() => handleActivarEdicion(jugador)}
+                                        >
+                                            <img
+                                                src={editar}
+                                                alt="Borrar"
+                                            />
+                                        </button>
+                                    )}
                                 </div>
                             </dl>
                         </div>
