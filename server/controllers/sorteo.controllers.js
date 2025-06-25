@@ -277,6 +277,119 @@ export const deleteJugador = async (req, res) => {
     }
 }
 
+//Editar Jugador
+export const updateJugador = async (req, res) => {
+    const { id } = req.params;
+    const {
+        nombres_apellidos,
+        cedula,
+        celular,
+        pais_estado,
+        metodo_pago,
+        referenciaPago,
+        boletos
+    } = req.body;
+
+    //convertir boletos en Arrays
+    let boletosArray = [];
+    if (typeof boletos === 'string') {
+        boletosArray = boletos
+            .split(",")
+            .map(b => b.trim())
+            .filter(b => b !== '')
+            .map(b => b.padStart(4, '0'))
+    } else if (Array.isArray(boletos)) {
+        boletosArray = [...boletos];
+    };
+    
+    boletosArray = boletosArray.map(b => String(b).padStart(4, '0'));
+
+    //Transaccion
+    const connection = await pool.getConnection();
+    
+    try {
+            await connection.beginTransaction();
+
+            //Actualizacion de valores
+            await connection.query(
+                `UPDATE jugador SET 
+                nombres_apellidos = ?,
+                cedula = ?,
+                celular = ?,
+                pais_estado = ?,
+                metodo_pago = ?,
+                referenciaPago = ?
+                WHERE id = ?`,
+                [nombres_apellidos, cedula, celular, pais_estado, metodo_pago, referenciaPago, id]
+            );
+
+            //Eliminar Boletos existentes
+            // await connection.query(
+            //     'DELETE FROM numeros_boletos WHERE jugador_id = ?',
+            //     [id] 
+            // );
+
+            //Insertar nuevos boletos si hay
+            // if (boletosArray.length > 0) {
+            //     const valoresBoletos = boletosArray.map(num => [num.padStart(4, '0'), id]);
+            //     await connection.query(
+            //         'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
+            //         [valoresBoletos]
+            //     );
+            // }
+
+            if(boletosArray.length > 0) {
+                //obtener los boletos de la BD
+                const [currentBoletos] = await connection.query(
+                    'SELECT numero_boleto FROM numeros_boletos WHERE jugador_id = ?',
+                    [id]
+                );
+
+                const currentSet = new Set(currentBoletos.map(b => b.numero_boleto));
+                const newSet = new Set(boletosArray);
+
+                //Eliminar boletos que no esten en el nuevo set
+                const toDelete = [...currentSet].filter(num => !newSet.has(num));
+                if(toDelete.length > 0) {
+                    await connection.query(
+                        'DELETE FROM numeros_boletos WHERE jugador_id = ? AND numero_boleto IN (?)',
+                        [id, toDelete]
+                    );
+                };
+
+                const toInsert = boletosArray.filter(num => !currentSet.has(num));
+                if(toInsert.length > 0) {
+                    const valoresBoletos = toInsert.map(num => [num, id]);
+                    await connection.query(
+                        'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
+                        [valoresBoletos]
+                    )
+                };
+            };
+
+            await connection.commit();
+
+            res.json({
+                success: true,
+                message: 'Jugador Actualizado'
+            });
+
+        } catch (error) {
+            await connection.rollback();
+            console.error("Error en la actualizacion del jugadir", error);
+            res.status(500).json({
+                error: 'Errror en la actualizacion del jugador',
+                details: error.message,
+                sql: error.sql
+            })
+            throw error;
+        } finally {
+            connection.release();
+        }
+    
+};
+
+
 export const postCardPub = async (req, res) => {
     try {
         const { titulo_p, subtitulo_p, descripcion_p } = req.body;
@@ -374,7 +487,7 @@ export const deleteCardPub = async (req, res) => {
             'SELECT * FROM card_pub WHERE id = ?',
             [id]
         );
-        
+
         if (checkResult.length === 0) {
             return res.status(404).json({ error: 'No se encontraron publicaciones' })
         };
@@ -391,6 +504,6 @@ export const deleteCardPub = async (req, res) => {
 
     } catch (error) {
         console.error('Error al eliminar publicacion', error);
-        res.status(500).json({error: 'Error al eliminar la publicaicon'})
+        res.status(500).json({ error: 'Error al eliminar la publicaicon' })
     }
 };

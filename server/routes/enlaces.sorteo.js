@@ -18,7 +18,8 @@ import {
     postCardPub,
     getCardPub,
     getAllCardPub,
-    deleteCardPub
+    deleteCardPub,
+    updateJugador
 } from '../controllers/sorteo.controllers.js';
 
 
@@ -109,5 +110,7 @@ router.get('/cardpub/:id/image', getCardPub);
 router.get('/cardpub', getAllCardPub);
 
 router.delete('/cardpub/:id', deleteCardPub);
+
+router.put('/jugador/:id', updateJugador);
 
 export default router;
