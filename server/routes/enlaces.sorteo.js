@@ -19,7 +19,8 @@ import {
     getCardPub,
     getAllCardPub,
     deleteCardPub,
-    updateJugador
+    updateJugador,
+    updateCardPub
 } from '../controllers/sorteo.controllers.js';
 
 
@@ -73,7 +74,7 @@ const storageCardPub = multer.diskStorage({
 
 const uploadCardPub = multer({
     storage: storageCardPub,
-    limits: {fileSize: 5 * 1024 * 1020},
+    limits: {fileSize: 5 * 1024 * 1024},
     fileFilter: (req, file, cb) => {
         if(file.mimetype.startsWith('image/')) {
             cb(null, true)
@@ -112,5 +113,8 @@ router.get('/cardpub', getAllCardPub);
 router.delete('/cardpub/:id', deleteCardPub);
 
 router.put('/jugador/:id', updateJugador);
+
+router.put('/cardpub/:id', uploadCardPub.single('imagen'), updateCardPub);
+
 
 export default router;

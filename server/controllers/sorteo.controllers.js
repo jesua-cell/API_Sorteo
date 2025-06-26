@@ -5,6 +5,7 @@ import pool from '../config/db.js';
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken'
 import dotenv from "dotenv";
+import { error } from "node:console";
 
 //Configuracion del archivo UOLOADS_DIR:
 const __filename = fileURLToPath(import.meta.url);
@@ -301,18 +302,18 @@ export const updateJugador = async (req, res) => {
     } else if (Array.isArray(boletos)) {
         boletosArray = [...boletos];
     };
-    
+
     boletosArray = boletosArray.map(b => String(b).padStart(4, '0'));
 
     //Transaccion
     const connection = await pool.getConnection();
-    
-    try {
-            await connection.beginTransaction();
 
-            //Actualizacion de valores
-            await connection.query(
-                `UPDATE jugador SET 
+    try {
+        await connection.beginTransaction();
+
+        //Actualizacion de valores
+        await connection.query(
+            `UPDATE jugador SET 
                 nombres_apellidos = ?,
                 cedula = ?,
                 celular = ?,
@@ -320,73 +321,73 @@ export const updateJugador = async (req, res) => {
                 metodo_pago = ?,
                 referenciaPago = ?
                 WHERE id = ?`,
-                [nombres_apellidos, cedula, celular, pais_estado, metodo_pago, referenciaPago, id]
+            [nombres_apellidos, cedula, celular, pais_estado, metodo_pago, referenciaPago, id]
+        );
+
+        //Eliminar Boletos existentes
+        // await connection.query(
+        //     'DELETE FROM numeros_boletos WHERE jugador_id = ?',
+        //     [id] 
+        // );
+
+        //Insertar nuevos boletos si hay
+        // if (boletosArray.length > 0) {
+        //     const valoresBoletos = boletosArray.map(num => [num.padStart(4, '0'), id]);
+        //     await connection.query(
+        //         'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
+        //         [valoresBoletos]
+        //     );
+        // }
+
+        if (boletosArray.length > 0) {
+            //obtener los boletos de la BD
+            const [currentBoletos] = await connection.query(
+                'SELECT numero_boleto FROM numeros_boletos WHERE jugador_id = ?',
+                [id]
             );
 
-            //Eliminar Boletos existentes
-            // await connection.query(
-            //     'DELETE FROM numeros_boletos WHERE jugador_id = ?',
-            //     [id] 
-            // );
+            const currentSet = new Set(currentBoletos.map(b => b.numero_boleto));
+            const newSet = new Set(boletosArray);
 
-            //Insertar nuevos boletos si hay
-            // if (boletosArray.length > 0) {
-            //     const valoresBoletos = boletosArray.map(num => [num.padStart(4, '0'), id]);
-            //     await connection.query(
-            //         'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
-            //         [valoresBoletos]
-            //     );
-            // }
-
-            if(boletosArray.length > 0) {
-                //obtener los boletos de la BD
-                const [currentBoletos] = await connection.query(
-                    'SELECT numero_boleto FROM numeros_boletos WHERE jugador_id = ?',
-                    [id]
+            //Eliminar boletos que no esten en el nuevo set
+            const toDelete = [...currentSet].filter(num => !newSet.has(num));
+            if (toDelete.length > 0) {
+                await connection.query(
+                    'DELETE FROM numeros_boletos WHERE jugador_id = ? AND numero_boleto IN (?)',
+                    [id, toDelete]
                 );
-
-                const currentSet = new Set(currentBoletos.map(b => b.numero_boleto));
-                const newSet = new Set(boletosArray);
-
-                //Eliminar boletos que no esten en el nuevo set
-                const toDelete = [...currentSet].filter(num => !newSet.has(num));
-                if(toDelete.length > 0) {
-                    await connection.query(
-                        'DELETE FROM numeros_boletos WHERE jugador_id = ? AND numero_boleto IN (?)',
-                        [id, toDelete]
-                    );
-                };
-
-                const toInsert = boletosArray.filter(num => !currentSet.has(num));
-                if(toInsert.length > 0) {
-                    const valoresBoletos = toInsert.map(num => [num, id]);
-                    await connection.query(
-                        'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
-                        [valoresBoletos]
-                    )
-                };
             };
 
-            await connection.commit();
+            const toInsert = boletosArray.filter(num => !currentSet.has(num));
+            if (toInsert.length > 0) {
+                const valoresBoletos = toInsert.map(num => [num, id]);
+                await connection.query(
+                    'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
+                    [valoresBoletos]
+                )
+            };
+        };
 
-            res.json({
-                success: true,
-                message: 'Jugador Actualizado'
-            });
+        await connection.commit();
 
-        } catch (error) {
-            await connection.rollback();
-            console.error("Error en la actualizacion del jugadir", error);
-            res.status(500).json({
-                error: 'Errror en la actualizacion del jugador',
-                details: error.message,
-                sql: error.sql
-            })
-            throw error;
-        } finally {
-            connection.release();
-        }
-    
+        res.json({
+            success: true,
+            message: 'Jugador Actualizado'
+        });
+
+    } catch (error) {
+        await connection.rollback();
+        console.error("Error en la actualizacion del jugadir", error);
+        res.status(500).json({
+            error: 'Errror en la actualizacion del jugador',
+            details: error.message,
+            sql: error.sql
+        })
+        throw error;
+    } finally {
+        connection.release();
+    }
+
 };
 
 
@@ -394,8 +395,9 @@ export const postCardPub = async (req, res) => {
     try {
         const { titulo_p, subtitulo_p, descripcion_p } = req.body;
         const imagen_pub = req.file;
+        console.log('Imagen recibida:', req.file);
 
-        if (!titulo_p || !subtitulo_p || !descripcion_p || !imagen_pub) {
+        if (!titulo_p || !subtitulo_p || !descripcion_p || !imagen_pub.path) {
             return res.status(404).json({ error: 'Error en los campos del CardPub' });
         };
 
@@ -413,7 +415,7 @@ export const postCardPub = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error en peticion del CardPub");
+        console.error("Error en peticion del CardPub", error);
         res.status(500).json({ error: 'Error al guardar la publicacion' });
     }
 };
@@ -505,5 +507,50 @@ export const deleteCardPub = async (req, res) => {
     } catch (error) {
         console.error('Error al eliminar publicacion', error);
         res.status(500).json({ error: 'Error al eliminar la publicaicon' })
+    }
+};
+
+export const updateCardPub = async (req, res) => {
+    const { id } = req.params;
+
+    const {
+        titulo_p,
+        subtitulo_p,
+        descripcion_p
+    } = req.body;
+
+    const file = req.file;
+
+    try {
+        let updateFields = {
+            titulo_p,
+            subtitulo_p,
+            descripcion_p
+        };
+
+        //Si se subio una imagen; cambiarla
+        if (file) {
+            const imageBuffer = fs.readFileSync(file.path);
+            updateFields.imagen_pub = imageBuffer;
+            fs.unlinkSync(file.path);
+        };
+
+        const [result] = await pool.query(
+            'UPDATE card_pub SET ? WHERE id = ?',
+            [updateFields, id]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(500).json({ error: 'Publicacion no encontrada' });
+        };
+
+        res.json({
+            success: true,
+            message: 'Publicacion Actualizada'
+        });
+
+    } catch (error) {
+        console.error('Error al Actualizar', error);
+        res.status(500).json({ error: 'Error al actualizae' });
     }
 };
