@@ -218,6 +218,8 @@ export const Sesion = () => {
         return <div><h4>Verificando Sesion...</h4></div>
     }
 
+    const totalBoletos = jugadores.flatMap(j => j.boletos || []).length;
+
     return (
         <>
 
@@ -244,6 +246,12 @@ export const Sesion = () => {
                 </div>
 
                 <h2 className="title_inventario">Inventario</h2>
+                <p>Numero Jugadores <strong>{jugadores.length}</strong> de 1000</p>
+                <p>Jugadores pendientes <strong>{jugadores.length - 1000}</strong></p>
+
+                <p>Numeros seleccionados <strong>{totalBoletos}</strong> de 1000</p>
+                <p>Numeros pendientes <strong>{Math.max(0, 1000 - totalBoletos)}</strong> de 1000</p>
+
                 <input
                     type="text"
                     placeholder="Buscador..."

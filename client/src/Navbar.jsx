@@ -2,8 +2,11 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import logoutIcon from "./assets/cerrar-sesion.png";
 import logo from "./assets/logo_or.png";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
+
+  const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
   const [adminName, setAdminName] = useState('');
@@ -38,7 +41,9 @@ export const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('adminSession');
-    localStorage.removeItem('jwtToken')
+    localStorage.removeItem('jwtToken');
+    navigate('/');
+    closeMenu();
     setAdminName('');
   };
 
@@ -59,26 +64,17 @@ export const Navbar = () => {
 
           <Link 
           to={"/"} 
-          onClick={()=>{
-            closeMenu();
-            if(adminName) handleLogout();
-          }}
+          onClick={closeMenu}
           
           >Inicio</Link>
           <Link 
           to={"/sorteo"} 
-          onClick={()=>{
-            closeMenu();
-            if(adminName) handleLogout();
-          }}
+          onClick={closeMenu}
           
           >Sorteo</Link>
           <Link 
           to={"/cuentas_de_pago"} 
-          onClick={()=>{
-            closeMenu();
-            if(adminName) handleLogout();
-          }}
+          onClick={closeMenu}
           
           >Cuentas de Pago</Link>
 

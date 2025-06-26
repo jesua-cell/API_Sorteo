@@ -1,24 +1,29 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 
 export const SelectImage = ({ previewImage, onFileChange, onRemoveImage, buttonLabel = "Seleccionar Imagen" }) => {
 
     const fileInputRef = useRef();
 
+    useEffect(() => {
+        if (!previewImage && fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    }, [previewImage]);
+
+
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
 
-            if (file.type.match('image.*')) {
-                onFileChange(file);
-            } 
+            onFileChange(file);
 
             e.target.value = null;
         }
     }
 
-    // const handleClick = () => {
-    //     fileInputRef.current.click();
-    // };
+    const handleClick = () => {
+        fileInputRef.current.click();
+    };
 
     return (
         <>
@@ -34,8 +39,8 @@ export const SelectImage = ({ previewImage, onFileChange, onRemoveImage, buttonL
                 />
                 <label
                     className='input_seleccionarFile'
-                    htmlFor='comprobantePago'
-                // onClick={handleClick}
+                    // htmlFor='comprobantePago'
+                    onClick={handleClick}
                 >{buttonLabel}</label>
                 {previewImage && (
                     <div className='image_comprobante'>
