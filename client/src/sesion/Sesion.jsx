@@ -27,6 +27,10 @@ export const Sesion = () => {
     const [editingID, setEditingID] = useState(null);
     const [tempData, setTempData] = useState({});
 
+    //Estados del Input VALOR_VEF
+    const [valor, setValor] = useState(0);
+    const [inputValor, setInputValor] = useState('');
+
     const navigate = useNavigate();
 
     //Estado de acceso al Admin
@@ -110,21 +114,6 @@ export const Sesion = () => {
 
     }, [search, jugadores])
 
-    // Filter: React-Select
-    const categorias = [
-        { label: 'Nombres', value: 'Nombres' },
-        { label: 'Ciudad-Estado', value: 'Ciudad-Estado' },
-        { label: 'Metodo-Pago', value: 'Metodo-Pago' },
-        { label: 'Comprobante', value: 'Comprobante' },
-        { label: 'Referencia', value: 'Referencia' },
-        { label: 'Numero-Boletos', value: 'Numero-Boletos' },
-        { label: 'Fecha', value: 'Fecha' },
-    ];
-
-    // const handleSelect = ({ value }) => {
-    //     console.log(value);
-    //     setSelect(value)
-    // };
 
     //Funcion para activar Edicion
     const handleActivarEdicion = (jugador) => {
@@ -210,6 +199,43 @@ export const Sesion = () => {
         navigate('/');
     };
 
+    useEffect(() => {
+
+        const fetchValorVes = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/valor');
+                setValor(response.data.valor);
+            } catch (error) {
+                console.error('Error al obtener el valor del VES', error);
+            }
+        };
+
+
+    }, [])
+
+
+    const enviarValor = async () => {
+        try {
+            // Convertir a número y validar
+            const valorNumerico = parseFloat(inputValor);
+            if (isNaN(valorNumerico)) {
+                console.error('Valor no numérico');
+                return;
+            };
+
+            //enviar al back-bd
+            await axios.post(
+                'http://localhost:3000/valor',
+                { valor: valorNumerico }
+            );
+
+            setValor(valorNumerico);
+            setInputValor('');
+        } catch (error) {
+            console.error('Error en el evnio del valor:', error);
+        }
+    };
+
     if (loading) {
         return <div><h4>Cargando Jugadores...</h4></div>
     };
@@ -246,12 +272,16 @@ export const Sesion = () => {
                 </div>
 
                 <h2 className="title_inventario">Inventario</h2>
-                <p>Numero Jugadores <strong>{jugadores.length}</strong> de 1000</p>
-                <p>Jugadores pendientes <strong>{jugadores.length - 1000}</strong></p>
 
-                <p>Numeros seleccionados <strong>{totalBoletos}</strong> de 1000</p>
-                <p>Numeros pendientes <strong>{Math.max(0, 1000 - totalBoletos)}</strong> de 1000</p>
+                {/* Informacion del Sorteo */}
+                <div className="contInfoSorteo">
+                    <p className="infoSorteoText">Numero Jugadores <strong>{jugadores.length}</strong> de 1000</p>
+                    <p className="infoSorteoText">Jugadores pendientes <strong>{jugadores.length - 1000}</strong></p>
+                    <p className="infoSorteoText">Numeros seleccionados <strong>{totalBoletos}</strong> de 1000</p>
+                    <p className="infoSorteoText">Numeros disponibles <strong>{Math.max(0, 1000 - totalBoletos)}</strong> de 1000</p>
+                </div>
 
+                {/* Filter */}
                 <input
                     type="text"
                     placeholder="Buscador..."
@@ -259,14 +289,19 @@ export const Sesion = () => {
                     value={search}
                     onChange={searcher}
                 />
-                {/* <div>
-                    <Select
-                        defaultValue={{ label: 'Seleccionar una Categoria:', value: 'vacio' }}
-                        options={categorias}
-                        onChange={handleSelect}
+
+                {/* Valor BCV */}
+                <label>Valor del VES: <strong>${valor}</strong></label>
+                <div className="conntValorVef">
+                    <input
+                        type="number"
+                        className="input_bcv"
+                        placeholder="Valor VES"
+                        value={inputValor}
+                        onChange={(e) => setInputValor(e.target.value)}
                     />
-                    <p>Seleccion: {select}</p>
-                </div> */}
+                    <button onClick={enviarValor} className="btn_ves">Enviar</button>
+                </div>
 
                 {filterJugadores.length === 0 ? (
                     <div className="no_result">

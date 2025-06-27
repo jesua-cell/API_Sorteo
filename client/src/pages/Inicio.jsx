@@ -32,21 +32,27 @@ export const Inicio = () => {
                     </p>
                     <button className='btn-inicio' type="button"><Link to={"/sorteo"}>Lista de Boletos</Link></button>
                 </div>
-            
-            {cardData.map((card, index) => (
-                    <div key={index} className='contContendido'>
-                        <h1 className='titulo_sorteo'>{card.titulo_p}</h1>
-                        <img
-                            src={`data:image/*;base64,${card.imagen_pub}`}
-                            alt='Imagen del sorteo'
-                        />
-                        <h2>{card.subtitulo_p}</h2>
-                        <p>{card.descripcion_p}</p>
-                        <button className='btn-inicio' type="button">
-                            <Link to={"/sorteo"}>Lista de Boletos</Link>
-                        </button>
+
+                {cardData.length > 0 ? (
+                    cardData.map((card, index) => (
+                        <div key={index} className='contContendido'>
+                            <h1 className='titulo_sorteo'>{card.titulo_p}</h1>
+                            <img
+                                src={`data:image/*;base64,${card.imagen_pub}`}
+                                alt='Imagen del sorteo'
+                            />
+                            <h2>{card.subtitulo_p}</h2>
+                            <p>{card.descripcion_p}</p>
+                            <button className='btn-inicio' type="button">
+                                <Link to={"/sorteo"}>Lista de Boletos</Link>
+                            </button>
+                        </div>
+                    ))
+                ) : (
+                    <div className='contContendido'>
+                        <h1 className='titulo_sorteo'>Próximos Sorteo</h1>
                     </div>
-            ))}
+                )}
             </div>
 
         </>
