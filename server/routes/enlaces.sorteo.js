@@ -20,7 +20,9 @@ import {
     getAllCardPub,
     deleteCardPub,
     updateJugador,
-    updateCardPub
+    updateCardPub,
+    postValorVes,
+    getValorVes
 } from '../controllers/sorteo.controllers.js';
 
 
@@ -42,10 +44,10 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 }
 
 //crear carpeta para cardpub si no existe
- if (!fs.existsSync(CARDPUB_DIR)) {
-     fs.mkdirSync(CARDPUB_DIR, {recursive: true})
-     console.log('Carpeta carpub creada');
- };
+if (!fs.existsSync(CARDPUB_DIR)) {
+    fs.mkdirSync(CARDPUB_DIR, { recursive: true })
+    console.log('Carpeta carpub creada');
+};
 
 //Configuracion del multer
 const storage = multer.diskStorage({
@@ -74,9 +76,9 @@ const storageCardPub = multer.diskStorage({
 
 const uploadCardPub = multer({
     storage: storageCardPub,
-    limits: {fileSize: 5 * 1024 * 1024},
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
-        if(file.mimetype.startsWith('image/')) {
+        if (file.mimetype.startsWith('image/')) {
             cb(null, true)
         } else {
             cb(new Error('Solo se permiten imagenes'), false);
@@ -115,6 +117,13 @@ router.delete('/cardpub/:id', deleteCardPub);
 router.put('/jugador/:id', updateJugador);
 
 router.put('/cardpub/:id', uploadCardPub.single('imagen'), updateCardPub);
+
+router.post('/valor', postValorVes);
+
+router.post('/valor', postValorVes);
+
+router.get('/valor', getValorVes);
+
 
 
 export default router;
