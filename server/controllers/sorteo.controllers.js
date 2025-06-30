@@ -564,7 +564,7 @@ export const postValorVes = async (req, res) => {
     };
 
     try {
-        
+
         await pool.query('INSERT INTO valor_ves (valor) VALUES (?)', [valor]);
 
         res.json({
@@ -574,7 +574,7 @@ export const postValorVes = async (req, res) => {
 
     } catch (error) {
         console.error('Error en la obtencion del valor del VES');
-        res.status(500).json({error: 'Error en la obtencion del valor del VES'})
+        res.status(500).json({ error: 'Error en la obtencion del valor del VES' })
     }
 
 };
@@ -583,13 +583,46 @@ export const getValorVes = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT valor FROM valor_ves ORDER BY id DESC LIMIT 1');
 
-        if(rows.length === 0){
-            return res.status(404).json({error: 'No hay valores regitrados'})
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'No hay valores regitrados' })
         };
 
-        res.json({valor: rows[0].valor});
+        res.json({
+            valor: rows[0].valor,
+            id: rows[0].valor
+        });
 
     } catch (error) {
-        res.status(500).json({error: 'Error en la obtencion del valor del VES'})
+        res.status(500).json({ error: 'Error en la obtencion del valor del VES' })
+    }
+};
+
+export const updateValores = async (req, res) => {
+    const { valor } = req.body;
+
+    if (valor === undefined) {
+        return res.status(400).json({ error: 'Valor Requerido' });
+    };
+
+    try {
+
+        //Verificar si el registro existe; solo uno
+        const [result] = await pool.query(
+            'UPDATE valor_ves SET valor = ?',
+            [valor]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Registro no encontrado' });
+        };
+
+        res.json({
+            message: 'Valor Actualizado Correctamente',
+            valor_actualizado: valor
+        });
+
+    } catch (error) {
+        console.error('Error en la actualizacion del valor', error);
+        res.status(500).json({ error: 'Error en la actualizacion del valor' })
     }
 };
