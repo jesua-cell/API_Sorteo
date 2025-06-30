@@ -243,17 +243,24 @@ export const Sesion = () => {
     };
 
     const normalizarNumero = (valorStr) => {
-        return valorStr
-            .replace(/\./g, '')
-            .replace(',', '.')
+
+        if (!valorStr) return '';
+
+        const sinPuntos = valorStr.replace(/\,/g, '');
+
+        const conPuntoDecimal = sinPuntos.replace(',', '.');
+
+        return conPuntoDecimal;
     };
 
     //Funcion para actulizar el  valor del VALOR_VES
     const handleUpdate = async () => {
         try {
 
-            const valorNormalizado = normalizarNumero(editValue);
             //Valor de la actualizacion: valor(UPDATE)
+
+            const valorNormalizado = normalizarNumero(editValue)
+
             const valorNumerico = parseFloat(valorNormalizado); //Convertir a decimal
             if (isNaN(valorNumerico)) {
                 console.error('Valor no numerico');
@@ -283,6 +290,16 @@ export const Sesion = () => {
         } catch (error) {
             console.error('Error en la actualizacion del valor', error);
         }
+    };
+
+    const formatoLatino = (numero) => {
+        
+        if (numero == null) return '';
+
+        return numero.toLocaleString('es-VE', {
+            minimumFractionDigits: 2,
+            minimumFractionDigits: 2
+        })
     };
 
     if (loading) {
@@ -341,7 +358,7 @@ export const Sesion = () => {
                                 value={editValue}
                                 onChange={(e) => setEditValue(e.target.value)}
                                 placeholder="Nuevo Valor del VES"
-                                style={{marginBottom: '14px', marginTop: '15px'}}
+                                style={{ marginBottom: '14px', marginTop: '15px' }}
                             />
                             <div className="btns_vef">
                                 <button onClick={handleUpdate} className="btn_save_ves">Guardar</button>
@@ -350,7 +367,7 @@ export const Sesion = () => {
                         </div>
                     ) : (
                         <div className="conntValorVef">
-                            <label className="label_valor">Valor del VES: <strong>${valor}</strong></label>
+                            <label className="label_valor">Valor del VES: <strong>${formatoLatino(valor)}</strong></label>
                             <button
                                 onClick={() => {
                                     setEditValue(valor.toString());

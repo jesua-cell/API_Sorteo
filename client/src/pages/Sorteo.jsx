@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import axios from "axios";
 //Imagenes:
 import zelle from '../assets/zelle.png'
 import nequi from '../assets/nequi.png'
@@ -25,6 +26,11 @@ export const Sorteo = () => {
     const [numerosElegidos, setNumerosElegidos] = useState([])
     const [modalMessage, setModalMessage] = useState('');
     const [isError, setIsError] = useState(false);
+
+    //Estados para obtener los valores de la tabla valores_ves
+    const [editValue, setEditValue] = useState('');
+    const [currentId, setCurrentId] = useState(null);
+    const [valor, setValor] = useState(0);
 
     const [usedNumbers, setUsedNumbers] = useState([]);
 
@@ -149,6 +155,32 @@ export const Sorteo = () => {
         return () => clearTimeout(timer);
     }, [showModal])
 
+    //Obtener valor del VES a la BD
+    const fetchValorVes = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/valor');
+            setValor(response.data.valor);
+            setCurrentId(response.data.id);
+        } catch (error) {
+            console.error('Error al obtener el valor del VES', error);
+        }
+    };
+
+    const normalizarNumero = (valorStr) => {
+
+        if (!valorStr) return '';
+
+        const sinPuntos = valorStr.replace(/\,/g, '');
+
+        const conPuntoDecimal = sinPuntos.replace(',', '.');
+
+        return conPuntoDecimal;
+    };
+
+    useEffect(() => {
+        fetchValorVes();
+    }, [])
+
 
     //Funcion para calcular el monto total de pago segun el metodo de pago
     const calcularMontoTotal = () => {
@@ -174,7 +206,7 @@ export const Sorteo = () => {
         }
     };
     //TODO Recibir y operar contanste que tenga el valor de los BCV
-    
+
     //Funcionar para enviar datos a la BD
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -1425,9 +1457,10 @@ export const Sorteo = () => {
                                     <h4 className='titular'>Titular:</h4>
                                     <h4 className='remitente'>Vanessa Rincón</h4>
                                     <h4 className='remitente'>Cedúla:</h4>
-                                    <h4 className='remitente'>21.453.387</h4>
+                                    <h4 className='remitente'>21 453 387</h4>
                                     <div className="preciosConversionNumbers">
-                                        <h4>(Consultar la tasa actual)</h4>
+                                        <h4>Pago:</h4>
+                                        {`$${selectNumbers.length * normalizarNumero(valor)}`} 
                                     </div>
                                 </div>
                             }
@@ -1439,7 +1472,8 @@ export const Sorteo = () => {
                                     <h4 className='titular'>Titular:</h4>
                                     <h4 className='remitente'>Donney Caicedo</h4>
                                     <div className="preciosConversionNumbers">
-                                        <h4>(Consultar la tasa actual)</h4>
+                                        <h4>Pago:</h4>
+                                        {`$${selectNumbers.length * normalizarNumero(valor)}`}
                                     </div>
                                 </div>
                             }
