@@ -27,9 +27,13 @@ export const Sesion = () => {
     const [editingID, setEditingID] = useState(null);
     const [tempData, setTempData] = useState({});
 
-    //Estados del Input VALOR_VEF
+    //Estados del Input VALOR_VES
     const [valor, setValor] = useState(0);
     const [inputValor, setInputValor] = useState('');
+    //Estados de VALOR_VES
+    const [isEditing, setIsEditing] = useState(false);
+    const [editValue, setEditValue] = useState('');
+    const [currentId, setCurrentId] = useState(null);
 
     const navigate = useNavigate();
 
@@ -199,21 +203,23 @@ export const Sesion = () => {
         navigate('/');
     };
 
+    //Obtener valor del VES a la BD
+    const fetchValorVes = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/valor');
+            setValor(response.data.valor);
+            setCurrentId(response.data.id);
+        } catch (error) {
+            console.error('Error al obtener el valor del VES', error);
+        }
+    };
+
+    //Muestra el valor del VES al cargar el componente
     useEffect(() => {
+        fetchValorVes();
+    }, []);
 
-        const fetchValorVes = async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/valor');
-                setValor(response.data.valor);
-            } catch (error) {
-                console.error('Error al obtener el valor del VES', error);
-            }
-        };
-
-
-    }, [])
-
-
+    //Enviar valor del VES a la BD
     const enviarValor = async () => {
         try {
             // Convertir a número y validar
@@ -229,10 +235,53 @@ export const Sesion = () => {
                 { valor: valorNumerico }
             );
 
-            setValor(valorNumerico);
+            fetchValorVes();
             setInputValor('');
         } catch (error) {
             console.error('Error en el evnio del valor:', error);
+        }
+    };
+
+    const normalizarNumero = (valorStr) => {
+        return valorStr
+            .replace(/\./g, '')
+            .replace(',', '.')
+    };
+
+    //Funcion para actulizar el  valor del VALOR_VES
+    const handleUpdate = async () => {
+        try {
+
+            const valorNormalizado = normalizarNumero(editValue);
+            //Valor de la actualizacion: valor(UPDATE)
+            const valorNumerico = parseFloat(valorNormalizado); //Convertir a decimal
+            if (isNaN(valorNumerico)) {
+                console.error('Valor no numerico');
+                return;
+            };
+
+            await axios.put(
+                `http://localhost:3000/valor`,
+                { valor: valorNumerico }
+            );
+
+            setValor(valorNumerico); //Estado del valor editado
+            setIsEditing(false);
+            setEditValue(''); //Estado del input en Edicion
+            toast('Cambios del valor del VES Guardados',
+                {
+                    icon: '💾',
+                    style: {
+                        borderRadius: '20px',
+                        background: '#9fb3ff',
+                        color: '#000467',
+                        padding: '8px',
+                        textAlign: 'center'
+                    },
+                }
+            );
+        } catch (error) {
+            console.error('Error en la actualizacion del valor', error);
         }
     };
 
@@ -275,13 +324,46 @@ export const Sesion = () => {
 
                 {/* Informacion del Sorteo */}
                 <div className="contInfoSorteo">
-                    <p className="infoSorteoText">Numero Jugadores <strong>{jugadores.length}</strong> de 1000</p>
-                    <p className="infoSorteoText">Jugadores pendientes <strong>{jugadores.length - 1000}</strong></p>
-                    <p className="infoSorteoText">Numeros seleccionados <strong>{totalBoletos}</strong> de 1000</p>
-                    <p className="infoSorteoText">Numeros disponibles <strong>{Math.max(0, 1000 - totalBoletos)}</strong> de 1000</p>
+                    <p className="infoSorteoText">Numero Jugadores: <strong>{jugadores.length}</strong> de 1000</p>
+                    <p className="infoSorteoText">Jugadores pendientes: <strong>{jugadores.length - 1000}</strong></p>
+                    <p className="infoSorteoText">Numeros seleccionados: <strong>{totalBoletos}</strong> de 1000</p>
+                    <p className="infoSorteoText">Numeros disponibles: <strong>{Math.max(0, 1000 - totalBoletos)}</strong> de 1000</p>
                 </div>
 
                 {/* Filter */}
+
+                <div className="boxValor">
+                    {isEditing ? (
+                        <div className="conntValorVef">
+                            <input
+                                type="number"
+                                className="input_bcv"
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                placeholder="Nuevo Valor del VES"
+                                style={{marginBottom: '14px', marginTop: '15px'}}
+                            />
+                            <div className="btns_vef">
+                                <button onClick={handleUpdate} className="btn_save_ves">Guardar</button>
+                                <button onClick={() => setIsEditing(false)} className="btn_cancel_ves">Cancelar</button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="conntValorVef">
+                            <label className="label_valor">Valor del VES: <strong>${valor}</strong></label>
+                            <button
+                                onClick={() => {
+                                    setEditValue(valor.toString());
+                                    setIsEditing(true);
+                                }}
+                                className="btn_edit_ves"
+                            >
+                                Editar
+                            </button>
+                        </div>
+                    )}
+                </div>
+
                 <input
                     type="text"
                     placeholder="Buscador..."
@@ -289,19 +371,6 @@ export const Sesion = () => {
                     value={search}
                     onChange={searcher}
                 />
-
-                {/* Valor BCV */}
-                <label>Valor del VES: <strong>${valor}</strong></label>
-                <div className="conntValorVef">
-                    <input
-                        type="number"
-                        className="input_bcv"
-                        placeholder="Valor VES"
-                        value={inputValor}
-                        onChange={(e) => setInputValor(e.target.value)}
-                    />
-                    <button onClick={enviarValor} className="btn_ves">Enviar</button>
-                </div>
 
                 {filterJugadores.length === 0 ? (
                     <div className="no_result">
@@ -512,7 +581,7 @@ export const Sesion = () => {
                         </div>
                     ))
                 )}
-            </div>
+            </div >
 
         </>
     )
