@@ -62,7 +62,8 @@ export const addJugadores = async (req, res) => {
             pais_estado,
             referenciaPago,
             metodo_pago,
-            numeros
+            numeros,
+            monto_total
         } = req.body;
 
         const comprobante_pago = req.file ? req.file.filename : null;
@@ -82,7 +83,8 @@ export const addJugadores = async (req, res) => {
                 pais_estado,
                 referenciaPago,
                 metodo_pago,
-                comprobante_pago
+                comprobante_pago,
+                monto_total
             }
         );
 
@@ -288,7 +290,8 @@ export const updateJugador = async (req, res) => {
         pais_estado,
         metodo_pago,
         referenciaPago,
-        boletos
+        boletos,
+        monto_total
     } = req.body;
 
     //convertir boletos en Arrays
@@ -319,9 +322,19 @@ export const updateJugador = async (req, res) => {
                 celular = ?,
                 pais_estado = ?,
                 metodo_pago = ?,
-                referenciaPago = ?
+                referenciaPago = ?,
+                monto_total = ?
                 WHERE id = ?`,
-            [nombres_apellidos, cedula, celular, pais_estado, metodo_pago, referenciaPago, id]
+            [
+                nombres_apellidos,
+                cedula,
+                celular,
+                pais_estado,
+                metodo_pago,
+                referenciaPago,
+                monto_total,
+                id
+            ]
         );
 
         //Eliminar Boletos existentes
