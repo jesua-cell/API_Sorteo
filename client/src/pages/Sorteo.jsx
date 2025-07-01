@@ -28,7 +28,6 @@ export const Sorteo = () => {
     const [isError, setIsError] = useState(false);
 
     //Estados para obtener los valores de la tabla valores_ves
-    const [editValue, setEditValue] = useState('');
     const [currentId, setCurrentId] = useState(null);
     const [valor, setValor] = useState(0);
 
@@ -57,7 +56,7 @@ export const Sorteo = () => {
         return () => lista?.removeEventListener('click', handleClick)
     }, [])
 
-
+    //Funcion para bloquear los numeros elegidos
     useEffect(() => {
         const fetchUsedNumbers = async () => {
             try {
@@ -82,18 +81,21 @@ export const Sorteo = () => {
     }, [])
 
 
+    //*Funcion para recarhar el compoenete "lista" cuanda se haya elegido un numero
+    // useEffect(() => {
+    //     if (selectNumbers.length) {
+    //         setSearchTerm('');
+    //         listaRef.current.scrollTop = 0;
+    //         Array.from(listaRef.current.children).forEach(child =>
+    //             child.style.display = 'block'
+    //         );
+    //     }
+    // }, [selectNumbers])
 
-    useEffect(() => {
-        if (selectNumbers.length) {
-            setSearchTerm('');
-            listaRef.current.scrollTop = 0;
-            Array.from(listaRef.current.children).forEach(child =>
-                child.style.display = 'block'
-            );
-        }
-    }, [selectNumbers])
+    //TODO Desenmarcar un numero elegido al hacerle click
 
 
+    //Filtro(input) para buscar numeros de la "lista"
     const handleSearch = (e) => {
 
         const inputValue = e.target.value;
@@ -136,10 +138,8 @@ export const Sorteo = () => {
         setSelectNumbers([]);
     };
 
-    /**
-     * Obentener los valores y enviarlos al servidor
-     */
 
+    // Obentener los valores y enviarlos al servidor
     const [nombre, setNombre] = useState('');
     const [celular, setCelular] = useState('')
     const [paisEstado, setPaisEstado] = useState('')
@@ -166,6 +166,7 @@ export const Sorteo = () => {
         }
     };
 
+    //Conversion del numero(VES)
     const normalizarNumero = (valorStr) => {
 
         if (!valorStr) return '';
@@ -185,36 +186,38 @@ export const Sorteo = () => {
     //Funcion para calcular el monto total de pago segun el metodo de pago
     const calcularMontoTotal = () => {
 
-        const cantidadNumeros = selectNumbers.length; //Variable que almacena los numeros elegidos
+        let cantidadNumeros = selectNumbers.length; //Variable que almacena los numeros elegidos
 
-        montoTotal = '';
+        let montoTotal = '';
         switch (activeTab) {
             case 0: //Zelle
             case 3: //Paypal
-                montoTotal = (cantidadNumeros * 9).toLocaleString('es-US');
+                montoTotal = (cantidadNumeros * 9);
                 break;
             case 1: //Nequi
             case 2: //Bancolombia
-                montoTotal = (cantidadNumeros * 35000).toLocaleString('es-CO');
+                montoTotal = (cantidadNumeros * 35000);
                 break;
             case 4: //PagoMovil
             case 5: //Banco Venezuela
-                montoTotal = '(Consultar tasa actual)';
+                montoTotal = (cantidadNumeros * valor);
                 break;
             default:
-                return 0;
+                return montoTotal = 0;
         }
+        return montoTotal;
     };
-    //TODO Recibir y operar contanste que tenga el valor de los BCV
 
     //Funcionar para enviar datos a la BD
     const handleLogin = async (e) => {
+
         e.preventDefault();
 
         const metodosPago = ["Zelle", "Nequi", "Bancolombia", "PayPal", "PagoMovil", "Banco Venezuela"];
 
         const metodoPago = metodosPago[activeTab] || "Desconocido";
 
+        const montoTotal = calcularMontoTotal();
 
         if (selectNumbers.length === 0) {
             setModalMessage('Selecciona un numero');
@@ -233,7 +236,7 @@ export const Sorteo = () => {
             formData.append("metodo_pago", metodoPago);
             formData.append("comprobante_pago", selectedFile);
             formData.append("numeros", JSON.stringify(selectNumbers));
-
+            formData.append("monto_total", montoTotal);
 
             const response = await createJugador(formData);
 
@@ -259,6 +262,7 @@ export const Sorteo = () => {
                 numerosBoletos: selectNumbers,
                 metodo_pago: metodoPago,
                 comprobante_pago: selectedFile,
+                monto_total: montoTotal,
                 cedula: cedula
             }
 
@@ -296,6 +300,7 @@ export const Sorteo = () => {
                         onWheel={(e) => e.target.blur()}
                     />
 
+                    <label className='usedNumSorteo'>Numeros disponibles: {(1000) - usedNumbers.length}</label>
                     <div className="lista" ref={listaRef} >
                         <div className="listaNumero">0001</div>
                         <div className="listaNumero">0002</div>
@@ -1415,9 +1420,9 @@ export const Sorteo = () => {
                                 <div className="modoPago">
                                     <h4 className='nombrePago'>Nequi</h4>
                                     <h4 className='cuenta'>Cuenta:</h4>
-                                    <h4 className='numeroCuenta'>3154854020</h4>
+                                    <h4 className='numeroCuenta'>3223223329</h4>
                                     <h4 className='titular'>Titular:</h4>
-                                    <h4 className='remitente'>Donney Caicedo</h4>
+                                    <h4 className='remitente'>Maria Alejandra Garcia</h4>
                                     <div className="preciosConversionNumbers">
                                         <h4>Pago:</h4>
                                         {`$${(selectNumbers.length * 35000).toLocaleString('es-CO')}`}
@@ -1430,7 +1435,7 @@ export const Sorteo = () => {
                                     <h4 className='cuenta'>Cuenta Ahorro:</h4>
                                     <h4 className='numeroCuenta'>82000002819</h4>
                                     <h4 className='titular'>Titular:</h4>
-                                    <h4 className='remitente'>Donney Caicedo</h4>
+                                    <h4 className='remitente'>Vanessa Rincón</h4>
                                     <div className="preciosConversionNumbers">
                                         <h4>Pago:</h4>
                                         {`$${(selectNumbers.length * 35000).toLocaleString('es-CO')}`}
@@ -1441,9 +1446,9 @@ export const Sorteo = () => {
                                 <div className="modoPago">
                                     <h4 className='nombrePago'>PayPal</h4>
                                     <h4 className='cuenta'>Cuenta:</h4>
-                                    <h4 className='numeroCuenta'>tonny1620@gmail.com</h4>
+                                    <h4 className='numeroCuenta'>magc290598@gmail.com</h4>
                                     <h4 className='titular'>Titular:</h4>
-                                    <h4 className='remitente'>Donney Caicedo</h4>
+                                    <h4 className='remitente'>María Alejandra Garcia</h4>
                                     <div className="preciosConversionNumbers">
                                         <h4>Pago:</h4>
                                         {`$${selectNumbers.length * 9}`}
@@ -1460,7 +1465,7 @@ export const Sorteo = () => {
                                     <h4 className='remitente'>21 453 387</h4>
                                     <div className="preciosConversionNumbers">
                                         <h4>Pago:</h4>
-                                        {`$${selectNumbers.length * normalizarNumero(valor)}`} 
+                                        {`$${selectNumbers.length * normalizarNumero(valor)}`}
                                     </div>
                                 </div>
                             }

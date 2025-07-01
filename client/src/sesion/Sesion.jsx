@@ -129,7 +129,8 @@ export const Sesion = () => {
             pais_estado: jugador.pais_estado,
             metodo_pago: jugador.metodo_pago,
             referenciaPago: jugador.referenciaPago,
-            boletos: jugador.boletos.join(", ")
+            boletos: jugador.boletos.join(", "),
+            monto_total: jugador.monto_total
         });
     };
 
@@ -148,6 +149,7 @@ export const Sesion = () => {
                     return {
                         ...j,
                         ...tempData,
+                        monto_total: tempData.monto_total,
                         boletos: tempData.boletos
                             ? tempData.boletos.split(",")
                                 .map(b => b.trim())
@@ -293,7 +295,7 @@ export const Sesion = () => {
     };
 
     const formatoLatino = (numero) => {
-        
+
         if (numero == null) return '';
 
         return numero.toLocaleString('es-VE', {
@@ -342,7 +344,7 @@ export const Sesion = () => {
                 {/* Informacion del Sorteo */}
                 <div className="contInfoSorteo">
                     <p className="infoSorteoText">Numero Jugadores: <strong>{jugadores.length}</strong> de 1000</p>
-                    <p className="infoSorteoText">Jugadores pendientes: <strong>{jugadores.length - 1000}</strong></p>
+                    <p className="infoSorteoText">Puestos Jugadores pendientes: <strong>{1000 - jugadores.length}</strong></p>
                     <p className="infoSorteoText">Numeros seleccionados: <strong>{totalBoletos}</strong> de 1000</p>
                     <p className="infoSorteoText">Numeros disponibles: <strong>{Math.max(0, 1000 - totalBoletos)}</strong> de 1000</p>
                 </div>
@@ -546,6 +548,24 @@ export const Sesion = () => {
                                         )}
                                     </dd>
                                 </div>
+
+                                <div className="fila" key={`${jugador.id}-monto`}>
+                                    <dt>Monto Total:</dt>
+                                    <dd>
+                                        {editingID === jugador.id ? (
+                                            <input
+                                                type="text"
+                                                className="input_edicion"
+                                                value={tempData.monto_total}
+                                                onChange={(e) => setTempData({ ...tempData, monto_total: e.target.value })}
+                                                placeholder="Monto Total"
+                                            />
+                                        ) : (
+                                            <strong>{formatoLatino(jugador.monto_total)}</strong>
+                                        )}
+                                    </dd>
+                                </div>
+
                                 <div className="fila" key={`${jugador.id}-fecha`}>
                                     <dt>Fecha:</dt>
                                     <dd><strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>

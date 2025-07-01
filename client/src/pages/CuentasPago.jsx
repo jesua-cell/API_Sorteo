@@ -53,13 +53,13 @@ export const CuentasPago = () => {
                     <h2 className='titl_CuentaPago'>Nequi</h2>
                     <img src={nequi} className='img_cuentaPago' alt="Zelle" />
                     <h3 className='text_cuentaPago'>Cuenta:</h3>
-                    <h3 className='text_cuentaPago'>3154854020</h3>
+                    <h3 className='text_cuentaPago'>3223223329</h3>
                     <h3 className='text_cuentaPago'>Titular:</h3>
-                    <h3 className='text_cuentaPago'>Donney Caicedo</h3>
+                    <h3 className='text_cuentaPago'>Maria Alejandra Garcia</h3>
                     <CopyToClipboard
                         text={cuentas.nequi}
                         onCopy={() => {
-                            toast.success('3154854020\nDonney Caicedo', {
+                            toast.success('3223223329\nMaria Alejandra Garcia', {
                                 iconTheme: {
                                     primary: '#713200'
                                 }
@@ -78,11 +78,11 @@ export const CuentasPago = () => {
                     <h3 className='text_cuentaPago'>Cuenta:</h3>
                     <h3 className='text_cuentaPago'>82000002819</h3>
                     <h3 className='text_cuentaPago'>Titular:</h3>
-                    <h3 className='text_cuentaPago'>Donney Caicedo</h3>
+                    <h3 className='text_cuentaPago'>Vanessa Rincón</h3>
                     <CopyToClipboard
                         text={cuentas.bancolombia}
                         onCopy={() => {
-                            toast.success('82000002819\nDonney Caicedo', {
+                            toast.success('82000002819\nVanessa Rincón', {
                                 iconTheme: {
                                     primary: '#713200'
                                 }
@@ -99,13 +99,13 @@ export const CuentasPago = () => {
                     <h2 className='titl_CuentaPago'>PayPal</h2>
                     <img src={paypal} className='img_cuentaPago' alt="Zelle" />
                     <h3 className='text_cuentaPago'>Cuenta:</h3>
-                    <h3 className='text_cuentaPago'>tonny1620@gmail.com</h3>
+                    <h3 className='text_cuentaPago'>magc290598@gmail.com</h3>
                     <h3 className='text_cuentaPago'>Titular:</h3>
-                    <h3 className='text_cuentaPago'>Donney Caicedo</h3>
+                    <h3 className='text_cuentaPago'>María Alejandra Garcia</h3>
                     <CopyToClipboard
                         text={cuentas.paypal}
                         onCopy={() => {
-                            toast.success('tonny1620@gmail.com\nDonney Caicedo', {
+                            toast.success('magc290598@gmail.com\nMaría Alejandra Garcia', {
                                 iconTheme: {
                                     primary: '#713200'
                                 }
@@ -124,11 +124,13 @@ export const CuentasPago = () => {
                     <h3 className='text_cuentaPago'>Cuenta:</h3>
                     <h3 className='text_cuentaPago'>04147014646</h3>
                     <h3 className='text_cuentaPago'>Titular:</h3>
-                    <h3 className='text_cuentaPago'>Donney Caicedo</h3>
+                    <h3 className='text_cuentaPago'>Vanessa Rincón</h3>
+                    <h3 className='text_cuentaPago'>Cedúla</h3>
+                    <h3 className='text_cuentaPago'>21 453 387</h3>
                     <CopyToClipboard
                         text={cuentas.pagomovil}
                         onCopy={() => {
-                            toast.success('04147014646\nDonney Caicedo', {
+                            toast.success('04147014646\nVanessa Rincón\n21453387', {
                                 iconTheme: {
                                     primary: '#713200'
                                 }
@@ -170,6 +172,6 @@ export const CuentasPago = () => {
 }
 
 /**
- * TODO: Crear los contenedores de las cuentas de pago
- * TODO: Crear un boton con cuya funcion copie los datos de las cuentas
+ * *TODO: Crear los contenedores de las cuentas de pago
+ * *TODO: Crear un boton con cuya funcion copie los datos de las cuentas
  */

@@ -321,7 +321,7 @@ a {
 }
 
 .text_cuentaPago:nth-child(6) {
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; */
 }
 
 .icon-btn {
@@ -527,6 +527,12 @@ input[type="number"]::-webkit-outer-spin-button {
     margin: 0;
 }
 
+.usedNumSorteo {
+    font-weight: bold;
+    font-size: 17px;
+    margin-right: 170px;
+
+}
 
 .lista {
     display: flex;
