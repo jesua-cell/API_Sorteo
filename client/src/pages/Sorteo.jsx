@@ -15,6 +15,7 @@ import SelectImage from "../components/SelectImage.jsx";
 export const Sorteo = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [rawInput, setRawInput] = useState('');
     const [selectNumbers, setSelectNumbers] = useState([]);
     const [previewImage, setPreviewImage] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
@@ -33,6 +34,7 @@ export const Sorteo = () => {
 
     const [usedNumbers, setUsedNumbers] = useState([]);
 
+    //Funcion para seleccionar los numeros en la lista
     useEffect(() => {
 
         const handleClick = (e) => {
@@ -45,16 +47,47 @@ export const Sorteo = () => {
 
                 const numero = numemeroElement.textContent;
 
-                setSelectNumbers(prev =>
-                    prev.includes(numero) ? prev.filter(n => n !== numero) : [...prev, numero]
-                )
+                toggleNumberSelec(numero);
+
+                setSearchTerm('');
+                setRawInput('');
+
+                //Mostrar todos los numeros
+                if (listaRef.current) {
+                    Array.from(listaRef.current.children).forEach(child => {
+                        child.style.display = 'block'
+                    })
+                };
             };
-        }
+        };
+        //Manjador de eventos para para la ejecucion de HandleClick()
         const lista = listaRef.current;
         lista?.addEventListener('click', handleClick);
 
-        return () => lista?.removeEventListener('click', handleClick)
+        return () => {
+            lista?.removeEventListener('click', handleClick)
+        }
     }, [])
+
+    //Funcion para seleccionar y desseleccionar
+    const toggleNumberSelec = (numero) => {
+        setSelectNumbers(prev =>
+            prev.includes(numero)
+                ? prev.filter(n => n !== numero)
+                : [...prev, numero]
+        );
+
+        setSearchTerm(''); //Limpiar el input
+        setRawInput('');
+
+        //Mostrar todos los numeros
+        if (listaRef.current) {
+            Array.from(listaRef.current.children).forEach(child => {
+                child.style.display = 'block'
+            })
+        };
+
+    };
 
     //Funcion para bloquear los numeros elegidos
     useEffect(() => {
@@ -100,16 +133,19 @@ export const Sorteo = () => {
 
         const inputValue = e.target.value;
 
+        setRawInput(inputValue);
+
         const searchValue = inputValue === '' ? '' : String(inputValue).padStart(4, '0');
 
         setSearchTerm(searchValue);
+        console.log(searchValue);
 
         if (listaRef.current) {
             Array.from(listaRef.current.children).forEach(child => {
                 const numero = child.textContent;
                 child.style.display = searchValue === '' || numero.includes(searchValue) ? 'block' : 'none';
             })
-        }
+        };
     };
 
     const handleImageUpload = (file) => {
@@ -294,6 +330,7 @@ export const Sorteo = () => {
                         type="number"
                         placeholder='Buscar'
                         className='btnBuscar'
+                        value={rawInput}
                         onChange={handleSearch}
                         min="1"
                         max="1000"
@@ -1320,7 +1357,11 @@ export const Sorteo = () => {
                         <div className='btnSeleccionado'>
                             <div className="num_select">
                                 {selectNumbers.map((numero, index) => (
-                                    <span key={index} className='num-item'>
+                                    <span
+                                        key={index}
+                                        className='num-item'
+                                        onClick={() => toggleNumberSelec(numero)}
+                                    >
                                         {numero}
                                     </span>
                                 ))}
