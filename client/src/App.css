@@ -23,7 +23,7 @@ body {
     --fondoNumerosLista: #f6c7f6;
     --fondoNumerosSeleccionados: linear-gradient(166deg, rgb(199, 106, 199) 0%, rgba(214, 137, 214, 1) 100%);
     --fondoSesion: #fafbfd;
-    --fondoTarjeraCuentasPago: linear-gradient(64deg, rgb(47, 49, 54) 7%, rgb(16, 16, 20) 50%, rgb(64, 60, 78) 90%);
+    --fondoTarjeraCuentasPago: linear-gradient(64deg, rgb(27, 28, 33) 7%, rgb(18, 12, 17) 50%, rgb(43, 32, 43) 90%);
     --fondoBtnEnviar: linear-gradient(90deg, rgba(30, 43, 166, 1) 0%, rgba(57, 95, 219, 1) 50%, rgba(104, 106, 222, 1) 100%);
     /* texto */
     --colorTexto: #fafbfd;
@@ -234,6 +234,26 @@ a {
     color: #793072;
 }
 
+.label_img_inicio {
+    font-size: 19px;
+    margin-bottom: 18px;
+    opacity: 0.9;
+}
+
+.box_img {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    width: 99%;
+}
+
+.box_img img {
+    height: 31px;
+    width: 31px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    padding: 1px;
+}
 
 /* //* Footer */
 
@@ -326,6 +346,7 @@ a {
 
 .icon-btn {
     text-align: center;
+    margin-top: 15px;
     margin-bottom: 15px;
     border-radius: 5px;
     border: none;

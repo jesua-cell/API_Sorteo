@@ -126,7 +126,7 @@ export const CuentasPago = () => {
                     <h3 className='text_cuentaPago'>Titular:</h3>
                     <h3 className='text_cuentaPago'>Vanessa Rincón</h3>
                     <h3 className='text_cuentaPago'>Cedúla</h3>
-                    <h3 className='text_cuentaPago'>21 453 387</h3>
+                    <h3 className='text_cuentaPago'>21453387</h3>
                     <CopyToClipboard
                         text={cuentas.pagomovil}
                         onCopy={() => {
@@ -149,11 +149,11 @@ export const CuentasPago = () => {
                     <h3 className='text_cuentaPago'>Cuenta:</h3>
                     <h3 className='text_cuentaPago'>V-21453387</h3>
                     <h3 className='text_cuentaPago'>Titular:</h3>
-                    <h3 className='text_cuentaPago'>Donney Caicedo</h3>
+                    <h3 className='text_cuentaPago'>Vannesa Rincón</h3>
                     <CopyToClipboard
                         text={cuentas.bancovenezuela}
                         onCopy={() => {
-                            toast.success('V-21453387\nDonney Caicedo', {
+                            toast.success('V-21453387\nVannesa Rincón', {
                                 iconTheme: {
                                     primary: '#713200'
                                 }

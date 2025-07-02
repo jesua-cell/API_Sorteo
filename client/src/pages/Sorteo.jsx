@@ -14,13 +14,14 @@ import SelectImage from "../components/SelectImage.jsx";
 
 export const Sorteo = () => {
 
-    const [searchTerm, setSearchTerm] = useState('');
-    const [rawInput, setRawInput] = useState('');
-    const [selectNumbers, setSelectNumbers] = useState([]);
-    const [previewImage, setPreviewImage] = useState(null);
-    const [activeTab, setActiveTab] = useState(0);
-    const listaRef = useRef();
+    const [searchTerm, setSearchTerm] = useState(''); // Estados  de busquedad
+    const [rawInput, setRawInput] = useState(''); // Estados de valor crudo
+    const [selectNumbers, setSelectNumbers] = useState([]); // Estados del contenedor de los numeros seleccionados
+    const [previewImage, setPreviewImage] = useState(null); // Estados del inputFile
+    const [activeTab, setActiveTab] = useState(0); // Estados del contenedor de pestañas de los metodo de pago
+    const listaRef = useRef(); // Lista de los numeros
 
+    // Estados de la ventana Modal
     const [showModal, setShowModal] = useState(false);
     // const [modalMessList, setModalMessList] = useState('')
     const [nameJugador, setNameJugador] = useState('')
@@ -32,6 +33,7 @@ export const Sorteo = () => {
     const [currentId, setCurrentId] = useState(null);
     const [valor, setValor] = useState(0);
 
+    //Estados de los numeros usados
     const [usedNumbers, setUsedNumbers] = useState([]);
 
     //Funcion para seleccionar los numeros en la lista
@@ -1503,7 +1505,7 @@ export const Sorteo = () => {
                                     <h4 className='titular'>Titular:</h4>
                                     <h4 className='remitente'>Vanessa Rincón</h4>
                                     <h4 className='remitente'>Cedúla:</h4>
-                                    <h4 className='remitente'>21 453 387</h4>
+                                    <h4 className='remitente'>21453387</h4>
                                     <div className="preciosConversionNumbers">
                                         <h4>Pago:</h4>
                                         {`$${selectNumbers.length * normalizarNumero(valor)}`}
@@ -1516,7 +1518,7 @@ export const Sorteo = () => {
                                     <h4 className='cuenta'>Cuenta:</h4>
                                     <h4 className='numeroCuenta'>21453387</h4>
                                     <h4 className='titular'>Titular:</h4>
-                                    <h4 className='remitente'>Donney Caicedo</h4>
+                                    <h4 className='remitente'>Vanessa Rincón</h4>
                                     <div className="preciosConversionNumbers">
                                         <h4>Pago:</h4>
                                         {`$${selectNumbers.length * normalizarNumero(valor)}`}
@@ -1560,7 +1562,7 @@ export const Sorteo = () => {
 /**
  * *TODO: Colocar en un contenedor la cantidad de numeros seleccionados.
  * *TODO: Configurar el precio total por cada numero elegido dependiendo la modena de la entidad de pago
- * TODO: Considerar guardar el total del pago en un string en el servidor
+ * *TODO: Considerar guardar el total del pago en un string en el servidor
  * TODO: Colocar un contenedor para que el usuario verifique su juego
  * TODO: Validación de formulario y feedback
  * //* TODO: Sistema de paginación para los números

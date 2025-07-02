@@ -1,7 +1,16 @@
-import { Link } from 'react-router-dom';
-import carro2 from '../assets/carro2.png';
-import axios from 'axios';
 import { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+//Imagenes
+import carro2 from '../assets/carro2.png';
+import whatsapp from '../assets/whatsapp.png';
+import telegrama from '../assets/telegrama.png';
+import instagram from '../assets/instagram.png';
+
+import whatsapp_alt from '../assets/whatsapp_alt.png';
+import telegrama_alt from '../assets/telegrama_alt.png';
+import instagram_alt from '../assets/instagram_alt.png';
+
 
 export const Inicio = () => {
 
@@ -51,6 +60,13 @@ export const Inicio = () => {
                 ) : (
                     <div className='contContendido'>
                         <h1 className='titulo_sorteo'>Próximos Sorteo</h1>
+                        <label className="label_img_inicio">Síguenos en nuestras redes</label>
+                       
+                        <div className="box_img">
+                            <img src={instagram_alt} className="img_inicio" alt="instamgram" />
+                            <img src={whatsapp_alt} className="img_inicio" alt="instamgram" />
+                            <img src={telegrama_alt} className="img_inicio" alt="telegram" />
+                        </div>
                     </div>
                 )}
             </div>
