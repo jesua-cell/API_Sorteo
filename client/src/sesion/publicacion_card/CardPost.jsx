@@ -57,7 +57,7 @@ export const CardPost = () => {
     //Enviar datos a la BD
     const handleSubmit = async () => {
 
-        if(isEditing){
+        if (isEditing) {
             toast.error("Termina la edición actual antes de crear una nueva publicación");
             return;
         }
@@ -111,7 +111,8 @@ export const CardPost = () => {
                     }
                 }
             )
-            console.log('Publicacion Guardada', response.data);
+
+            setCardData(prevData => [...prevData, response.data]);
 
             toast('Publicacion Creada y Subida',
                 {
@@ -129,7 +130,6 @@ export const CardPost = () => {
             setDescripcion('');
             removeImage('');
 
-            window.location.reload();
         } catch (error) {
             console.error('Error al guardar el Card-Pub:', error);
             toast.error("Error al subir la publicacion");
@@ -138,6 +138,7 @@ export const CardPost = () => {
 
     //obtener los datos de la BD
     useEffect(() => {
+
         const fetchCardData = async () => {
             try {
                 const response = await axios.get('http://localhost:3000/cardpub');
@@ -177,7 +178,7 @@ export const CardPost = () => {
 
     //Activar Edicion
     const handleActivateEdit = (card) => {
-        
+
         setIsEditing(true);
 
         setEditingID(card.id);
@@ -207,7 +208,7 @@ export const CardPost = () => {
                 formData.append('imagen', ediSelectedFile);
             };
 
-            await axios.put(`http://localhost:3000/cardpub/${id}`, formData, {
+            const response = await axios.put(`http://localhost:3000/cardpub/${id}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
@@ -217,14 +218,14 @@ export const CardPost = () => {
                     ...card,
                     titulo_p: tempData.titulo_p,
                     subtitulo_p: tempData.subtitulo_p,
-                    descripcion_p: tempData.descripcion_p
+                    descripcion_p: tempData.descripcion_p,
+                    imagen_pub: response.data.imagen_pub || card.imagen_pub
                 } : card
             ));
 
             setEditingID(null);
             setEditPreviewImage(null);
             setEdiSelectedFile(null);
-            window.location.reload();
             toast('Publicacion Editada',
                 {
                     icon: '✅',
@@ -286,7 +287,7 @@ export const CardPost = () => {
             />
 
             {/* Formulario para CREAR nueva publicación */}
-            <div className="card" style={{opacity: isEditing ? 0.5 : 1, pointerEvents: isEditing ? 'none' : 'all'}}>
+            <div className="card" style={{ opacity: isEditing ? 0.5 : 1, pointerEvents: isEditing ? 'none' : 'all' }}>
                 <h1 className="title_card_post">Publicaciones del Sorteo</h1>
                 <div className='contContendidoCard'>
                     <label style={{ fontWeight: '700', opacity: '0.8' }}>Referencia de Publicación</label>
@@ -353,7 +354,7 @@ export const CardPost = () => {
                                         onChange={(e) => setTempData({ ...tempData, titulo_p: e.target.value })}
                                         className="input_card"
                                         placeholder="Título Principal"
-                                        style={{marginBottom: '25px'}}
+                                        style={{ marginBottom: '25px' }}
                                     />
 
                                     <div className="contentCard">
@@ -372,7 +373,7 @@ export const CardPost = () => {
                                         onChange={(e) => setTempData({ ...tempData, subtitulo_p: e.target.value })}
                                         className="input_card"
                                         placeholder="Sub-título"
-                                        style={{marginBottom: '25px', marginTop: '18px'}}
+                                        style={{ marginBottom: '25px', marginTop: '18px' }}
                                     />
 
                                     <textarea
@@ -381,7 +382,7 @@ export const CardPost = () => {
                                         onChange={(e) => setTempData({ ...tempData, descripcion_p: e.target.value })}
                                         className="input_card"
                                         placeholder="Descripción"
-                                        style={{marginBottom: '25px'}}
+                                        style={{ marginBottom: '25px' }}
                                     />
 
                                     <div className="cont_inputs_card">

@@ -240,6 +240,10 @@ a {
     opacity: 0.9;
 }
 
+.a_inicio {
+    padding: 0px;
+}
+
 .box_img {
     display: flex;
     justify-content: center;

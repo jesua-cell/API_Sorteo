@@ -3,13 +3,10 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 //Imagenes
 import carro2 from '../assets/carro2.png';
-import whatsapp from '../assets/whatsapp.png';
-import telegrama from '../assets/telegrama.png';
-import instagram from '../assets/instagram.png';
-
 import whatsapp_alt from '../assets/whatsapp_alt.png';
 import telegrama_alt from '../assets/telegrama_alt.png';
 import instagram_alt from '../assets/instagram_alt.png';
+import tiktok from '../assets/tiktok.png';
 
 
 export const Inicio = () => {
@@ -61,11 +58,58 @@ export const Inicio = () => {
                     <div className='contContendido'>
                         <h1 className='titulo_sorteo'>Próximos Sorteo</h1>
                         <label className="label_img_inicio">Síguenos en nuestras redes</label>
-                       
+
                         <div className="box_img">
-                            <img src={instagram_alt} className="img_inicio" alt="instamgram" />
-                            <img src={whatsapp_alt} className="img_inicio" alt="instamgram" />
-                            <img src={telegrama_alt} className="img_inicio" alt="telegram" />
+                            <a
+                            className="a_inicio" 
+                            href="https://www.instagram.com/laorquidea2025?igsh=cjN5MXpqam9ja2g2" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            >
+                                <img
+                                    src={instagram_alt}
+                                    className="img_inicio"
+                                    alt="instamgram"
+                                />
+                            </a>
+                            <a 
+                            className="a_inicio"
+                            href="https://wa.me/584121373761" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            >
+                                <img
+                                    src={whatsapp_alt}
+                                    className="img_inicio"
+                                    alt="instamgram"
+                                />
+                            </a>
+
+                            <a 
+                            className="a_inicio"
+                            href="" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            >
+                                <img
+                                    src={telegrama_alt}
+                                    className="img_inicio"
+                                    alt="telegram"
+                                />
+                            </a>
+
+                            <a 
+                            className="a_inicio"
+                            href="https://www.tiktok.com/@la.orquidea38?_t=ZS-8xhSaTav4XR&_r=1" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            >
+                                <img
+                                    src={tiktok}
+                                    className="img_inicio"
+                                    alt="tiktok_3"
+                                />
+                            </a>
                         </div>
                     </div>
                 )}
