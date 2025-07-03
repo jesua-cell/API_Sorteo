@@ -406,7 +406,11 @@ export const updateJugador = async (req, res) => {
 
 export const postCardPub = async (req, res) => {
     try {
-        const { titulo_p, subtitulo_p, descripcion_p } = req.body;
+        const {
+            titulo_p,
+            subtitulo_p,
+            descripcion_p
+        } = req.body;
         const imagen_pub = req.file;
         console.log('Imagen recibida:', req.file);
 
@@ -421,10 +425,32 @@ export const postCardPub = async (req, res) => {
             [titulo_p, subtitulo_p, descripcion_p, imageBuffer]
         );
 
+        //Obtener el registro recien insertado 
+        const [newValuesCard] = await pool.query(
+            'SELECT id, titulo_p, subtitulo_p, descripcion_p, imagen_pub FROM card_pub WHERE id = ?',
+            [result.insertId]
+        );
+
+        if (newValuesCard === 0) {
+            return res.status(500).json({ error: 'Error al obtener las publicacion recien subida' });
+        };
+
+        //Manejo del campo imagen_pub
+        const card = newValuesCard[0];
+        let imageBase64 = null;
+        if (card.imagen_pub) {
+            imageBase64 = card.imagen_pub.toString('base64');
+        };
+
+        //Retorno de datos del back al front
         res.status(201).json({
             success: true,
             message: 'Publicacion Guardada',
             id: result.insertId,
+            titulo_p: card.titulo_p,
+            subtitulo_p: card.subtitulo_p,
+            descripcion_p: card.descripcion_p,
+            imagen_pub: imageBase64
         });
 
     } catch (error) {
@@ -557,9 +583,31 @@ export const updateCardPub = async (req, res) => {
             return res.status(500).json({ error: 'Publicacion no encontrada' });
         };
 
+        //Obtener el registro recien actualido
+        const [newValuesCardPut] = await pool.query(
+            'SELECT id, titulo_p, subtitulo_p, descripcion_p, imagen_pub FROM card_pub WHERE id = ?',
+            [id]
+        );
+
+        if (newValuesCardPut === 0) {
+            return res.status(500).json({ error: 'Error al recuperar la publicaion actualizada' });
+        };
+
+        //Manejo de la imagen:pub
+        const card = newValuesCard[0];
+        let imageBase64 = null;
+        if (card.imagen_pub) {
+            imageBase64 = card.imagen_pub.toString('base64');
+        };
+
         res.json({
             success: true,
-            message: 'Publicacion Actualizada'
+            message: 'Publicacion Actualizada',
+            id: card.id,
+            titulo_p: card.titulo_p,
+            subtitulo_p: card.subtitulo_p,
+            descripcion_p: card.descripcion_p,
+            imagen_pub: imageBase64
         });
 
     } catch (error) {
