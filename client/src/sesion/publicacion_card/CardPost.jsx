@@ -189,7 +189,12 @@ export const CardPost = () => {
             imagen_pub: null
         });
         //Mostrar imagenes en la previsualizacion
-        setEditPreviewImage(`data:image/*;base64,${card.imagen_pub}`);
+        if (card.imagen_pub) {
+            setEditPreviewImage(`data:image/*;base64,${card.imagen_pub}`);
+        } else {
+            setEditPreviewImage(null);
+        };
+
         setEdiSelectedFile(null);
     };
 
@@ -404,10 +409,12 @@ export const CardPost = () => {
                                 // MODO VISUALIZACIÓN
                                 <>
                                     <h1 className='titulo_sorteo'>{card.titulo_p}</h1>
-                                    <img
-                                        src={`data:image/*;base64,${card.imagen_pub}`}
-                                        alt='Imagen del sorteo'
-                                    />
+                                    {card.imagen_pub && (
+                                        <img
+                                            src={`data:image/*;base64,${card.imagen_pub}`}
+                                            alt='Imagen del sorteo'
+                                        />
+                                    )}
                                     <h2>{card.subtitulo_p}</h2>
                                     <p>{card.descripcion_p}</p>
                                     <button className='btn-inicio' type="button">
