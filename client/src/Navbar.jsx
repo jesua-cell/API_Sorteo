@@ -62,22 +62,28 @@ export const Navbar = () => {
 
         <div className={`nav_item ${isOpen && "open"}`}>
 
-          <Link 
-          to={"/"} 
-          onClick={closeMenu}
-          
+          {/* Enlaces Publicos */}
+          <Link
+            to={"/"}
+            onClick={closeMenu}
           >Inicio</Link>
-          <Link 
-          to={"/sorteo"} 
-          onClick={closeMenu}
-          
+
+          <Link
+            to={"/sorteo"}
+            onClick={closeMenu}
           >Sorteo</Link>
-          <Link 
-          to={"/cuentas_de_pago"} 
-          onClick={closeMenu}
-          
+
+          <Link
+            to={"/cuentas_de_pago"}
+            onClick={closeMenu}
           >Cuentas de Pago</Link>
 
+          <Link
+            to={"/verificador"}
+            onClick={closeMenu}
+          >Verificador</Link>
+
+          {/* Enlaces Privados */}
           {adminName && (
             <>
               <Link className='enlaces_admin' to={"/card_post"} onClick={closeMenu}>Publicación de Sorteo</Link>

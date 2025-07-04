@@ -381,7 +381,9 @@ a {
 .contFooter {
     display: flex;
     flex-wrap: nowrap;
+    justify-content: center;
     height: 100%;
+    width: 100%;
     background: var(--fondoContenedorTarjeta);
 }
 
@@ -394,10 +396,9 @@ a {
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-left: 57px;
+    align-items: center;
     height: 100vh;
-    margin-top: 200px;
-    margin-left: 45px;
+    margin-top: 250px;
 }
 
 .nameFooter {
@@ -423,6 +424,7 @@ a {
     justify-content: center;
     gap: 10px;
     width: 90%;
+    margin: 8px 0px;
 }
 
 .a_footer p {
@@ -430,8 +432,9 @@ a {
     text-align: center;
 }
 
+
 .a_footer:nth-child(1) {
-    border-bottom: 2px solid;
+    border-bottom: 3px solid;
     border-image: linear-gradient(to right,
             #ffffff,
             #e4e4e8 50%,
@@ -439,7 +442,7 @@ a {
 }
 
 .a_footer:nth-child(2) {
-    border-bottom: 2px solid;
+    border-bottom: 3px solid;
     border-image: linear-gradient(to right,
             #02d758,
             #17c25c 50%,
@@ -447,7 +450,7 @@ a {
 }
 
 .a_footer:nth-child(3) {
-    border-bottom: 2px solid;
+    border-bottom: 3px solid;
     border-image: linear-gradient(to right,
             #2FA6DE,
             #41a0cd 50%,
@@ -455,7 +458,7 @@ a {
 }
 
 .a_footer:nth-child(4) {
-    border-bottom: 2px solid;
+    border-bottom: 3px solid;
     border-image: linear-gradient(to right,
             #6736C5,
             #C93368 50%,
@@ -463,8 +466,12 @@ a {
 }
 
 .img_footer {
-    height: 20px;
-    width: 20px;
+    background-color: #fff;
+    padding: 1px;
+    height: 35px;
+    width: 35px;
+    object-fit: cover;
+    border-radius: 50%;
     transition: transform 0.3s ease;
 }
 
@@ -494,12 +501,6 @@ a {
         transform: translateX(0) scale(1);
     }
 }
-
-
-
-
-
-
 
 /* //* Sorteo.jsx */
 
@@ -997,6 +998,108 @@ input[type="number"]::-webkit-outer-spin-button {
 
 }
 
+/* Verificador */
+.contVerificador {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100dvh;
+    width: 100%;
+    overflow-y: hidden;
+}
+
+.label_verificado {
+    font-size: 19px;
+    font-weight: 800;
+    opacity: 0.8;
+    margin-bottom: 15px;
+}
+
+.input_verificador {
+    border: none;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.btn_verificador {
+    font-size: 23px;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 10px 20px;
+    background: #1b1d21;
+    color: #fff;
+    border: none;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.contResultado {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 53%;
+    width: 80%;
+    background: var(--fondoTarjeraCuentasPago);
+    border-radius: 15px;
+    overflow-y: hidden;
+}
+
+.h4_verificador {
+    margin: 15px;
+    margin-top: 0px;
+    margin-bottom: 25px;
+    font-weight: bold;
+    font-size: 23px;
+}
+
+.lbl_vrf {
+    opacity: 0.9;
+    font-weight: 500;
+    font-size: 20px;
+}
+
+
+.p_verificador {
+    margin: 10px;
+    font-weight: bold;
+    font-size: 25px;
+    background-color: #3f3f3f;
+    width: 70%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 5px 2px;
+    opacity: 0.9;
+}
+
+.p_verificador:nth-child(4) {
+    margin-bottom: 20px;
+}
+
+.contVerificadorBoletos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 85%;
+    margin-top: 5px;
+}
+
+.boletos_verificador {
+    font-weight: bold;
+    font-size: 24px;
+    background-color: #3f3f3f;
+    padding: 6px 12px;
+    margin: 5px 6px;
+    border-radius: 12px;
+
+}
+
+.verificador_false {
+    text-align: center;
+}
 
 /* Componentes: Modal */
 

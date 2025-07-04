@@ -1,42 +1,36 @@
-import internet from "../assets/internet_blanco.png";
-import whatsapp from "../assets/whatsapp.png";
-import telegrama from "../assets/telegrama.png";
-import instagram from "../assets/instagram.png"
+import internet from "../assets/red_mundial.png";
+import whatsapp_alt from '../assets/whatsapp_alt.png';
+import instagram_alt from '../assets/instagram_alt.png';
+import tiktok from '../assets/tiktok.png';
+
 
 export const Contacto = () => {
     return (
         <>
-            {/* <h3 className="titlFooter">Contactos:</h3> */}
             <div className="contFooter">
-                <div className="nameFooter">
-                    <h5>Sitio Web </h5>
-                    <h5>WhatsApp</h5>
-                    <h5>Telegram</h5>
-                    <h5>Instagram</h5>
-                </div>
                 <div className="itemFooter">
                     <a href="#" className="a_footer">
                         <img src={internet} alt="website" className="img_footer" />
-                        <p>sorteos.com</p>
+                        <p>laOrquedea.com</p>
                     </a>
                     <a href="#" className="a_footer">
-                        <img src={whatsapp} alt="whatsApp" className="img_footer" />
-                        <p>+57 302 45789</p>
+                        <img src={whatsapp_alt} alt="whatsApp" className="img_footer" />
+                        <p>La Orquídea</p>
                     </a>
                     <a href="#" className="a_footer">
-                        <img src={telegrama} alt="Telegram" className="img_footer" />
-                        <p>Sorteo</p>
+                        <img src={tiktok} alt="Tiktok" className="img_footer" />
+                        <p>La Orquídea</p>
                     </a>
                     <a href="#" className="a_footer">
-                        <img src={instagram} alt="Instagram" className="img_footer" />
-                        <p>Sorteo</p>
+                        <img src={instagram_alt} alt="Instagram" className="img_footer" />
+                        <p>La Orquídea</p>
                     </a>
                 </div>
             </div>
         </>
         /**
-         * TODO: Agregar un border interactivo, que, cuando se haga clicl se coloque de un color mar llamativo
-         * TODO: Cuandos se haga clicl el icono y el <a> se moverean
+         * *TODO: Agregar un border interactivo, que, cuando se haga clicl se coloque de un color mar llamativo
+         * *TODO: Cuandos se haga clicl el icono y el <a> se moverean
          */
     )
 }
