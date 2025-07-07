@@ -300,8 +300,8 @@ export const Sesion = () => {
 
         return numero.toLocaleString('es-VE', {
             minimumFractionDigits: 2,
-            minimumFractionDigits: 2
-        })
+            maximumFractionDigits: 2
+        }) + ` Bs`
     };
 
     if (loading) {
@@ -314,6 +314,12 @@ export const Sesion = () => {
 
     const totalBoletos = jugadores.flatMap(j => j.boletos || []).length;
 
+    //TODO Agregar un nuevo campo de pago en efectivo
+    //TODO Colocar un boton de "pendiente" o "pago hecho" en el campo de monto total
+    //TODO Crear una funcion que muestre 100 o 1000 numeros en el archivo Sorteo.jsx
+
+    //TODO Agregar un componente de paginacion
+    //TODO Configurar el filtro de busquedad para por medio de una funcion, busque los datos desde el back, y los muestre en el archivo
     return (
         <>
 
@@ -369,7 +375,7 @@ export const Sesion = () => {
                         </div>
                     ) : (
                         <div className="conntValorVef">
-                            <label className="label_valor">Valor del VES: <strong>${formatoLatino(valor)}</strong></label>
+                            <label className="label_valor">Valor del VES: <strong>{formatoLatino(valor)}</strong></label>
                             <button
                                 onClick={() => {
                                     setEditValue(valor.toString());

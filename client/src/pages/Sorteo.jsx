@@ -7,6 +7,7 @@ import bancolombia from '../assets/bancolombia.png'
 import paypal from '../assets/paypal.png'
 import pagomovil from '../assets/pagomovil.png'
 import bancovenezuela from '../assets/bancovenezuela.png'
+import pago_efectivo from '../assets/pago_efectivo.png'
 
 import { createJugador, getUsedNumbers } from "../api/submit.server.js";
 import { Modal } from '../components/Modal.jsx'
@@ -62,6 +63,7 @@ export const Sorteo = () => {
                 };
             };
         };
+
         //Manjador de eventos para para la ejecucion de HandleClick()
         const lista = listaRef.current;
         lista?.addEventListener('click', handleClick);
@@ -88,7 +90,6 @@ export const Sorteo = () => {
                 child.style.display = 'block'
             })
         };
-
     };
 
     //Funcion para bloquear los numeros elegidos
@@ -114,20 +115,6 @@ export const Sorteo = () => {
         };
         fetchUsedNumbers();
     }, [])
-
-
-    //*Funcion para recarhar el compoenete "lista" cuanda se haya elegido un numero
-    // useEffect(() => {
-    //     if (selectNumbers.length) {
-    //         setSearchTerm('');
-    //         listaRef.current.scrollTop = 0;
-    //         Array.from(listaRef.current.children).forEach(child =>
-    //             child.style.display = 'block'
-    //         );
-    //     }
-    // }, [selectNumbers])
-
-    //TODO Desenmarcar un numero elegido al hacerle click
 
 
     //Filtro(input) para buscar numeros de la "lista"
@@ -340,6 +327,7 @@ export const Sorteo = () => {
                     />
 
                     <label className='usedNumSorteo'>Numeros disponibles: {(1000) - usedNumbers.length}</label>
+                    
                     <div className="lista" ref={listaRef} >
                         <div className="listaNumero">0001</div>
                         <div className="listaNumero">0002</div>
@@ -1442,6 +1430,9 @@ export const Sorteo = () => {
                             <li className={activeTab == 5 ? "active" : ""} onClick={() => seleccionar(5)}>
                                 <img className='imgPago' src={bancovenezuela} alt="BancoVenezuela" />
                             </li>
+                            <li className={activeTab == 6 ? "active" : ""} onClick={() => seleccionar(6)}>
+                                <img className='imgPago' src={pago_efectivo} alt="PagoEfectivo" />
+                            </li>
                             <span className='indicador'></span>
                         </ul>
 
@@ -1525,6 +1516,16 @@ export const Sorteo = () => {
                                     </div>
                                 </div>
                             }
+                            {activeTab === 6 &&
+                                <div className="modoPago">
+                                    <h4 className='nombrePago'>Pago en Efectivo</h4>
+                                    
+                                    <div className="preciosConversionNumbers">
+                                        <h4>Pago:</h4>
+                                        {`$${(selectNumbers.length * 35000).toLocaleString('es-CO')}`}
+                                    </div>
+                                </div>
+                            }
                         </div>
 
                         <label className='labelForm'>Comprobante de Pago:</label>
@@ -1552,7 +1553,6 @@ export const Sorteo = () => {
                     message={modalMessage}
                     isError={isError}
                     onClose={() => setShowModal(false)}
-                //TODO: Agregarle la fecha de creacion y la fecha de juego
                 />
             )}
         </>
@@ -1563,7 +1563,7 @@ export const Sorteo = () => {
  * *TODO: Colocar en un contenedor la cantidad de numeros seleccionados.
  * *TODO: Configurar el precio total por cada numero elegido dependiendo la modena de la entidad de pago
  * *TODO: Considerar guardar el total del pago en un string en el servidor
- * TODO: Colocar un contenedor para que el usuario verifique su juego
+ * *TODO: Colocar un contenedor para que el usuario verifique su juego
  * TODO: Validación de formulario y feedback
  * //* TODO: Sistema de paginación para los números
  * //* TODO: Persistencia en LocalStorage

@@ -736,7 +736,7 @@ input[type="number"]::-webkit-outer-spin-button {
     opacity: 0.7;
     border-radius: 5px;
     border: 1px solid #094293;
-    width: 92%;
+    width: 94%;
     margin-left: 6px;
 }
 
@@ -850,6 +850,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .titulo_medioPago {
     margin-left: 3px;
+    margin-top: 10px;
+    margin-left: 10px;
     margin-bottom: 0;
     font-size: 22px;
     font-weight: bold;
@@ -859,7 +861,8 @@ input[type="number"]::-webkit-outer-spin-button {
 .span_medioPago {
     margin-left: 4px;
     opacity: 0.5;
-    margin-top: 0;
+    margin-top: 1px;
+    margin-left: 10px;
     font-size: 19px;
 }
 
@@ -1752,4 +1755,175 @@ input[type="number"]::-webkit-outer-spin-button {
     border: 2px solid #c33963;
     background-color: #191919;
     margin-bottom: 18px;
+}
+
+
+/* Resolucion de Computador de Mesa */
+
+@media(min-width: 768px) {
+
+    /* Inicio */
+
+    .contTarjeta {
+        display: flex;
+        align-content: center;
+        height: 130vh;
+    }
+
+    .contContendido {
+        justify-content: center;
+        overflow-y: hidden;
+        overflow-x: hidden;
+        width: 10px;
+        height: 600px;
+    }
+
+    /* Sorteo */
+    .tituloSorteo{
+        font-size: 70px;
+    }
+
+    .btnBuscar {
+        width: 200px;
+        text-align: center;
+    }
+
+    .lista {
+        height: 570px;
+        width: 80%;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow:
+            inset 0 -3em 3em rgba(255, 255, 255, 0.3),
+            0.3em 0.3em 1em rgba(100, 98, 98, 0.3);
+    }
+
+    /* background: linear-gradient(356deg,rgba(28, 13, 2, 1) 8%, rgba(71, 71, 71, 1) 45%, rgba(97, 97, 97, 1) 78%); */
+
+    .usedNumSorteo {
+        margin-bottom: 10px;
+        margin-right: 1050px;
+    }
+
+    .lista::-webkit-scrollbar {
+        width: 0px;
+    }
+
+    .numerosSeleccionados {
+        margin-top: 40px;
+        margin-bottom: 40px;
+        background: linear-gradient(39deg, rgba(148, 40, 135, 1) 9%, rgba(168, 35, 144, 1) 77%);
+        box-shadow:
+            /* inset 0 -3em 3em rgba(75, 73, 73, 0.3), */
+            0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+    }
+
+    .num-item {
+        background: #03100d;
+    }
+
+    .numerosSeleccionados h4 {
+        padding: 15px 0px;
+    }
+
+    .precioNumbers {
+        padding: 10px 0px;
+    }
+
+    .formDatos {
+        width: 65%;
+        background: -webkit-linear-gradient(90deg, #ffffff, #fffcfc, #bdbdbd);
+        background: linear-gradient(90deg, #efeded, #dedede, #ebe9e9);
+        box-shadow:
+            0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+    }
+
+    .formDatos input {
+        width: 96%;
+        font-size: 22px;
+        padding: 9px;
+    }
+
+    .labelForm {
+        margin-top: 5px;
+        font-size: 21px;
+    }
+
+    .tabs {
+        width: 98%;
+        gap: 20px;
+    }
+
+    .imgPago {
+        height: 80px;
+        width: 80px;
+        border-radius: 12px;
+        padding: 4px;
+    }
+
+    .tab_content {
+        width: 100%;
+    }
+
+    .modoPago {
+        width: 100%;
+    }
+
+    .nombrePago {
+        width: 35%;
+    }
+
+    .cuenta {
+        width: 35%;
+    }
+
+    .numeroCuenta {
+        width: 35%;
+    }
+
+    .titular {
+        width: 35%;
+    }
+
+    .remitente {
+        width: 35%;
+    }
+
+    .preciosConversionNumbers {
+        width: 37%;
+    }
+
+    .input_comprobatePago {
+        display: flex;
+        justify-content: center;
+        border: 3px solid #800080;
+        border-radius: 10px;
+        width: 96%;
+        height: 40vh;
+    }
+
+    .image_comprobante {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-items: flex-start;
+        z-index: 1;
+        margin-top: 12px;
+        max-width: 325px;
+    }
+
+    .image_comprobante img {
+        height: 200px;
+        width: 340px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow:
+            0.3em 0.3em 1em rgba(0, 0, 0, 0.5);
+    }
+
+    .input_seleccionarFile {
+        border: 2px solid #800080;
+        color: #000;
+    }
 }
