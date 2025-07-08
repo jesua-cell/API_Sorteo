@@ -227,6 +227,9 @@ export const Sorteo = () => {
             case 5: //Banco Venezuela
                 montoTotal = (cantidadNumeros * valor);
                 break;
+            case 6:
+                montoTotal = (cantidadNumeros * 35000);
+                break;
             default:
                 return montoTotal = 0;
         }
@@ -238,7 +241,7 @@ export const Sorteo = () => {
 
         e.preventDefault();
 
-        const metodosPago = ["Zelle", "Nequi", "Bancolombia", "PayPal", "PagoMovil", "Banco Venezuela"];
+        const metodosPago = ["Zelle", "Nequi", "Bancolombia", "PayPal", "PagoMovil", "Banco Venezuela", "Pago Efectivo"];
 
         const metodoPago = metodosPago[activeTab] || "Desconocido";
 

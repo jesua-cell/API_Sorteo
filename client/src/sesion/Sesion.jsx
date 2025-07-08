@@ -4,6 +4,8 @@ import borrar from "../assets/borrar.png";
 import editar from "../assets/editar.png";
 import sav from "../assets/sav.png";
 import error from "../assets/error.png";
+import reloj from "../assets/reloj.png";
+import cheque from "../assets/cheque.png";
 import buscar from "../assets/buscar.png";
 import zoom from "../assets/zoom.png";
 
@@ -30,10 +32,14 @@ export const Sesion = () => {
     //Estados del Input VALOR_VES
     const [valor, setValor] = useState(0);
     const [inputValor, setInputValor] = useState('');
+
     //Estados de VALOR_VES
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState('');
     const [currentId, setCurrentId] = useState(null);
+
+    //Estados de los botones toggle del "monto total"
+    const [pagoEstados, setPagoEstados] = useState({});
 
     const navigate = useNavigate();
 
@@ -72,6 +78,13 @@ export const Sesion = () => {
                 setJugadores(response.data);
                 setFilterJugadores(response.data);
                 setLoading(false);
+
+                //Datos iniciales del estado_pago
+                const estadosIniciales = {};
+                response.data.forEach(jugador => {
+                    estadosIniciales[jugador.id] = jugador.estado_pago || 'pendiente'
+                });
+                setPagoEstados(estadosIniciales);
             } catch (error) {
                 console.error("Error al obtener jugadores en el Admin", error);
                 setLoading(false);
@@ -130,7 +143,8 @@ export const Sesion = () => {
             metodo_pago: jugador.metodo_pago,
             referenciaPago: jugador.referenciaPago,
             boletos: jugador.boletos.join(", "),
-            monto_total: jugador.monto_total
+            monto_total: jugador.monto_total,
+            estado_pago: jugador.estado_pago
         });
     };
 
@@ -294,6 +308,27 @@ export const Sesion = () => {
         }
     };
 
+    // funcion toggle del campo de monto total
+    const togglePago = async (jugadorId, nuevoEstado) => {
+
+        try {
+
+            const token = localStorage.getItem('jwtToken');
+            await axios.put(
+                `http://localhost:3000/jugador/${jugadorId}/estado_pago`,
+                { estado_pago: nuevoEstado },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            //Actualizar lista de estado
+            setJugadores(prev => prev.map(j =>
+                j.id === jugadorId ? { ...j, estado_pago: nuevoEstado } : j 
+            ));
+        } catch (error) {
+            console.error('Error en la actualizacion de datos del estado de pago', error);
+        }
+    };
+
     const formatoLatino = (numero) => {
 
         if (numero == null) return '';
@@ -301,7 +336,7 @@ export const Sesion = () => {
         return numero.toLocaleString('es-VE', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
-        }) + ` Bs`
+        })
     };
 
     if (loading) {
@@ -314,8 +349,8 @@ export const Sesion = () => {
 
     const totalBoletos = jugadores.flatMap(j => j.boletos || []).length;
 
-    //TODO Agregar un nuevo campo de pago en efectivo
-    //TODO Colocar un boton de "pendiente" o "pago hecho" en el campo de monto total
+    //TODO* Agregar un nuevo campo de pago en efectivo
+    //TODO* Colocar un boton de "pendiente" o "pago hecho" en el campo de monto total
     //TODO Crear una funcion que muestre 100 o 1000 numeros en el archivo Sorteo.jsx
 
     //TODO Agregar un componente de paginacion
@@ -409,218 +444,242 @@ export const Sesion = () => {
                     </div>
                 ) : (
                     filterJugadores.map(jugador => (
-                        <div className="box_jugador" key={`jugador-${jugador.id}`}>
-                            <dl className="lista-datos" key={`lista-datos-${jugador.id}`}>
-                                <div className="fila" key={`${jugador.id}-id`}>
-                                    <dt>ID:</dt>
-                                    <dd>{jugador.id}</dd>
-                                </div>
-                                <div className="fila" key={`${jugador.id}-nombres`}>
-                                    <dt>Nombres:</dt>
-                                    <dd>
-                                        {editingID === jugador.id ? (
-                                            <input
-                                                type="text"
-                                                className="input_edicion"
-                                                value={tempData.nombres_apellidos}
-                                                onChange={(e) => setTempData({ ...tempData, nombres_apellidos: e.target.value })}
-                                            />
-                                        ) : (
-                                            <strong>{jugador.nombres_apellidos}</strong>
-                                        )}
-                                    </dd>
-                                </div>
-                                <div className="fila" key={`${jugador.id}-celular`}>
-                                    <dt>Celular:</dt>
-                                    <dd>
-                                        {editingID === jugador.id ? (
-                                            <input
-                                                type="text"
-                                                className="input_edicion"
-                                                value={tempData.celular}
-                                                onChange={(e) => setTempData({ ...tempData, celular: e.target.value })}
-                                            />
-                                        ) : (
-                                            jugador.celular
-                                        )}
-                                    </dd>
-                                </div>
-                                <div className="fila" key={`${jugador.id}-cedula`}>
-                                    <dt>Cédula:</dt>
-                                    <dd>
-                                        {editingID === jugador.id ? (
-                                            <input
-                                                type="text"
-                                                className="input_edicion"
-                                                value={tempData.cedula}
-                                                onChange={(e) => setTempData({ ...tempData, cedula: e.target.value })}
-                                            />
-                                        ) : (
-                                            jugador.cedula
-                                        )}
-                                    </dd>
-                                </div>
-                                <div className="fila" key={`${jugador.id}-ciudad`}>
-                                    <dt>Ciudad y Estado:</dt>
-                                    <dd>
-                                        {editingID === jugador.id ? (
-                                            <input
-                                                type="text"
-                                                value={tempData.pais_estado}
-                                                className="input_edicion"
-                                                onChange={(e) => setTempData({ ...tempData, pais_estado: e.target.value })}
-                                            />
-                                        ) : (
-                                            jugador.pais_estado
-                                        )}
-                                    </dd>
-                                </div>
-                                <div className="fila" key={`${jugador.id}-metodo`}>
-                                    <dt>Método de Pago:</dt>
-                                    <dd>
-                                        {editingID === jugador.id ? (
-                                            <input
-                                                type="text"
-                                                className="input_edicion"
-                                                value={tempData.metodo_pago}
-                                                onChange={(e) => setTempData({ ...tempData, metodo_pago: e.target.value })}
-                                            />
-                                        ) : (
-                                            jugador.metodo_pago
-                                        )}
-                                    </dd>
-                                </div>
-                                <div className="fila" key={`${jugador.id}-comprobante`}>
-                                    <dt>Comprobante:</dt>
-                                    <dd>
-                                        {jugador.comprobante_url ? (
-                                            <div className="cont_comprobante_img">
-                                                <a
-                                                    className="targe_comprobante"
-                                                    href={jugador.comprobante_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    key={`comprobante-link${jugador.id}`}
-                                                >
-                                                    <img
-                                                        src={zoom}
-                                                        className="zoom_comprobante"
-                                                        key={`comprobante-link-zoom-${jugador.id}`}
-                                                    />
-                                                    <img
-                                                        className="comprobante_img"
-                                                        src={jugador.comprobante_url}
-                                                        alt="Comprobante de pago"
-                                                        key={`comprobante-img-${jugador.id}`}
-                                                    />
-                                                </a>
-                                            </div>
-                                        ) : (
-                                            "Comprobante de pago"
-                                        )}
-                                    </dd>
-                                </div>
-                                <div className="fila" key={`${jugador.id}-referencia`}>
-                                    <dt>Referencia:</dt>
-                                    <dd>
-                                        {editingID === jugador.id ? (
-                                            <input
-                                                type="text"
-                                                className="input_edicion"
-                                                value={tempData.referenciaPago}
-                                                onChange={(e) => setTempData({ ...tempData, referenciaPago: e.target.value })}
-                                            />
-                                        ) : (
-                                            jugador.referenciaPago
-                                        )}
-                                    </dd>
-                                </div>
-                                <div className="fila" key={`${jugador.id}-boletos`}>
-                                    <dt>Numeros de Boletos:</dt>
-                                    <dd>
-                                        {editingID === jugador.id ? (
-                                            <textarea
-                                                type="text"
-                                                key={`${jugador.id}-textarea${editingID === jugador.id}`}
-                                                className="input_edicion_area"
-                                                value={tempData.boletos}
-                                                onChange={(e) => setTempData({ ...tempData, boletos: e.target.value })}
-                                                placeholder="Separar por comas (ej: 0123, 0789)"
-                                            />
-                                        ) : (
-                                            jugador.boletos && jugador.boletos.map((boleto, index) => (
-                                                <p className="fila_num" key={`${jugador.id}-${index}`}>{boleto}</p>
-                                            ))
-                                        )}
-                                    </dd>
-                                </div>
+                        <div className="contJugadores" key={`contJugador-${jugador.id}`}>
+                            <div className="box_jugador" key={`jugador-${jugador.id}`}>
+                                <dl className="lista-datos" key={`lista-datos-${jugador.id}`}>
+                                    <div className="fila" key={`${jugador.id}-id`}>
+                                        <dt>ID:</dt>
+                                        <dd>{jugador.id}</dd>
+                                    </div>
+                                    <div className="fila" key={`${jugador.id}-nombres`}>
+                                        <dt>Nombres:</dt>
+                                        <dd>
+                                            {editingID === jugador.id ? (
+                                                <input
+                                                    type="text"
+                                                    className="input_edicion"
+                                                    value={tempData.nombres_apellidos}
+                                                    onChange={(e) => setTempData({ ...tempData, nombres_apellidos: e.target.value })}
+                                                />
+                                            ) : (
+                                                <strong>{jugador.nombres_apellidos}</strong>
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div className="fila" key={`${jugador.id}-celular`}>
+                                        <dt>Celular:</dt>
+                                        <dd>
+                                            {editingID === jugador.id ? (
+                                                <input
+                                                    type="text"
+                                                    className="input_edicion"
+                                                    value={tempData.celular}
+                                                    onChange={(e) => setTempData({ ...tempData, celular: e.target.value })}
+                                                />
+                                            ) : (
+                                                jugador.celular
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div className="fila" key={`${jugador.id}-cedula`}>
+                                        <dt>Cédula:</dt>
+                                        <dd>
+                                            {editingID === jugador.id ? (
+                                                <input
+                                                    type="text"
+                                                    className="input_edicion"
+                                                    value={tempData.cedula}
+                                                    onChange={(e) => setTempData({ ...tempData, cedula: e.target.value })}
+                                                />
+                                            ) : (
+                                                jugador.cedula
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div className="fila" key={`${jugador.id}-ciudad`}>
+                                        <dt>Ciudad y Estado:</dt>
+                                        <dd>
+                                            {editingID === jugador.id ? (
+                                                <input
+                                                    type="text"
+                                                    value={tempData.pais_estado}
+                                                    className="input_edicion"
+                                                    onChange={(e) => setTempData({ ...tempData, pais_estado: e.target.value })}
+                                                />
+                                            ) : (
+                                                jugador.pais_estado
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div className="fila" key={`${jugador.id}-metodo`}>
+                                        <dt>Método de Pago:</dt>
+                                        <dd>
+                                            {editingID === jugador.id ? (
+                                                <input
+                                                    type="text"
+                                                    className="input_edicion"
+                                                    value={tempData.metodo_pago}
+                                                    onChange={(e) => setTempData({ ...tempData, metodo_pago: e.target.value })}
+                                                />
+                                            ) : (
+                                                jugador.metodo_pago
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div className="fila" key={`${jugador.id}-comprobante`}>
+                                        <dt>Comprobante:</dt>
+                                        <dd>
+                                            {jugador.comprobante_url ? (
+                                                <div className="cont_comprobante_img">
+                                                    <a
+                                                        className="targe_comprobante"
+                                                        href={jugador.comprobante_url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        key={`comprobante-link${jugador.id}`}
+                                                    >
+                                                        <img
+                                                            src={zoom}
+                                                            className="zoom_comprobante"
+                                                            key={`comprobante-link-zoom-${jugador.id}`}
+                                                        />
+                                                        <img
+                                                            className="comprobante_img"
+                                                            src={jugador.comprobante_url}
+                                                            alt="Comprobante de pago"
+                                                            key={`comprobante-img-${jugador.id}`}
+                                                        />
+                                                    </a>
+                                                </div>
+                                            ) : (
+                                                "Comprobante de pago"
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div className="fila" key={`${jugador.id}-referencia`}>
+                                        <dt>Referencia:</dt>
+                                        <dd>
+                                            {editingID === jugador.id ? (
+                                                <input
+                                                    type="text"
+                                                    className="input_edicion"
+                                                    value={tempData.referenciaPago}
+                                                    onChange={(e) => setTempData({ ...tempData, referenciaPago: e.target.value })}
+                                                />
+                                            ) : (
+                                                jugador.referenciaPago
+                                            )}
+                                        </dd>
+                                    </div>
+                                    <div className="fila" key={`${jugador.id}-boletos`}>
+                                        <dt>Numeros de Boletos:</dt>
+                                        <dd>
+                                            {editingID === jugador.id ? (
+                                                <textarea
+                                                    type="text"
+                                                    key={`${jugador.id}-textarea${editingID === jugador.id}`}
+                                                    className="input_edicion_area"
+                                                    value={tempData.boletos}
+                                                    onChange={(e) => setTempData({ ...tempData, boletos: e.target.value })}
+                                                    placeholder="Separar por comas (ej: 0123, 0789)"
+                                                />
+                                            ) : (
+                                                jugador.boletos && jugador.boletos.map((boleto, index) => (
+                                                    <p className="fila_num" key={`${jugador.id}-${index}`}>{boleto}</p>
+                                                ))
+                                            )}
+                                        </dd>
+                                    </div>
 
-                                <div className="fila" key={`${jugador.id}-monto`}>
-                                    <dt>Monto Total:</dt>
-                                    <dd>
-                                        {editingID === jugador.id ? (
-                                            <input
-                                                type="text"
-                                                className="input_edicion"
-                                                value={tempData.monto_total}
-                                                onChange={(e) => setTempData({ ...tempData, monto_total: e.target.value })}
-                                                placeholder="Monto Total"
-                                            />
-                                        ) : (
-                                            <strong>{formatoLatino(jugador.monto_total)}</strong>
-                                        )}
-                                    </dd>
-                                </div>
+                                    <div key={`${jugador.id}-monto`} className={`fila_monto ${jugador.estado_pago === 'pendiente' ? 'estado-pendiente' : 'estado-pagado'}`}>
+                                        <dt>Monto Total:</dt>
+                                        <dd>
+                                            {editingID === jugador.id ? (
+                                                <input
+                                                    type="text"
+                                                    className="input_edicion"
+                                                    value={tempData.monto_total}
+                                                    onChange={(e) => setTempData({ ...tempData, monto_total: e.target.value })}
+                                                    placeholder="Monto Total"
+                                                />
+                                            ) : (
+                                                <div className="contPagos">
+                                                    <strong>{formatoLatino(jugador.monto_total)}</strong>
+                                                    <div className={`contBtnPagos`}>
+                                                        <button
+                                                            className="btn_pago_pendiente"
+                                                            onClick={() => togglePago(jugador.id, 'pendiente')}
+                                                        >
+                                                            <img
+                                                                src={reloj}
+                                                                className="img_btn_pendiente"
+                                                            />
+                                                        </button>
+                                                        <button
+                                                            className="btn_pago_pagado"
+                                                            onClick={() => togglePago(jugador.id, 'pagado')}
+                                                        >
+                                                            <img
+                                                                src={cheque}
+                                                                className="img_btn_pagado"
+                                                            />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </dd>
+                                    </div>
 
-                                <div className="fila" key={`${jugador.id}-fecha`}>
-                                    <dt>Fecha:</dt>
-                                    <dd><strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
-                                        <br />
-                                        {new Date(jugador.fecha_registro).toLocaleTimeString()}
-                                    </dd>
-                                </div>
+                                    <div className="fila" key={`${jugador.id}-fecha`}>
+                                        <dt>Fecha:</dt>
+                                        <dd><strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
+                                            <br />
+                                            {new Date(jugador.fecha_registro).toLocaleTimeString()}
+                                        </dd>
+                                    </div>
 
-                                <div className="lista_btns" key={`${jugador.id}-botones`}>
-                                    <button
-                                        className="btn_eliminar_sesion"
-                                        onClick={() => handleEliminar(jugador.id)}
-                                        key={`$btn-eliminar-${jugador.id}`}
-                                    >
-                                        <img
-                                            src={borrar}
-                                            alt="Borrar"
-                                            key={`img-eliminar-${jugador.id}`}
-                                        />
-                                    </button>
-                                    {editingID === jugador.id ? (
-                                        <>
-                                            <button
-                                                className="btn_guardar_sesion"
-                                                onClick={() => handleguardarCambios(jugador.id)}
-                                            >
-                                                <img src={sav} />
-                                            </button>
-
-                                            <button
-                                                className="btn_cancel_sesion"
-                                                onClick={handleCancelEditar}
-                                            >
-                                                <img src={error} />
-                                            </button>
-                                        </>
-                                    ) : (
+                                    <div className="lista_btns" key={`${jugador.id}-botones`}>
                                         <button
-                                            className="btn_editar_sesion"
-                                            onClick={() => handleActivarEdicion(jugador)}
+                                            className="btn_eliminar_sesion"
+                                            onClick={() => handleEliminar(jugador.id)}
+                                            key={`$btn-eliminar-${jugador.id}`}
                                         >
                                             <img
-                                                src={editar}
+                                                src={borrar}
                                                 alt="Borrar"
+                                                key={`img-eliminar-${jugador.id}`}
                                             />
                                         </button>
-                                    )}
-                                </div>
-                            </dl>
+                                        {editingID === jugador.id ? (
+                                            <>
+                                                <button
+                                                    className="btn_guardar_sesion"
+                                                    onClick={() => handleguardarCambios(jugador.id)}
+                                                >
+                                                    <img src={sav} />
+                                                </button>
+
+                                                <button
+                                                    className="btn_cancel_sesion"
+                                                    onClick={handleCancelEditar}
+                                                >
+                                                    <img src={error} />
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button
+                                                className="btn_editar_sesion"
+                                                onClick={() => handleActivarEdicion(jugador)}
+                                            >
+                                                <img
+                                                    src={editar}
+                                                    alt="Borrar"
+                                                />
+                                            </button>
+                                        )}
+                                    </div>
+                                </dl>
+                            </div>
                         </div>
                     ))
                 )}
