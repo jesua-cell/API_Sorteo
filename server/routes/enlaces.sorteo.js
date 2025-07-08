@@ -23,7 +23,8 @@ import {
     updateCardPub,
     postValorVes,
     getValorVes,
-    updateValores
+    updateValores,
+    UpdateEstadoPago
 } from '../controllers/sorteo.controllers.js';
 
 
@@ -126,6 +127,8 @@ router.get('/valor', getValorVes);
 router.post('/valor', postValorVes);
 
 router.put('/valor', updateValores);
+
+router.put('/jugador/:id/estado_pago', UpdateEstadoPago);
 
 
 

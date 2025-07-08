@@ -24,6 +24,7 @@ export const getJugadores = async (req, res) => {
         const [jugadores] = await pool.query(`
             SELECT 
                 j.*,
+                j.estado_pago,
                 MIN(nb.fecha_asignacion) AS fecha_registro
             FROM jugador j
             LEFT JOIN numeros_boletos nb ON j.id = nb.jugador_id
@@ -291,7 +292,8 @@ export const updateJugador = async (req, res) => {
         metodo_pago,
         referenciaPago,
         boletos,
-        monto_total
+        monto_total,
+        estado_pago
     } = req.body;
 
     //convertir boletos en Arrays
@@ -323,7 +325,8 @@ export const updateJugador = async (req, res) => {
                 pais_estado = ?,
                 metodo_pago = ?,
                 referenciaPago = ?,
-                monto_total = ?
+                monto_total = ?,
+                estado_pago = ?
                 WHERE id = ?`,
             [
                 nombres_apellidos,
@@ -333,6 +336,7 @@ export const updateJugador = async (req, res) => {
                 metodo_pago,
                 referenciaPago,
                 monto_total,
+                estado_pago,
                 id
             ]
         );
@@ -685,5 +689,30 @@ export const updateValores = async (req, res) => {
     } catch (error) {
         console.error('Error en la actualizacion del valor', error);
         res.status(500).json({ error: 'Error en la actualizacion del valor' })
+    }
+};
+
+export const UpdateEstadoPago = async (req, res) => {
+    
+    const { id } = req.params;
+    const { estado_pago } = req.body;
+
+    try {
+
+        const [result] = await pool.query(
+            'UPDATE jugador SET estado_pago = ? WHERE id = ?',
+            [estado_pago, id]
+        );
+
+        if (result.affectedRows === 0) { 
+            return res.status(404).json({error: 'Jugador no encontrado'})
+        };
+
+        res.json({
+            success: true,
+            message: 'Estado de pago actualizado'
+        });
+    } catch (error) {
+        console.error("Error en la actualizacion de estado de pago", error);
     }
 };
