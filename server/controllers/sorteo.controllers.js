@@ -91,7 +91,7 @@ export const addJugadores = async (req, res) => {
 
         //Insertat boletos
         const numerosArray = JSON.parse(numeros);
-        const valoresBoletos = numerosArray.map(num => [num.padStart(4, '0'), jugadorResult.insertId]);
+        const valoresBoletos = numerosArray.map(num => [num.padStart(3, '0'), jugadorResult.insertId]);
 
         await pool.query(
             'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
@@ -156,7 +156,7 @@ export const getBoletos = async (req, res) => {
 
     try {
         const [rows] = await pool.query('SELECT numero_boleto FROM numeros_boletos');
-        const usedNumbers = rows.map(row => row.numero_boleto)
+        const usedNumbers = rows.map(row => row.numero_boleto.padStart(3, '0'));
         res.json(usedNumbers);
     } catch (error) {
         console.error(error);
@@ -308,7 +308,7 @@ export const updateJugador = async (req, res) => {
         boletosArray = [...boletos];
     };
 
-    boletosArray = boletosArray.map(b => String(b).padStart(4, '0'));
+    boletosArray = boletosArray.map(b => String(b).padStart(3, '0'));
 
     //Transaccion
     const connection = await pool.getConnection();
