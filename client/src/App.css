@@ -1375,20 +1375,20 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     align-content: center;
     padding: 10px;
+    width: 300px;
 }
 
 .btn_edit_ves {
     border: none;
-    font-size: 19px;
+    font-size: 20px;
     border-radius: 15px;
     padding: 4px 7px;
     font-weight: bold;
-    color: #061c14;
-    /* border: 2px solid #191919; */
-    background-color: #38c191;
+    color: #38c191;
+    background-color: #061c14;
+    width: 100px;
     margin-bottom: 18px;
-    width: 85px;
-    padding: 5px;
+    padding: 8px 20px;
     margin-top: -2px;
 }
 
@@ -1399,29 +1399,26 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .btn_save_ves {
     border: none;
-    font-size: 17px;
+    font-size: 19px;
     border-radius: 15px;
-    padding: 4px 7px;
     font-weight: bold;
     color: #d0e5f9;
-    /* border: 2px solid #191919; */
-    background-color: #19198f;
+    background-color: #061c14;
     margin-bottom: 18px;
-    padding: 8px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
     margin-top: -2px;
 }
 
 .btn_cancel_ves {
     border: none;
-    font-size: 17px;
+    font-size: 19px;
     border-radius: 15px;
-    padding: 4px 7px;
     font-weight: bold;
-    color: #d84c4c;
-    /* border: 2px solid #191919; */
-    background-color: #f4c4b2;
+    color: #ff8b8b;
+    background-color: #061c14;
     margin-bottom: 18px;
-    padding: 8px;
+    padding: 10px 14px;
     margin-top: -2px;
 }
 
