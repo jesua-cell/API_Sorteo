@@ -345,7 +345,7 @@ export const Sesion = () => {
 
     if (!isAuthenticated) {
         return <div><h4>Verificando Sesion...</h4></div>
-    }
+    } 
 
     const totalBoletos = jugadores.flatMap(j => j.boletos || []).length;
 

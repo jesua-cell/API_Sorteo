@@ -20,7 +20,7 @@ body {
     --fondoTarjetaInicio: radial-gradient(circle, rgb(69, 71, 89) 0%, rgb(13, 23, 55) 50%, rgb(5, 5, 31) 100%);
     --fondoSorteo: #e5e1f0;
     --fondoCuentasPago: linear-gradient(97deg, rgba(102, 57, 102, 1) 18%, rgba(138, 44, 138, 1) 84%);
-    --fondoNumerosLista: #f6c7f6;
+    --fondoNumerosLista: #ffefff;
     --fondoNumerosSeleccionados: linear-gradient(166deg, rgb(199, 106, 199) 0%, rgba(214, 137, 214, 1) 100%);
     --fondoSesion: #fafbfd;
     --fondoTarjeraCuentasPago: linear-gradient(64deg, rgb(27, 28, 33) 7%, rgb(18, 12, 17) 50%, rgb(43, 32, 43) 90%);
@@ -568,6 +568,7 @@ input[type="number"]::-webkit-outer-spin-button {
     width: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
+    background-color: #ffdefd;
 
 }
 
@@ -597,27 +598,37 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     text-align: center;
     background: var(--fondoNumerosLista);
+    font-size: 20px;
     margin: 2px;
+    margin-bottom: 2px;
     padding: 5px;
     width: 48px;
     height: 24px;
     border-radius: 5px;
-    font-size: 18px;
-    font-weight: 500;
+    font-weight: bold;
     cursor: pointer;
     transition: ease-in-out 200ms;
 
     &:hover {
-        background: var(--fondoEnlaces);
+        background: #ae2e8c;
         color: var(--colorTexto);
         font-weight: 900;
     }
 }
 
 .listaNumero.used {
-    background-color: #333;
-    color: #d0daff;
+    background-color: #762121;
+    color: #ffdede;
     cursor: not-allowed;
+}
+
+.listaNumero.selected {
+    background: #ae2e8c;
+    color: #fff;
+}
+
+.listaNumero.hidden {
+  display: none !important;
 }
 
 .numerosSeleccionados {
@@ -683,9 +694,9 @@ input[type="number"]::-webkit-outer-spin-button {
     background: var(--fondoEnlaces);
     color: var(--colorTexto);
     margin: 2px;
-    padding: 4px;
+    padding: 5px 8px;
     border-radius: 8px;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     width: 48px;
     cursor: pointer;
