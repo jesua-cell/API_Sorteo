@@ -24,7 +24,7 @@ body {
     --fondoNumerosSeleccionados: linear-gradient(166deg, rgb(199, 106, 199) 0%, rgba(214, 137, 214, 1) 100%);
     --fondoSesion: #fafbfd;
     --fondoTarjeraCuentasPago: linear-gradient(64deg, rgb(27, 28, 33) 7%, rgb(18, 12, 17) 50%, rgb(43, 32, 43) 90%);
-    --fondoBtnEnviar: linear-gradient(90deg, rgba(30, 43, 166, 1) 0%, rgba(57, 95, 219, 1) 50%, rgba(104, 106, 222, 1) 100%);
+    --fondoBtnEnviar: linear-gradient(139deg, rgba(97, 136, 255, 1) 9%, rgba(0, 0, 143, 1) 45%, rgba(40, 100, 161, 1) 84%);
     /* texto */
     --colorTexto: #fafbfd;
     --colorTextoOscuro: #191919;
@@ -168,12 +168,16 @@ body {
     overflow-y: scroll;
 }
 
+.contTarjeta::-webkit-scrollbar {
+    display: none;
+}
+
 .contContendido {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 85vh;
+    height: auto;
     width: 90%;
     min-width: 335px;
     margin: 15px;
@@ -181,11 +185,12 @@ body {
     border-radius: 10px;
     box-sizing: border-box;
     border: 2px solid #9d95b0;
-    overflow-y: scroll;
     overflow-wrap: break-word;
     word-wrap: break-word;
     text-align: center;
     padding-bottom: 15px;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 .contContendido p {
@@ -194,13 +199,28 @@ body {
 
 .titulo_sorteo {
     margin: 8px 0;
-    font-size: 67px;
-    background: linear-gradient(90deg, #cd6bed, #ff66f0, #cd6bed);
+    font-size: 47px;
+    width: 70%;
+    background: linear-gradient(135deg, #c75eea, #ff66f0, #bd42e7, #ff66f0);
+    background-size: 200% 100%;
+    color: transparent;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    animation: textBack 5s linear infinite alternate;
+}
+
+@keyframes textBack {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
 }
 
 .contContendido h2 {
+    font-size: 25px;
     margin: 15px 1px 5px 0px;
 }
 
@@ -289,7 +309,15 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: var(--fondoCuentasPago);
+    min-width: 350px;
+    /* background: var(--fondoCuentasPago); */
+}
+
+.boxCuentasPago {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 350px;
 }
 
 .h1_cuentaPago {
@@ -553,11 +581,17 @@ input[type="number"]::-webkit-outer-spin-button {
     margin: 0;
 }
 
+.numUsedCount {
+    display: inline-block;
+    width: 90%;
+    margin-bottom: 8px;
+}
+
 .usedNumSorteo {
+    white-space: nowrap;
     font-weight: bold;
     font-size: 17px;
-    margin-right: 170px;
-
+    margin: 0px;
 }
 
 .lista {
@@ -598,13 +632,14 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     text-align: center;
     background: var(--fondoNumerosLista);
-    font-size: 20px;
+    font-size: 18px;
     margin: 2px;
     margin-bottom: 2px;
     padding: 5px;
     width: 48px;
     height: 24px;
     border-radius: 5px;
+    border: 1px solid #ae2e8c;
     font-weight: bold;
     cursor: pointer;
     transition: ease-in-out 200ms;
@@ -628,7 +663,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .listaNumero.hidden {
-  display: none !important;
+    display: none !important;
 }
 
 .numerosSeleccionados {
@@ -637,12 +672,12 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 5px;
     margin: 15px 0px;
     border-radius: 10px;
-    height: 80px;
     background: var(--fondoNumerosSeleccionados);
     color: var(--colorTexto);
     display: flex;
     align-items: center;
     max-width: 320px;
+    overflow: hidden;
     height: auto !important;
 }
 
@@ -744,11 +779,15 @@ input[type="number"]::-webkit-outer-spin-button {
 .formDatos input {
     border: none;
     padding: 7px;
-    opacity: 0.7;
+    opacity: 0.9;
     border-radius: 5px;
-    border: 1px solid #094293;
+    border: 1px solid #583458;
     width: 94%;
     margin-left: 6px;
+}
+
+.formDatos input::selection {
+    color: #522052;
 }
 
 .input_comprobatePago {
@@ -756,7 +795,8 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: column;
     align-items: center;
     width: 95%;
-    margin-left: 15px;
+    margin-top: 10px;
+    margin-left: 4px;
 }
 
 .input_seleccionarFile {
@@ -775,7 +815,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .image_comprobante img {
     height: 180px;
-    width: 320px;
+    width: 290px;
     object-fit: cover;
 }
 
@@ -815,6 +855,7 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: 600;
     border: none;
     color: #ffff;
+    opacity: 1 !important;
     background: var(--fondoBtnEnviar);
 }
 
@@ -851,12 +892,17 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 5px;
     opacity: 0.5;
     border-bottom: 2px solid transparent;
-    transform: opacity 300ms ease-in-out;
+    transition: opacity 300ms ease-in-out;
 
     &:hover {
         opacity: 1;
         border-bottom: 3px solid #07183f;
     }
+}
+
+.tabs li.active .imgPago {
+    opacity: 1;
+    border-bottom: 3px solid #07183f;
 }
 
 .titulo_medioPago {
@@ -1006,7 +1052,7 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: bold;
     border-radius: 5px;
     border: none;
-    background: #3355a5;
+    background: #0c1731;
     color: rgb(247, 244, 255);
     width: 120px;
 
@@ -1218,17 +1264,30 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Sesion Admins */
 .cont_admins {
-    background: var(--fondoSesion);
     color: var(--colorTextoOscuro);
+    background-color: #c5c7c9;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
     overflow-y: scroll;
 }
 
+.contListaJugadores {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.contJugadores {
+    width: 90%;
+}
+
 .box_jugador {
-    width: 95%;
+    width: 250%;
+    height: auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -1277,7 +1336,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .fila_num {
     margin: 4px 0px;
-    background-color: #c5cbf9;
+    font-weight: bold;
+    background-color: #be62ce;
     border: 1px solid #c5cbf9;
     border-radius: 5px;
     text-align: center;
@@ -1285,7 +1345,9 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .lista_btns {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    height: auto;
 }
 
 /* Botones De Consultar: Editar - Guardar - Eliminar */
@@ -1318,6 +1380,8 @@ input[type="number"]::-webkit-outer-spin-button {
     justify-content: center;
     align-items: center;
 }
+
+
 
 .btn_editar_sesion img {
     width: 21px;
@@ -1359,10 +1423,10 @@ input[type="number"]::-webkit-outer-spin-button {
 .buscador_sesion {
     padding: 10px;
     font-size: 20px;
+    width: 86%;
     background-color: #f4f4fa;
-    border: 2px solid #00030f;
+    border: 1px solid #00030f;
     font-weight: 600;
-    opacity: 0.8;
     margin: 5px 0px;
     margin-bottom: 25px;
     border-radius: 9px;
@@ -1373,11 +1437,9 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     justify-content: center;
     border-radius: 10px;
-    border: 2px solid #333;
+    background-color: #fafafa;
     width: 94%;
     height: 130px;
-    margin-bottom: 40px;
-    margin-top: 40px;
 }
 
 .conntValorVef {
@@ -1465,8 +1527,8 @@ input[type="number"]::-webkit-outer-spin-button {
     object-fit: cover;
     position: absolute;
     z-index: 10;
-    margin-top: 22px;
-    margin-left: 17px;
+    margin-left: -12px;
+    margin-top: 19px;
 }
 
 .comprobante_img {
@@ -1476,6 +1538,47 @@ input[type="number"]::-webkit-outer-spin-button {
     position: relative;
     z-index: 1;
     border-radius: 5px;
+}
+
+/* Numeros de puestos */
+
+.countNumSorteoPub {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fafafa;
+    border-radius: 10px;
+    width: 94%;
+}
+
+.title_countNumSorteoPub {
+    padding: 5px 20px;
+}
+
+.btn_countPub_mil {
+    width: 30%;
+    height: 38px;
+    border: none;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 22px;
+    background-color: #061c14;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.btn_countPub_cien {
+    width: 30%;
+    height: 38px;
+    border: none;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 22px;
+    background-color: #061c14;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 8px 12px;
 }
 
 /* Sesion de admin */
@@ -1512,11 +1615,10 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 15px;
     width: 90%;
-    border: 2px solid #2c2e36;
     border-radius: 10px;
     padding: 8px;
+    background-color: #fafafa;
 }
 
 .infoSorteoText {
@@ -1549,6 +1651,14 @@ input[type="number"]::-webkit-outer-spin-button {
     color: var(--colorTexto);
     padding: 8px 25px;
     border-radius: 5px;
+}
+
+.contInventario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 27px;
 }
 
 .select_component {
@@ -1631,7 +1741,6 @@ input[type="number"]::-webkit-outer-spin-button {
 .btn_pago_pendiente,
 .btn_pago_pagado {
     border: none;
-    margin-right: 10px;
     border-radius: 8px;
 }
 
@@ -1655,12 +1764,11 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 2px;
 }
 
-
-.fila_monto.estado-pendiente {
+.estado-pendiente {
     background-color: #fffce6;
 }
 
-.fila_monto.estado-pagado {
+.estado-pagado {
     background-color: #caffcc;
 }
 
@@ -1681,6 +1789,16 @@ input[type="number"]::-webkit-outer-spin-button {
     overflow-y: scroll;
 }
 
+.card::-webkit-scrollbar {
+    display: none;
+}
+
+.contContenidoCardPub {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 
 .contContendidoCard {
     display: flex;
@@ -1688,7 +1806,7 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     justify-content: center;
     gap: 15px;
-    height: 80vh;
+    height: 420px;
     width: 90%;
     min-width: 335px;
     margin: 15px;
@@ -1696,7 +1814,24 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 10px;
     box-sizing: border-box;
     border: 2px solid #9d95b0;
-    overflow-y: scroll;
+    overflow-y: visible;
+}
+
+.contContendidoCardEjemplo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    height: 45vh;
+    width: 200px;
+    min-width: 135px;
+    margin: 10px;
+    background: var(--fondoTarjetaInicio);
+    border-radius: 10px;
+    box-sizing: border-box;
+    border: 2px solid #9d95b0;
+    overflow-y: hidden;
 }
 
 .title_card_post {
@@ -1718,11 +1853,13 @@ input[type="number"]::-webkit-outer-spin-button {
     border: none;
     border-radius: 7px;
     font-size: 17px;
+    font-family: var(--FunnelSans);
     padding: 6px;
     font-size: 22px;
     margin-bottom: 7px;
     opacity: 0.9;
     border: 2px solid #8c418c;
+    height: auto;
     width: 286px;
     overflow-y: auto;
 }
@@ -1750,7 +1887,6 @@ input[type="number"]::-webkit-outer-spin-button {
     color: #3355a5;
     border: 1px solid #3355a5;
     background-color: #191919;
-    margin-bottom: 18px;
 }
 
 .btn-cardPost-editar {
@@ -1778,8 +1914,8 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .img_ejemplo_card {
-    height: 218px;
-    width: 130px;
+    height: 310px;
+    width: 199px;
     object-fit: cover;
     border-radius: 5px;
 }
@@ -1837,18 +1973,35 @@ input[type="number"]::-webkit-outer-spin-button {
         height: 600px;
     }
 
-    /* Sorteo */
+    /* inicio */
     .tituloSorteo {
         font-size: 70px;
     }
 
+
     .btnBuscar {
         width: 200px;
         text-align: center;
+        margin-bottom: 0px;
+    }
+
+    .btn-inicio button,
+    a {
+        color: #793072;
+        transition: padding, font-size, color, 0.3s ease-in-out;
+    }
+
+    .contContendido button {
+        border: 2px solid #793072;
+        transition: border 0.3s ease-in-out;
+
+        &:hover {
+            border: 3px solid #793072;
+        }
     }
 
     .lista {
-        height: 570px;
+        height: 400px;
         width: 80%;
         padding: 30px;
         border-radius: 10px;
@@ -1860,7 +2013,7 @@ input[type="number"]::-webkit-outer-spin-button {
     /* background: linear-gradient(356deg,rgba(28, 13, 2, 1) 8%, rgba(71, 71, 71, 1) 45%, rgba(97, 97, 97, 1) 78%); */
 
     .usedNumSorteo {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         margin-right: 1050px;
     }
 
@@ -1869,12 +2022,13 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .numerosSeleccionados {
-        margin-top: 40px;
+        margin-top: 30px;
         margin-bottom: 40px;
         background: linear-gradient(39deg, rgba(148, 40, 135, 1) 9%, rgba(168, 35, 144, 1) 77%);
         box-shadow:
             /* inset 0 -3em 3em rgba(75, 73, 73, 0.3), */
             0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+
     }
 
     .num-item {
@@ -1885,22 +2039,28 @@ input[type="number"]::-webkit-outer-spin-button {
         padding: 15px 0px;
     }
 
+    .btnSeleccionado {
+        min-height: 90px;
+        max-height: auto;
+    }
+
     .precioNumbers {
-        padding: 10px 0px;
+        padding: 15px 0px;
     }
 
     .formDatos {
         width: 65%;
-        background: -webkit-linear-gradient(90deg, #ffffff, #fffcfc, #bdbdbd);
-        background: linear-gradient(90deg, #efeded, #dedede, #ebe9e9);
+        background: -webkit-linear-gradient(90deg, #ffffff, #d0e1ff, #d8f5ff);
+        background: linear-gradient(139deg, rgb(228, 238, 253) 9%, rgba(212, 212, 255, 1) 45%, rgb(195, 208, 252) 84%);
         box-shadow:
-            0.3em 0.3em 1em rgba(0, 0, 0, 0.3);
+            0.3em 0.3em 1em rgba(11, 44, 129, 0.3);
     }
 
     .formDatos input {
         width: 96%;
-        font-size: 22px;
-        padding: 9px;
+        font-size: 20px;
+        padding: 8px;
+        margin-left: 10px;
     }
 
     .labelForm {
@@ -1911,6 +2071,7 @@ input[type="number"]::-webkit-outer-spin-button {
     .tabs {
         width: 98%;
         gap: 20px;
+        padding-left: 0px;
     }
 
     .imgPago {
@@ -1955,10 +2116,21 @@ input[type="number"]::-webkit-outer-spin-button {
     .input_comprobatePago {
         display: flex;
         justify-content: center;
-        border: 3px solid #800080;
         border-radius: 10px;
-        width: 96%;
-        height: 40vh;
+        width: 80%;
+        height: auto;
+    }
+
+    .contComprobantePago {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 90%;
+        border: 2px solid #b63080;
+        border-radius: 10px;
+        margin-left: 40px;
+        background-color: var(--fondoSesion);
+        opacity: 0.8;
     }
 
     .image_comprobante {
@@ -1969,12 +2141,12 @@ input[type="number"]::-webkit-outer-spin-button {
         align-items: flex-start;
         z-index: 1;
         margin-top: 12px;
-        max-width: 325px;
+        width: 30%;
     }
 
     .image_comprobante img {
-        height: 200px;
-        width: 340px;
+        height: auto;
+        width: 290px;
         object-fit: cover;
         border-radius: 10px;
         box-shadow:
@@ -1988,8 +2160,454 @@ input[type="number"]::-webkit-outer-spin-button {
 
     /* Sesion */
 
+    .cont_admins {
+        background-color: #c5c7c9;
+        overflow: auto;
+    }
+
+    .cont_admins::-webkit-scrollbar {
+        display: none;
+    }
+
+    .contInventario {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .contInfoSorteo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #fafafa;
+        font-size: 18px;
+        height: 90%;
+        width: 40%;
+        border-radius: 4px;
+    }
+
+    .boxValor {
+        font-size: 18px;
+        height: 99%;
+        width: 30%;
+        border-radius: 4px;
+        background-color: #fafafa;
+    }
+
+    .countNumSorteoPub {
+        font-size: 18px;
+        height: 99%;
+        width: 30%;
+        border-radius: 4px;
+        background-color: #fafafa;
+    }
+
+    .btn_edit_ves {
+        font-size: 18px;
+        padding: 8px 5px;
+        cursor: pointer;
+        background-color: #061c14;
+        color: #38c191;
+        border-radius: 15px;
+        box-sizing: border-box;
+        transition: all 0.3s linear;
+    }
+
+    /* Animacion de expandir el boton */
+    @keyframes anime {
+        0% {
+            width: 28%;
+        }
+
+        50% {
+            width: 40%;
+        }
+
+        100% {
+            width: 35%;
+        }
+    }
+
+    .btns_vef {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .btn_save_ves {
+        font-size: 16px;
+        padding: 8px 10px;
+        cursor: pointer;
+        width: 40%;
+        margin-bottom: 5px;
+    }
+
+    .btn_cancel_ves {
+        font-size: 16px;
+        padding: 8px 10px;
+        cursor: pointer;
+        width: 40%;
+    }
+
+    .title_countNumSorteoPub {
+        padding: 5px 10px;
+        margin: 5px 0px;
+    }
+
+    .btn_countPub_cien {
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color, font-size, 0.3s, color 0.3s;
+    }
+
+    .btn_countPub_mil {
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color, font-size, 0.3s, color 0.3s;
+    }
+
+    .btn_countPub_cien:hover {
+        animation: anime 0.5s forwards;
+        font-size: 22px;
+    }
+
+    .btn_countPub_mil:hover {
+        animation: anime 0.5s forwards;
+        font-size: 22px;
+    }
+
+    .btn_eliminar_sesion {
+        cursor: pointer;
+        background-color: #fde5e5;
+    }
+
+    .btn_eliminar_sesion:active {
+        background-color: #ac3535;
+    }
+
+    .btn_editar_sesion {
+        cursor: pointer;
+    }
+
+    .btn_editar_sesion:active {
+        background-color: #433dc5;
+    }
+
+    .btn_pago_pendiente {
+        cursor: pointer;
+    }
+
+    .btn_pago_pendiente:active {
+        background-color: #fafa0a;
+    }
+
+    .btn_pago_pagado {
+        cursor: pointer;
+    }
+
+    .btn_pago_pagado:active {
+        background-color: #0e9b34;
+    }
+
+    .btn_guardar_sesion {
+        cursor: pointer;
+    }
+
+    .btn_guardar_sesion:active {
+        background-color: #433dc5;
+    }
+
+    .btn_cancel_sesion {
+        cursor: pointer;
+    }
+
+    .btn_cancel_sesion:active {
+        background-color: #fafa0a;
+    }
+
+    .contBtnPagos {
+        gap: 10px;
+        height: 38px;
+        width: 55px;
+    }
+
+    .input_edicion {
+        width: 90%;
+    }
+
+    .contPagos{
+        width: 100%;
+        height: 100%;
+    }
+
+    .contPagos strong{
+        padding: 5px;
+    }
+
+    .contBtnPagos{
+        display: flex;
+        width: 100%;
+    }
+
+    .estado-pendiente {
+        height: 80px;
+        display: flex;
+        align-items: center;
+    }
+
+    .estado-pagado {
+        height: 80px;
+        display: flex;
+        align-items: center;
+    }
+
+    .buscador_sesion {
+        width: 40%;
+        outline: none;
+        border: none;
+    }
+
+    .contListaJugadores {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
     .contJugadores {
         display: flex;
-        flex-wrap: wrap;
+        width: 100%;
     }
+
+    .inventario {
+        border-collapse: collapse;
+        background-color: #fafafa;
+        margin-left: 10px;
+        margin-right: 10px;
+        border-radius: 10px;
+    }
+
+    .th_titulos {
+        font-size: 18px;
+    }
+
+    .th_titulos th {
+        padding: 5px 10px;
+    }
+
+    .th_id {
+        font-weight: bold;
+    }
+
+    .inventario th {
+        text-align: center;
+        border-top: 1px solid #7c7e81;
+        border-bottom: 1px solid #7c7e81;
+    }
+
+    .fila-jugador td {
+        font-size: 19px;
+        font-weight: 600;
+        text-align: center;
+        border-bottom: 3px solid #e2e3e4;
+    }
+
+    .td_id {
+        font-weight: bold;
+    }
+
+
+    .no_result {
+        width: 100%;
+    }
+
+    .box_jugador {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: radial-gradient(circle, rgba(217, 217, 217, 1) 9%, rgba(207, 207, 207, 1) 45%, rgba(168, 168, 168, 1) 84%);
+        width: auto;
+        min-width: 340px;
+        height: 800px;
+        max-height: 1200px;
+        min-height: auto;
+        border-top: none;
+        border: 1px solid #000;
+        margin: 2px;
+        margin-bottom: 5px;
+        border-radius: 10px;
+    }
+
+    .lista-datos {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: center;
+        gap: 0px;
+        width: 320px;
+        border-radius: 10px;
+        box-sizing: border-box;
+        border: 1px solid #333;
+        background: #ffffff;
+    }
+
+    /* .fila,
+    .fila_monto {
+        display: grid;
+        align-items: center;
+        grid-template-columns: 0.7fr 1fr;
+        padding: 3px;
+        width: 100%;
+        min-height: auto;
+        border-radius: 0px;
+        box-sizing: border-box;
+        padding-left: 8px;
+    } */
+
+    .fila_num {
+        font-weight: bold;
+        margin: 4px 0px;
+        padding: 3px 8px;
+        background-color: #9332a2;
+        color: #fff;
+        border-radius: 6px;
+        margin: 2px;
+        text-align: center;
+    }
+
+    /* Cuentas de pago */
+    .contCuentasPago {
+        display: flex;
+        align-items: center;
+    }
+
+    .boxCuentasPago {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .h1_cuentaPago {
+        padding-left: 50px;
+    }
+
+    .cuentaPago {
+        width: 28%;
+    }
+
+    /* CardPost */
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        align-content: space-around;
+        height: 120vh;
+    }
+
+    .contContendidoCard {
+        overflow-y: hidden;
+        height: 770px;
+        width: 40%;
+    }
+
+    .contContendidoCardEjemplo {
+        height: 340px;
+        overflow-x: hidden;
+    }
+
+    .contContendidoCard label {
+        padding: 10px;
+    }
+
+    .input_card {
+        width: 80%;
+        height: auto;
+        font-family: var(--FunnelSans);
+    }
+
+    .input_comprobatePago {
+        height: auto;
+        width: 355px;
+    }
+
+    .input_comprobatePago img {
+        margin-bottom: 20px;
+    }
+
+    .input_seleccionarFile {
+        width: 200px;
+        margin: 15px 0px;
+    }
+
+    .contContendido {
+        height: auto;
+        overflow-y: scroll;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        text-align: center;
+        transition: box-shadow 0.3s ease-in-out;
+
+        &:hover {
+            box-shadow: 0.1em 0.2em 1em rgba(255, 255, 255, 0.5);
+        }
+    }
+
+    .contContendido p {
+        font-size: 17px;
+    }
+
+    .contContendido::-webkit-scrollbar {
+        display: none;
+    }
+
+    .input_card {
+        font-size: var(--FunnelSans);
+        margin: 10px 0px;
+    }
+
+    .input_card:nth-child(1) {
+        height: 40px;
+    }
+
+    .input_card:nth-child(3) {
+        height: 80px;
+    }
+
+    .input_card:nth-child(4) {
+        height: 100px;
+    }
+
+    .image_comprobante {
+        width: 80%;
+    }
+
+    /* .contContendido button {
+        border: #793072;
+        padding-top: 2px;
+    } */
+
+    /* Login */
+    .contLogin {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .formLogin {
+        height: 55%;
+        width: 37%;
+    }
+
+    .btnLogin {
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+
+        &:hover {
+            background-color: #200db1;
+        }
+    }
+
 }

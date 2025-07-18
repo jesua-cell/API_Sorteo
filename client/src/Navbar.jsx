@@ -87,7 +87,7 @@ export const Navbar = () => {
           {adminName && (
             <>
               <Link className='enlaces_admin' to={"/card_post"} onClick={closeMenu}>Publicación de Sorteo</Link>
-              <Link className='enlaces_admin' to={"/sesion"} onClick={closeMenu}>Sesion Admin</Link>
+              <Link className='enlaces_admin' to={"/sesion"} onClick={closeMenu}>Inventario</Link>
               <button onClick={handleLogout} className='logout-btn'>
                 <img className='icon-logout' src={logoutIcon} />
                 Cerrar sesion

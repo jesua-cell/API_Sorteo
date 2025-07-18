@@ -292,19 +292,21 @@ export const CardPost = () => {
             />
 
             {/* Formulario para CREAR nueva publicación */}
-            <div className="card" style={{ opacity: isEditing ? 0.5 : 1, pointerEvents: isEditing ? 'none' : 'all' }}>
-                <h1 className="title_card_post">Publicaciones del Sorteo</h1>
-                <div className='contContendidoCard'>
-                    <label style={{ fontWeight: '700', opacity: '0.8' }}>Referencia de Publicación</label>
+            <h1 className="title_card_post">Publicaciones del Sorteo</h1>
+            <div className="contContenidoCardPub" style={{ opacity: isEditing ? 0.5 : 1, pointerEvents: isEditing ? 'none' : 'all' }}>
+                <div className="contContendidoCardEjemplo">
+                    <label style={{ fontWeight: '700', opacity: '0.8', textAlign: 'center' }}>Referencia de Publicación</label>
                     <img className="img_ejemplo_card" src={imageCard} alt="Sorteo" />
+                </div>
+                <div className='contContendidoCard'>
 
-                    <input
+                    <textarea
                         type="text"
                         name="titulo_card"
                         value={titulo}
                         onChange={(e) => setTitulo(e.target.value)}
                         className="input_card"
-                        placeholder="Titulo Principal"
+                        placeholder="Titulo Principal:"
                     />
 
                     <div className="contentCard">
@@ -316,22 +318,22 @@ export const CardPost = () => {
                         />
                     </div>
 
-                    <input
+                    <textarea
                         type="text"
                         name="sub_titulo_card"
                         value={subtitulo}
                         onChange={(e) => setSubtitulo(e.target.value)}
                         className="input_card"
-                        placeholder="Sub-titulo"
+                        placeholder="Sub-titulo:"
                     />
 
-                    <input
+                    <textarea
                         type="text"
                         name="parrafo_card"
                         value={descripcion}
                         onChange={(e) => setDescripcion(e.target.value)}
                         className="input_card"
-                        placeholder="Descripción"
+                        placeholder="Descripción:"
                     />
 
                     <div className="cont_inputs_card">

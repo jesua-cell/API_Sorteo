@@ -12,6 +12,7 @@ import pago_efectivo from '../assets/pago_efectivo.png'
 import { createJugador, getUsedNumbers } from "../api/submit.server.js";
 import { Modal } from '../components/Modal.jsx'
 import SelectImage from "../components/SelectImage.jsx";
+import toast from 'react-hot-toast';
 
 export const Sorteo = () => {
 
@@ -37,6 +38,8 @@ export const Sorteo = () => {
     //Estados de los numeros usados
     const [usedNumbers, setUsedNumbers] = useState([]);
 
+    // Estados para los mil o cien puestos
+    const [modoSorteo, setModoSorteo] = useState('1000');
 
     //Funcion para seleccionar los numeros en la lista
     // useEffect(() => {
@@ -75,20 +78,14 @@ export const Sorteo = () => {
     // }, [])
 
     //Funcion para seleccionar y desseleccionar
-    const toggleNumberSelec = (numero) => {
+    const toggleNumberSelec = (numMostrado) => {
+
+        const numAlmacenar = convFormAlmacemiento(numMostrado)
         setSelectNumbers(prev =>
-            prev.includes(numero)
-                ? prev.filter(n => n !== numero)
-                : [...prev, numero]
+            prev.includes(numAlmacenar)
+                ? prev.filter(n => n !== numAlmacenar)
+                : [...prev, numAlmacenar]
         );
-
-
-        //Mostrar todos los numeros
-        // if (listaRef.current) {
-        //     Array.from(listaRef.current.children).forEach(child => {
-        //         child.style.display = 'block'
-        //     })
-        // };
 
         setRawInput('');
         setSearchTerm('');
@@ -99,18 +96,7 @@ export const Sorteo = () => {
         const fetchUsedNumbers = async () => {
             try {
                 const usedNumbers = await getUsedNumbers();
-
                 setUsedNumbers(usedNumbers);
-
-                // if (listaRef.current) {
-                //     Array.from(listaRef.current.children).forEach(child => {
-                //         const numero = child.textContent;
-                //         if (usedNumbers.includes(numero)) {
-                //             child.classList.add('used')
-                //             child.dataset.used = true
-                //         }
-                //     })
-                // };
             } catch (error) {
                 console.log("error obteniedo los numeros usados", error);
                 setUsedNumbers([]);
@@ -119,7 +105,14 @@ export const Sorteo = () => {
         fetchUsedNumbers();
     }, [])
 
-
+    // Actualizar periodicamente los numeros
+    useEffect(() => {
+        const interval = setInterval(()=>{
+            getUsedNumbers().then(nums => setUsedNumbers(nums));
+        }, 10000);
+        return () => clearInterval(interval);
+    }, [])
+    
     //Filtro(input) para buscar numeros de la "lista"
     const handleSearch = (e) => {
 
@@ -216,6 +209,58 @@ export const Sorteo = () => {
         fetchValorVes();
     }, [])
 
+    // Funcion para obtener el Modo al cargar
+    useEffect(() => {
+
+        const fetchModoSorteo = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/modo_sorteo');
+                setModoSorteo(response.data.modo || '1000');
+            } catch (error) {
+                console.error("Error obteniendo la cantidad de los puestos", error);
+            }
+        };
+
+        fetchModoSorteo();
+    }, [])
+
+    // Funcion para generar numeros para mostrar
+    const triggerNum = () => {
+
+        if (modoSorteo === '100') {
+            return Array.from({ length: 100 }, (_, i) => {
+                return i === 99 ? '00' : String(i + 1).padStart(2, '0');
+            });
+        } else {
+            return Array.from({ length: 1000 }, (_, i) => {
+                return String(i).padStart(3, '0')
+            });
+        };
+    };
+
+    // Funcion para convertir a formato de almacenamiento de tres digitos
+    const convFormAlmacemiento = (numMostrado) => {
+
+        const num = parseInt(numMostrado)
+
+        if (modoSorteo === '100') {
+            if (num === 0 || numMostrado === '00') return '000';
+            return String(num).padStart(3, '0');
+        }
+        return numMostrado.padStart(3, '0');
+    };
+
+    // Funcion para convertir de almacenamiento a visualizacion
+    const convFormVisual = (numAlmacenado) => {
+        if (modoSorteo === '100') {
+            const num = parseInt(numAlmacenado);
+            if (num === 0) return '00';
+            return num <= 99 ? String(num).padStart(2, '0') : numAlmacenado
+        }
+        return numAlmacenado.padStart(3, '0');
+    };
+
+    // Calculo total de boletos
 
     //Funcion para calcular el monto total de pago segun el metodo de pago
     const calcularMontoTotal = () => {
@@ -308,9 +353,7 @@ export const Sorteo = () => {
                 monto_total: montoTotal,
                 cedula: cedula
             }
-
         });
-
     };
 
     const resetForm = () => {
@@ -346,26 +389,32 @@ export const Sorteo = () => {
 
 
 
+                    <div className='numUsedCount'>
+                        <label className='usedNumSorteo'>Numeros disponibles: {modoSorteo === '100' ? 100 : 1000 - usedNumbers.length}</label>
+                    </div>
                     <div className="lista" ref={listaRef}>
-                    <label className='usedNumSorteo'>Numeros disponibles: {(1000) - usedNumbers.length}</label>
-                        {Array.from({length: 1000}, (_, i) => {
-                            const displayNum =  String(i).padStart(3, '0');
-                            const isUsed = usedNumbers.includes(displayNum);
-                            const isSelected = selectNumbers.includes(displayNum);
-                            const isVisible = searchTerm === '' || displayNum.includes(searchTerm) || displayNum.replace(/^0+/, '').includes(searchTerm); 
+                        {triggerNum().map((numMostrado) => {
+                            const numAlmacenar = convFormAlmacemiento(numMostrado);
+                            const isUsed = usedNumbers.includes(convFormVisual(numAlmacenar));
+                            const isSelected = selectNumbers.includes(numAlmacenar);
+                            const isVisible =
+                                searchTerm === '' ||
+                                numMostrado.includes(searchTerm) ||
+                                numMostrado.replace(/^0+/, '').includes(searchTerm);
+
                             return (
-                                <div 
-                                className={`listaNumero ${isUsed ? 'used' : ''} ${isSelected ? 'selected' : ''} ${!isVisible ? 'hidden' : ''}`} 
-                                key={displayNum}
-                                data-used={isUsed}
-                                onClick={()=> !isUsed && toggleNumberSelec(displayNum)}
+                                <div
+                                    className={`listaNumero ${isUsed ? 'used' : ''} ${isSelected ? 'selected' : ''} ${!isVisible ? 'hidden' : ''}`}
+                                    key={numMostrado}
+                                    data-used={isUsed}
+                                    onClick={() => !isUsed && toggleNumberSelec(numMostrado)}
                                 >
-                                    {displayNum}
+                                    {numMostrado}
                                 </div>
-                            )
+                            );
                         })}
                     </div>
-                    
+
                     <div className='numerosSeleccionados'>
                         <div className='contentSeleccionados'>
                             <h4>Numeros Seleccionados:</h4>
@@ -380,6 +429,7 @@ export const Sorteo = () => {
                                 x
                             </button>
                         )}
+
                         <div className='btnSeleccionado'>
                             <div className="num_select">
                                 {selectNumbers.map((numero, index) => (
@@ -388,7 +438,7 @@ export const Sorteo = () => {
                                         className='num-item'
                                         onClick={() => toggleNumberSelec(numero)}
                                     >
-                                        {numero}
+                                        {convFormVisual(numero)}
                                     </span>
                                 ))}
                             </div>
@@ -398,6 +448,7 @@ export const Sorteo = () => {
                             {`COP: ${(selectNumbers.length * 35000).toLocaleString('es-CO')}`}
                         </div>
                     </div>
+                    {/* //TODO agregarle una animacion al contenedor cuando haya numeros */}
 
                     <form className='formDatos'>
                         <label className='labelForm'>Nombres y Apellidos:</label>
@@ -564,13 +615,15 @@ export const Sorteo = () => {
                             }
                         </div>
 
-                        <label className='labelForm'>Comprobante de Pago:</label>
-                        <SelectImage
-                            previewImage={previewImage}
-                            onFileChange={handleImageUpload}
-                            onRemoveImage={removeImage}
-                            buttonLabel='Subir: Foto / Captura de Pantalla'
-                        />
+                        <div className="contComprobantePago">
+                            <label className='labelForm'>Comprobante de Pago:</label>
+                            <SelectImage
+                                previewImage={previewImage}
+                                onFileChange={handleImageUpload}
+                                onRemoveImage={removeImage}
+                                buttonLabel='Subir: Foto / Captura de Pantalla'
+                            />
+                        </div>
                         <input
                             type="submit"
                             className='btnEnviar'
