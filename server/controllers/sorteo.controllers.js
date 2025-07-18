@@ -91,7 +91,12 @@ export const addJugadores = async (req, res) => {
 
         //Insertat boletos
         const numerosArray = JSON.parse(numeros);
-        const valoresBoletos = numerosArray.map(num => [num.padStart(3, '0'), jugadorResult.insertId]);
+        const valoresBoletos = numerosArray.map(num => {
+            const numInt = parseInt(num);
+            return [
+                isNaN(numInt) ? num.padStart(3, '0') : String(numInt).padStart(3, '0')
+            ];
+        });
 
         await pool.query(
             'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
@@ -154,9 +159,26 @@ export const addBoletos = async (req, res) => {
 //GET(Boletos)
 export const getBoletos = async (req, res) => {
 
+
     try {
+        const [modoResult] = await pool.query('SELECT modo FROM configuracion_sorteo LIMIT 1');
+        const modo = modoResult[0]?.modo || '1000';
+
         const [rows] = await pool.query('SELECT numero_boleto FROM numeros_boletos');
-        const usedNumbers = rows.map(row => row.numero_boleto.padStart(3, '0'));
+
+        const usedNumbers = rows.map(row => {
+            const num = parseInt(row.numero_boleto);
+            const normalized = isNaN(num) ? row.numero_boleto : String(num);
+
+            if (modo === '100') {
+                if (num === 0) return '00';
+                if (num <= 99) return String(num).padStart(2, '0');
+                return normalized.padStart(3, '0');
+            };
+
+            return normalized.padStart(3, '0');
+        });
+
         res.json(usedNumbers);
     } catch (error) {
         console.error(error);
@@ -303,7 +325,9 @@ export const updateJugador = async (req, res) => {
             .split(",")
             .map(b => b.trim())
             .filter(b => b !== '')
-            .map(b => b.padStart(4, '0'))
+            .map(b => {
+                return b.padStart(3, '0');
+            });
     } else if (Array.isArray(boletos)) {
         boletosArray = [...boletos];
     };
@@ -377,7 +401,14 @@ export const updateJugador = async (req, res) => {
 
             const toInsert = boletosArray.filter(num => !currentSet.has(num));
             if (toInsert.length > 0) {
-                const valoresBoletos = toInsert.map(num => [num, id]);
+                
+                const valoresBoletos = numerosArray.map(num => {
+                    const numInt = parseInt(num);
+                    return [
+                        isNaN(numInt) ? num.padStart(3, '0') : String(numInt).padStart(3, '0')
+                    ];
+                });
+
                 await connection.query(
                     'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
                     [valoresBoletos]
@@ -598,7 +629,7 @@ export const updateCardPub = async (req, res) => {
         };
 
         //Manejo de la imagen:pub
-        const card = newValuesCard[0];
+        const card = newValuesCardPut[0];
         let imageBase64 = null;
         if (card.imagen_pub) {
             imageBase64 = card.imagen_pub.toString('base64');
@@ -693,7 +724,7 @@ export const updateValores = async (req, res) => {
 };
 
 export const UpdateEstadoPago = async (req, res) => {
-    
+
     const { id } = req.params;
     const { estado_pago } = req.body;
 
@@ -704,8 +735,8 @@ export const UpdateEstadoPago = async (req, res) => {
             [estado_pago, id]
         );
 
-        if (result.affectedRows === 0) { 
-            return res.status(404).json({error: 'Jugador no encontrado'})
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Jugador no encontrado' })
         };
 
         res.json({
@@ -716,3 +747,39 @@ export const UpdateEstadoPago = async (req, res) => {
         console.error("Error en la actualizacion de estado de pago", error);
     }
 };
+
+// Obtener el numero de puestos
+export const getModoSorteo = async (req, res) => {
+
+    try {
+        const [rows] = await pool.query('SELECT modo from configuracion_sorteo LIMIT 1'); // Obtener el valor del 'modo'
+        res.json(rows[0] || { modo: '1000' }) // Se envia el valor de la tabla, y si no; se envia '1000'
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener el modo del sorteo' });
+    };
+};
+
+
+export const updateModoSorteo = async (req, res) => {
+
+    const { modo } = req.body;
+
+    try {
+
+        //verificar si existe el registro
+        const [check] = await pool.query('SELECT * FROM configuracion_sorteo');
+
+        if (check.length === 0) {
+            await pool.query('INSERT INTO configuracion_sorteo (modo) VALUES (?)', [modo]) // Si no hay registro, se insertara un nuevo modo
+        } else {
+            await pool.query('UPDATE configuracion_sorteo SET modo = ?', [modo]) // si ya existe, solo se actualiza el cmapo
+        };
+
+        res.json({ success: true, modo })
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener el modo del sorteo' });
+    }
+}; 

@@ -24,7 +24,9 @@ import {
     postValorVes,
     getValorVes,
     updateValores,
-    UpdateEstadoPago
+    UpdateEstadoPago,
+    getModoSorteo,
+    updateModoSorteo
 } from '../controllers/sorteo.controllers.js';
 
 
@@ -130,6 +132,8 @@ router.put('/valor', updateValores);
 
 router.put('/jugador/:id/estado_pago', UpdateEstadoPago);
 
+router.get('/modo_sorteo', getModoSorteo);
 
+router.put('/modo_sorteo', updateModoSorteo);
 
 export default router;
