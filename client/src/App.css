@@ -286,9 +286,10 @@ a {
     background-color: var(--fondoNavBar);
     display: flex;
     justify-content: space-evenly;
-    padding: 20px 0;
+    padding: 10px 0;
     width: 100%;
     min-width: 375px;
+    height: 60px;
 }
 
 .Footer a {
@@ -1270,8 +1271,8 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    overflow-y: scroll;
+    width: 100%;
+    min-width: 375px;
 }
 
 .contListaJugadores {
@@ -1282,20 +1283,78 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .contJugadores {
-    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
-.box_jugador {
-    width: 250%;
+.inventario {
+    display: none;
+}
+
+.table_jugadores {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: 90%;
+    min-width: 270px;
+    max-width: 90%;
+    margin: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: #d6d6d7 3px solid;
+}
+
+.contenido {
+    display: flex;
+    justify-content: center;
+    background-color: var(--fondoSesion);
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    font-size: 22px;
+}
+
+.table_jugadores .fila .columna {
+    display: flex;
+}
+
+.table_jugadores .fila .columna .header,
+.table_jugadores .fila .columna .contenido {
+    border-bottom: none;
+    padding: 13px;
+    border-bottom: 1px solid #b0b3b3;
+    font-weight: bold;
+}
+
+.table_jugadores .fila .columna .header {
+    font-size: 18px;
+    width: 40%;
+    background-color: var(--fondoSesion);
+    color: #00030f;
+}
+
+.header {
+    min-width: 120px;
+}
+
+.table_jugadores .fila .columna .contenido {
+    width: 60%;
+}
+
+
+/* .box_jugador {
+    width: 90%;
     height: auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
     border-top: 1px solid #191919;
-}
+} */
 
-.lista-datos {
+/* .lista-datos {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -1306,9 +1365,9 @@ input[type="number"]::-webkit-outer-spin-button {
     box-sizing: border-box;
     border: 1px solid #333;
 
-}
+} */
 
-.fila,
+/* .fila,
 .fila_monto {
     display: grid;
     align-items: center;
@@ -1332,13 +1391,19 @@ input[type="number"]::-webkit-outer-spin-button {
 .fila dd {
     font-weight: 400;
     font-size: 20px;
-}
+} */
 
 .fila_num {
-    margin: 4px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 80px;
+    height: 30px;
     font-weight: bold;
-    background-color: #be62ce;
-    border: 1px solid #c5cbf9;
+    font-size: 18px;
+    margin: 4px 4px;
+    background-color: #b91ed4;
+    color: #fff;
     border-radius: 5px;
     text-align: center;
 }
@@ -1519,6 +1584,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .cont_comprobante_img {
     position: relative;
     display: flex;
+    justify-content: center;
 }
 
 .zoom_comprobante {
@@ -1659,6 +1725,7 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     gap: 10px;
     margin-bottom: 27px;
+    height: auto;
 }
 
 .select_component {
@@ -1671,10 +1738,6 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.text_no_result {
-    margin: 10px 50px;
 }
 
 .text_no_result span {
@@ -1709,13 +1772,13 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Estilos de Edicion en los boletos */
 
-.input_edicion {
+/* .input_edicion {
     border: 2px solid #8598e4;
     opacity: 0.7;
     border-radius: 5px;
     padding: 3px;
     width: 90%;
-}
+} */
 
 .input_edicion_area {
     border: 2px solid #8598e4;
@@ -1732,10 +1795,22 @@ input[type="number"]::-webkit-outer-spin-button {
     justify-content: center;
 }
 
+.contBtnPagos button {
+    border: none;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
 .contPagos {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: auto;
+    width: 100%;
 }
 
 .btn_pago_pendiente,
@@ -1744,20 +1819,26 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 8px;
 }
 
+.img_btn_mb {
+    height: 22px;
+    width: 22px;
+    padding: 3px;
+}
+
 .btn_pago_pendiente {
     background-color: #fcfca0;
     padding: 5px;
 }
 
 .btn_pago_pagado {
-    background-color: #89ffb8;
+    background-color: #7fe6a8;
     padding: 5px;
 }
 
 .img_btn_pendiente,
 .img_btn_pagado {
-    height: 20px;
-    width: 20px;
+    height: 10px;
+    width: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1766,17 +1847,28 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .estado-pendiente {
     background-color: #fffce6;
+    height: 100%;
+    width: 100%;
 }
 
 .estado-pagado {
     background-color: #caffcc;
+    height: 100%;
+    width: 100%;
 }
 
+.input_edicion_mb {
+    width: 90%;
+    height: 30px;
+    border-radius: 5px;
+    outline: 1px;
+    padding: 4px;
+}
 
 /* Contenedor de Publicaicon del Sorteo */
 
 .contentCard {
-    margin-right: 15px;
+    margin-right: 0px;
 }
 
 .card {
@@ -1797,6 +1889,13 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100%;
+    background-color: #9b9a9a;
+    border-bottom: 2px solid #00030f;
+}
+
+.contPubUpload{
+    background-color: #b8b8b8;
 }
 
 
@@ -1806,11 +1905,12 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     justify-content: center;
     gap: 15px;
-    height: 420px;
+    min-height: 420px;
+    height: auto;
     width: 90%;
     min-width: 335px;
     margin: 15px;
-    background: var(--fondoTarjetaInicio);
+    background-color: #d6d6d6;
     border-radius: 10px;
     box-sizing: border-box;
     border: 2px solid #9d95b0;
@@ -1836,9 +1936,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .title_card_post {
     font-size: 35px;
-    color: #c1becb;
+    color: #28282a;
     text-align: center;
-    margin: 0px 15px;
+    margin: 0px;
+    padding-top: 20px;    
 }
 
 .SelectFileCard {
@@ -1862,6 +1963,14 @@ input[type="number"]::-webkit-outer-spin-button {
     height: auto;
     width: 286px;
     overflow-y: auto;
+    resize: none;
+    outline: 0.5px solid #00030f;
+}
+
+.input_card:focus {
+    border: 2px solid #b032b0;
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(176, 50, 176, 0.3); 
 }
 
 .input_card::placeholder {
@@ -1869,48 +1978,78 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: 600;
 }
 
+.input_card:nth-child(1) {
+    margin-top: 20px;
+}
+
 .input_card:nth-child(2) {
     margin-bottom: 20px;
+}
+
+.input_card::-webkit-scrollbar-button{
+    display: none;
 }
 
 .cont_inputs_card {
     display: flex;
     gap: 12px;
+    margin-bottom: 15px;
 }
 
 .btn-cardPost {
+    display: flex;
+    justify-content: center;
     border: none;
     font-size: 19px;
-    border-radius: 18px;
+    border-radius: 10px;
     padding: 8px 15px;
     font-weight: bold;
     color: #3355a5;
     border: 1px solid #3355a5;
     background-color: #191919;
+    height: auto;
+    width: 80%;
+}
+
+.img_btnCardPost{
+    height: 25px;
+    width: 25px;
+    filter: invert(1);
 }
 
 .btn-cardPost-editar {
-    border: none;
-    font-size: 19px;
-    border-radius: 18px;
-    padding: 8px 15px;
-    font-weight: bold;
-    color: #bda51e;
-    border: 1px solid #bda51e;
-    background-color: #191919;
-    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none !important;
+    border-radius: 7px !important;
+    background-color: #8c9df0;
+    height: 39px;
+    width: 42px;
+}
+
+.btn-cardPost-editar img{
+    height: 22px;
+    width: 22px;
 }
 
 .btn-cardPost-eliminar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: none;
-    font-size: 19px;
-    border-radius: 18px;
-    padding: 8px 15px;
-    font-weight: bold;
-    color: #c33963;
-    border: 1px solid #c33963;
-    background-color: #191919;
-    margin-bottom: 18px;
+    cursor: pointer;
+    border-radius: 7px !important;
+    border: none !important;
+    background-color: #cc9c9c;
+    height: 39px;
+    width: 42px;
+}
+
+.btn-cardPost-eliminar img{
+    height: 22px;
+    width: 22px;
 }
 
 .img_ejemplo_card {
@@ -1927,31 +2066,44 @@ input[type="number"]::-webkit-outer-spin-button {
     padding-bottom: 20px;
 }
 
+.p_noPub{
+    margin-top: 0px;
+    padding-top: 40px;
+    font-size: 35px;
+    color: #28282a;
+}
+
 /* Estado de Edicion de la Publicacion */
 .btn-cardPost-guardar {
-    border: none;
-    font-size: 19px;
-    border-radius: 18px;
-    padding: 8px 15px;
-    font-weight: bold;
-    color: #4f8fd8;
-    border: 2px solid #4f8fd8;
-    background-color: #191919;
-    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+    cursor: pointer;
+    border-radius: 7px !important;
+    background-color: #4643fa;
 }
 
 .btn-cardPost-cancelar {
-    border: none;
-    font-size: 19px;
-    border-radius: 18px;
-    padding: 8px 15px;
-    font-weight: bold;
-    color: #c33963;
-    border: 2px solid #c33963;
-    background-color: #191919;
-    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+    cursor: pointer;
+    border-radius: 7px !important;
+    background-color: #d67b04;
 }
 
+.btn-cardPost-cancelar img {
+    height: 25px;
+    width: 25px;
+}
+
+
+.btn-cardPost-guardar img {
+    height: 25px;
+    width: 25px;
+}
 
 /* Resolucion de Computador de Mesa */
 
@@ -1970,7 +2122,8 @@ input[type="number"]::-webkit-outer-spin-button {
         overflow-y: hidden;
         overflow-x: hidden;
         width: 10px;
-        height: 600px;
+        min-height: 600px;
+        height: auto;
     }
 
     /* inicio */
@@ -1991,14 +2144,14 @@ input[type="number"]::-webkit-outer-spin-button {
         transition: padding, font-size, color, 0.3s ease-in-out;
     }
 
-    .contContendido button {
+    /* .contContendido button {
         border: 2px solid #793072;
         transition: border 0.3s ease-in-out;
 
         &:hover {
             border: 3px solid #793072;
         }
-    }
+    } */
 
     .lista {
         height: 400px;
@@ -2161,6 +2314,7 @@ input[type="number"]::-webkit-outer-spin-button {
     /* Sesion */
 
     .cont_admins {
+        height: 100vh;
         background-color: #c5c7c9;
         overflow: auto;
     }
@@ -2296,6 +2450,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
     .btn_pago_pendiente {
         cursor: pointer;
+        padding: 5px;
     }
 
     .btn_pago_pendiente:active {
@@ -2326,26 +2481,28 @@ input[type="number"]::-webkit-outer-spin-button {
         background-color: #fafa0a;
     }
 
-    .contBtnPagos {
+    .contBtnPagos button {
         gap: 10px;
-        height: 38px;
-        width: 55px;
     }
 
     .input_edicion {
         width: 90%;
     }
 
-    .contPagos{
+    .contPagos {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: auto;
         width: 100%;
         height: 100%;
     }
 
-    .contPagos strong{
+    .contPagos strong {
         padding: 5px;
     }
 
-    .contBtnPagos{
+    .contBtnPagos {
         display: flex;
         width: 100%;
     }
@@ -2362,10 +2519,26 @@ input[type="number"]::-webkit-outer-spin-button {
         align-items: center;
     }
 
+    .img_btn_pendiente,
+    .img_btn_pagado {
+        height: 20px;
+        width: 20px;
+        padding: 3px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2px;
+    }
+
     .buscador_sesion {
         width: 40%;
         outline: none;
         border: none;
+    }
+
+    .cont_comprobante_img {
+        display: flex;
+        justify-content: center;
     }
 
     .contListaJugadores {
@@ -2377,9 +2550,15 @@ input[type="number"]::-webkit-outer-spin-button {
     .contJugadores {
         display: flex;
         width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .table_jugadores {
+        display: none;
     }
 
     .inventario {
+        display: block;
         border-collapse: collapse;
         background-color: #fafafa;
         margin-left: 10px;
@@ -2410,19 +2589,41 @@ input[type="number"]::-webkit-outer-spin-button {
         font-weight: 600;
         text-align: center;
         border-bottom: 3px solid #e2e3e4;
+        height: auto;
     }
 
     .td_id {
         font-weight: bold;
     }
 
+    .cont_boletos{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .td_boletos {
+        vertical-align: top;
+        width: 400px;
+        height: auto;
+    }
+
+    .fila_num {
+        display: flex;
+        justify-content: center;
+        width: 60px;
+        padding: 4px 0px;
+        border-bottom: 1px solid #ccc;
+    }
 
     .no_result {
         width: 100%;
     }
 
     .box_jugador {
-        display: flex;
+        display: none;
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -2439,7 +2640,7 @@ input[type="number"]::-webkit-outer-spin-button {
         border-radius: 10px;
     }
 
-    .lista-datos {
+    /* .lista-datos {
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
@@ -2450,7 +2651,7 @@ input[type="number"]::-webkit-outer-spin-button {
         box-sizing: border-box;
         border: 1px solid #333;
         background: #ffffff;
-    }
+    } */
 
     /* .fila,
     .fila_monto {
@@ -2465,16 +2666,8 @@ input[type="number"]::-webkit-outer-spin-button {
         padding-left: 8px;
     } */
 
-    .fila_num {
-        font-weight: bold;
-        margin: 4px 0px;
-        padding: 3px 8px;
-        background-color: #9332a2;
-        color: #fff;
-        border-radius: 6px;
-        margin: 2px;
-        text-align: center;
-    }
+
+
 
     /* Cuentas de pago */
     .contCuentasPago {
@@ -2502,14 +2695,16 @@ input[type="number"]::-webkit-outer-spin-button {
     .card {
         display: flex;
         flex-direction: column;
-        align-content: space-around;
+        align-content: center;
         height: 120vh;
     }
 
     .contContendidoCard {
         overflow-y: hidden;
-        height: 770px;
+        min-height: 770px;
+        height: auto;
         width: 40%;
+        margin-bottom: 50px;
     }
 
     .contContendidoCardEjemplo {
@@ -2541,8 +2736,12 @@ input[type="number"]::-webkit-outer-spin-button {
         margin: 15px 0px;
     }
 
+    .btn-cardPost{
+        cursor: pointer;
+    }
+
     .contContendido {
-        height: auto;
+        height: auto !important;
         overflow-y: scroll;
         overflow-wrap: break-word;
         word-wrap: break-word;

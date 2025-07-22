@@ -4,6 +4,12 @@ import { Toaster, toast } from "react-hot-toast";
 import SelectImage from "../../components/SelectImage.jsx";
 import imageCard from "../../assets/ima_sorteo_card_ejemplo.png";
 
+import borrar from "../../assets/borrar.png";
+import error from "../../assets/error.png";
+import boton_editar2 from "../../assets/boton_editar2.png";
+import subir from "../../assets/subir.png"
+import guardar_carpeta2 from "../../assets/guardar_carpeta2.png"
+
 export const CardPost = () => {
 
     //Estado para la creacion, seletImage 
@@ -292,12 +298,13 @@ export const CardPost = () => {
             />
 
             {/* Formulario para CREAR nueva publicación */}
-            <h1 className="title_card_post">Publicaciones del Sorteo</h1>
             <div className="contContenidoCardPub" style={{ opacity: isEditing ? 0.5 : 1, pointerEvents: isEditing ? 'none' : 'all' }}>
-                <div className="contContendidoCardEjemplo">
+                <h1 className="title_card_post">Publicaciones del Sorteo</h1>
+                {/* <div className="contContendidoCardEjemplo">
                     <label style={{ fontWeight: '700', opacity: '0.8', textAlign: 'center' }}>Referencia de Publicación</label>
                     <img className="img_ejemplo_card" src={imageCard} alt="Sorteo" />
-                </div>
+                </div> */}
+
                 <div className='contContendidoCard'>
 
                     <textarea
@@ -337,119 +344,132 @@ export const CardPost = () => {
                     />
 
                     <div className="cont_inputs_card">
-                        <input
+                        <button
                             type="submit"
                             className="btn-cardPost"
                             value='Subir'
                             onClick={handleSubmit}
-                        />
+                        >
+                            <img src={subir} className='img_btnCardPost' />
+                        </button>
                     </div>
                 </div>
             </div>
 
             {/* Lista de publicaciones existentes */}
-            {cardData.length > 0 ? (
-                <div className="card">
-                    {cardData.map((card, index) => (
-                        <div key={index} className='contContendido'>
-                            {editingID === card.id ? (
-                                // MODO EDICIÓN
-                                <>
-                                    <input
-                                        type="text"
-                                        value={tempData.titulo_p}
-                                        onChange={(e) => setTempData({ ...tempData, titulo_p: e.target.value })}
-                                        className="input_card"
-                                        placeholder="Título Principal"
-                                        style={{ marginBottom: '25px' }}
-                                    />
+            <div className="contPubUpload">
+                <h1 className='title_card_post'>Publicados:</h1>
+                {cardData.length > 0 ? (
+                    <div className="card">
+                        {cardData.map((card, index) => (
+                            <div key={index} className='contContendido'>
+                                {editingID === card.id ? (
+                                    // MODO EDICIÓN
+                                    <>
+                                        <textarea
+                                            type="text"
+                                            value={tempData.titulo_p}
+                                            onChange={(e) => setTempData({ ...tempData, titulo_p: e.target.value })}
+                                            className="input_card"
+                                            placeholder="Título Principal"
+                                            style={{ marginBottom: '0px', marginTop: '25px' }}
+                                        />
 
-                                    <div className="contentCard">
-                                        <SelectImage
-                                            key={`edit-${card.id}`}
-                                            previewImage={editPreviewImage}
-                                            onFileChange={handleEditImageUpload}
-                                            onRemoveImage={removeEditImage}
-                                            buttonLabel='Cambiar Imagen'
-                                        />
-                                    </div>
+                                        <div className="contentCard">
+                                            <SelectImage
+                                                key={`edit-${card.id}`}
+                                                previewImage={editPreviewImage}
+                                                onFileChange={handleEditImageUpload}
+                                                onRemoveImage={removeEditImage}
+                                                buttonLabel='Cambiar Imagen'
+                                            />
+                                        </div>
 
-                                    <textarea
-                                        type="text"
-                                        value={tempData.subtitulo_p}
-                                        onChange={(e) => setTempData({ ...tempData, subtitulo_p: e.target.value })}
-                                        className="input_card"
-                                        placeholder="Sub-título"
-                                        style={{ marginBottom: '25px', marginTop: '18px' }}
-                                    />
+                                        <textarea
+                                            type="text"
+                                            value={tempData.subtitulo_p}
+                                            onChange={(e) => setTempData({ ...tempData, subtitulo_p: e.target.value })}
+                                            className="input_card"
+                                            placeholder="Sub-título"
+                                            style={{ marginBottom: '25px', marginTop: '18px' }}
+                                        />
 
-                                    <textarea
-                                        type="text"
-                                        value={tempData.descripcion_p}
-                                        onChange={(e) => setTempData({ ...tempData, descripcion_p: e.target.value })}
-                                        className="input_card"
-                                        placeholder="Descripción"
-                                        style={{ marginBottom: '25px' }}
-                                    />
+                                        <textarea
+                                            type="text"
+                                            value={tempData.descripcion_p}
+                                            onChange={(e) => setTempData({ ...tempData, descripcion_p: e.target.value })}
+                                            className="input_card"
+                                            placeholder="Descripción"
+                                            style={{ marginBottom: '25px' }}
+                                        />
 
-                                    <div className="cont_inputs_card">
-                                        <input
-                                            type="submit"
-                                            className="btn-cardPost-guardar"
-                                            value='Guardar'
-                                            onClick={() => handleSaveEdit(card.id)}
-                                        />
-                                        <input
-                                            type="submit"
-                                            className="btn-cardPost-cancelar"
-                                            value='Cancelar'
-                                            onClick={handleCancelEdit}
-                                        />
-                                    </div>
-                                </>
-                            ) : (
-                                // MODO VISUALIZACIÓN
-                                <>
-                                    <h1 className='titulo_sorteo'>{card.titulo_p}</h1>
-                                    {card.imagen_pub && (
-                                        <img
-                                            src={`data:image/*;base64,${card.imagen_pub}`}
-                                            alt='Imagen del sorteo'
-                                        />
-                                    )}
-                                    <h2>{card.subtitulo_p}</h2>
-                                    <p>{card.descripcion_p}</p>
-                                    <button className='btn-inicio' type="button">
-                                        <>Lista de Boletos</>
-                                    </button>
-                                    <label style={{ fontWeight: '700', opacity: '0.7', marginBottom: '20px' }}>
-                                        "Botón solo de referencia"
-                                    </label>
+                                        <div className="cont_inputs_card">
+                                            <button
+                                                type="submit"
+                                                className="btn-cardPost-guardar"
+                                                value='Guardar'
+                                                onClick={() => handleSaveEdit(card.id)}
+                                            >
+                                                <img src={guardar_carpeta2} className='img_cardPost-guardar' />
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="btn-cardPost-cancelar"
+                                                value='Cancelar'
+                                                onClick={handleCancelEdit}
+                                            >
+                                                <img src={error} />
+                                            </button>
+                                        </div>
+                                    </>
+                                ) : (
+                                    // MODO VISUALIZACIÓN
+                                    <>
+                                        <h1 className='titulo_sorteo'>{card.titulo_p}</h1>
+                                        {card.imagen_pub && (
+                                            <img
+                                                src={`data:image/*;base64,${card.imagen_pub}`}
+                                                alt='Imagen del sorteo'
+                                            />
+                                        )}
+                                        <h2>{card.subtitulo_p}</h2>
+                                        <p>{card.descripcion_p}</p>
+                                        <button className='btn-inicio' type="button">
+                                            <>Lista de Boletos</>
+                                        </button>
+                                        <label style={{ fontWeight: '700', opacity: '0.7', marginBottom: '20px' }}>
+                                            "Botón solo de referencia"
+                                        </label>
 
-                                    <div className="cont_inputs_card">
-                                        <input
-                                            type="submit"
-                                            className="btn-cardPost-editar"
-                                            value='Editar'
-                                            onClick={() => handleActivateEdit(card)}
-                                        />
-                                        <input
-                                            type="submit"
-                                            className="btn-cardPost-eliminar"
-                                            value='Eliminar'
-                                            onClick={() => handleDelete(card.id)}
-                                        />
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <div className="no_pub">
-                    <p>No hay Publicaciones guardadas</p>
-                </div>
-            )}
+                                        <div className="cont_inputs_card">
+                                            <button
+                                                type="submit"
+                                                className="btn-cardPost-editar"
+                                                value='Editar'
+                                                onClick={() => handleActivateEdit(card)}
+                                            >
+                                                <img src={boton_editar2} />
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="btn-cardPost-eliminar"
+                                                value='Eliminar'
+                                                onClick={() => handleDelete(card.id)}
+                                            >
+                                                <img src={borrar} />
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="no_pub">
+                        <p className='p_noPub'>No hay Publicaciones guardadas</p>
+                    </div>
+                )}
+            </div>
         </>
     )
 }

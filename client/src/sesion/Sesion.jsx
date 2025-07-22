@@ -632,7 +632,7 @@ export const Sesion = () => {
                                                     jugador.referenciaPago
                                                 )}
                                             </td>
-                                            <td>
+                                            <td className="td_boletos">
                                                 {editingID === jugador.id ? (
                                                     <input
                                                         type="text"
@@ -641,28 +641,30 @@ export const Sesion = () => {
                                                         onChange={(e) => setTempData({ ...tempData, boletos: e.target.value })}
                                                     />
                                                 ) : (
-                                                    jugador.boletos && jugador.boletos.map((boleto, index) => {
-                                                        const num = parseInt(boleto);
+                                                    <div className="cont_boletos">
+                                                        {jugador.boletos && jugador.boletos.map((boleto, index) => {
+                                                            const num = parseInt(boleto);
 
-                                                        let numVisual;
-                                                        if (modoSorteo === '100') {
-                                                            if (num === 0) {
-                                                                numVisual = '00';
-                                                            } else if (num <= 99) {
-                                                                numVisual = String(num).padStart(2, '0');
+                                                            let numVisual;
+                                                            if (modoSorteo === '100') {
+                                                                if (num === 0) {
+                                                                    numVisual = '00';
+                                                                } else if (num <= 99) {
+                                                                    numVisual = String(num).padStart(2, '0');
+                                                                } else {
+                                                                    numVisual = boleto.padStart(3, '0');
+                                                                }
                                                             } else {
                                                                 numVisual = boleto.padStart(3, '0');
                                                             }
-                                                        } else {
-                                                            numVisual = boleto.padStart(3, '0');
-                                                        }
 
-                                                        return (
-                                                            <span key={`${jugador.id}-${index}`} className="fila_num">
-                                                                {numVisual}
-                                                            </span>
-                                                        );
-                                                    })
+                                                            return (
+                                                                <div key={`${jugador.id}-${index}`} className="fila_num">
+                                                                    {numVisual}
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
                                                 )}
                                             </td>
                                             {/* Monto Total */}
@@ -706,6 +708,7 @@ export const Sesion = () => {
                                             <td>
                                                 <div className="lista_btns">
                                                     {/**Botones: */}
+
                                                     {/**Borrar: */}
                                                     <button
                                                         className="btn_eliminar_sesion"
@@ -744,6 +747,303 @@ export const Sesion = () => {
                                     ))}
                                 </tbody>
                             </table>
+
+                            {filterJugadores.map((jugador) => (
+                                <div key={`jugador-mobile-${jugador.id}`} className="table_jugadores">
+                                    {/* ID */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">ID</div>
+                                            <div className="contenido">
+                                                {jugador.id}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/*Nombre */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Nombre</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <input
+                                                        type="text"
+                                                        className="input_edicion_mb"
+                                                        value={tempData.nombres_apellidos}
+                                                        onChange={(e) => setTempData({ ...tempData, nombres_apellidos: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    jugador.nombres_apellidos
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/*Celular */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Celular</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <input
+                                                        type="text"
+                                                        className="input_edicion_mb"
+                                                        value={tempData.celular}
+                                                        onChange={(e) => setTempData({ ...tempData, celular: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    jugador.celular
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/*Cedula */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Cedula</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <input
+                                                        type="text"
+                                                        className="input_edicion_mb"
+                                                        value={tempData.cedula}
+                                                        onChange={(e) => setTempData({ ...tempData, cedula: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    jugador.cedula
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/*Ciudad-Estado-Pais */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Ciudad - Pais</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <input
+                                                        type="text"
+                                                        className="input_edicion_mb"
+                                                        value={tempData.pais_estado}
+                                                        onChange={(e) => setTempData({ ...tempData, pais_estado: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    jugador.pais_estado
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/*Metodo de Pago */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Metodo de Pago</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <input
+                                                        type="text"
+                                                        className="input_edicion_mb"
+                                                        value={tempData.metodo_pago}
+                                                        onChange={(e) => setTempData({ ...tempData, metodo_pago: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    jugador.metodo_pago
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Comprobante */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Comprobante</div>
+                                            <div className="contenido">
+                                                {jugador.comprobante_url ? (
+                                                    <div className="cont_comprobante_img">
+                                                        <a
+                                                            className="targe_comprobante"
+                                                            href={jugador.comprobante_url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        >
+                                                            <img src={zoom} className="zoom_comprobante" />
+                                                            <img
+                                                                className="comprobante_img"
+                                                                src={jugador.comprobante_url}
+                                                                alt="Comprobante"
+                                                            />
+                                                        </a>
+                                                    </div>
+                                                ) : (
+                                                    "Sin Comprobante"
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/*Referencia */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Referencia</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <input
+                                                        type="text"
+                                                        className="input_edicion_mb"
+                                                        value={tempData.referenciaPago}
+                                                        onChange={(e) => setTempData({ ...tempData, referenciaPago: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    jugador.referenciaPago
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Boletos */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Boleto</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <input
+                                                        type="text"
+                                                        className="input_edicion"
+                                                        value={tempData.boletos}
+                                                        onChange={(e) => setTempData({ ...tempData, boletos: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    jugador.boletos.map((boleto, index) => {
+                                                        const num = parseInt(boleto);
+
+                                                        let numVisual;
+                                                        if (modoSorteo === '100') {
+                                                            if (num === 0) {
+                                                                numVisual = '00';
+                                                            } else if (num <= 99) {
+                                                                numVisual = String(num).padStart(2, '0');
+                                                            } else {
+                                                                numVisual = boleto.padStart(3, '0');
+                                                            }
+                                                        } else {
+                                                            numVisual = boleto.padStart(3, '0');
+                                                        }
+
+                                                        return (
+                                                            <div key={`${jugador.id}-${index}`} className="fila_num">
+                                                                {numVisual}
+                                                            </div>
+                                                        );
+                                                    })
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Monto Total */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Monto Total</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <input
+                                                        type="text"
+                                                        className="input_edicion"
+                                                        value={tempData.monto_total}
+                                                        onChange={(e) => setTempData({ ...tempData, monto_total: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <div className={jugador.estado_pago === 'pendiente' ? 'estado-pendiente' : 'estado-pagado'}>
+                                                        <strong>{formatoLatino(jugador.monto_total)}</strong>
+                                                        <div className="contBtnPagos">
+                                                            <button
+                                                                onClick={() => togglePago(jugador.id, 'pendiente')}
+                                                                className="btn_pago_pendiente"
+                                                            >
+                                                                <img src={reloj} alt="Pendiente" className="img_btn_mb" />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => togglePago(jugador.id, 'pagado')}
+                                                                className="btn_pago_pagado"
+                                                            >
+                                                                <img src={cheque} alt="Pagado" className="img_btn_mb" />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/*Fecha */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Fecha</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <input
+                                                        type="text"
+                                                        className="input_edicion_mb"
+                                                        value={tempData.fecha_registro}
+                                                        onChange={(e) => setTempData({ ...tempData, fecha_registro: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    jugador.fecha_registro
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/**Acciones */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Acciones</div>
+                                            <div className="contenido">
+                                                <div className="lista_btns">
+                                                    {/**Botones: */}
+
+                                                    {/**Borrar: */}
+                                                    <button
+                                                        className="btn_eliminar_sesion"
+                                                        onClick={() => handleEliminar(jugador.id)}
+                                                    >
+                                                        <img src={borrar} alt="borrar" />
+                                                    </button>
+                                                    {/**Editar */}
+                                                    {editingID === jugador.id ? (
+                                                        <>
+                                                            <button
+                                                                className="btn_guardar_sesion"
+                                                                onClick={() => handleguardarCambios(jugador.id)}
+                                                            >
+                                                                <img src={sav} alt="guardar" />
+                                                            </button>
+
+                                                            <button
+                                                                className="btn_cancel_sesion"
+                                                                onClick={handleCancelEditar}
+                                                            >
+                                                                <img src={error} alt="cancelar" />
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        <button
+                                                            className="btn_editar_sesion"
+                                                            onClick={() => handleActivarEdicion(jugador)}
+                                                        >
+                                                            <img src={editar} alt="editar" />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            ))}
+
                             {/* {filterJugadores.map(jugador => (
                                 <div className="box_jugador" key={`jugador-${jugador.id}`}>
                                     <dl className="lista-datos" key={`lista-datos-${jugador.id}`}>
