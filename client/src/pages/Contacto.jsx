@@ -11,7 +11,7 @@ export const Contacto = () => {
                 <div className="itemFooter">
                     <a href="#" className="a_footer">
                         <img src={internet} alt="website" className="img_footer" />
-                        <p>laOrquedea.com</p>
+                        <p>laOrquídea.com</p>
                     </a>
                     <a href="#" className="a_footer">
                         <img src={whatsapp_alt} alt="whatsApp" className="img_footer" />

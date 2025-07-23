@@ -8,6 +8,8 @@ import reloj from "../assets/reloj.png";
 import cheque from "../assets/cheque.png";
 import buscar from "../assets/buscar.png";
 import zoom from "../assets/zoom.png";
+import users from "../assets/users.png";
+import puestos from "../assets/puestos.png";
 
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
@@ -434,10 +436,25 @@ export const Sesion = () => {
                 {/* Informacion del Sorteo */}
                 <div className="contInventario">
                     <div className="contInfoSorteo">
-                        <p className="infoSorteoText">Numero Jugadores: <strong>{jugadores.length}</strong> de 1000</p>
-                        <p className="infoSorteoText">Puestos Jugadores pendientes: <strong>{1000 - jugadores.length}</strong></p>
-                        <p className="infoSorteoText">Numeros seleccionados: <strong>{totalBoletos}</strong> de 1000</p>
-                        <p className="infoSorteoText">Numeros disponibles: <strong>{Math.max(0, 1000 - totalBoletos)}</strong> de 1000</p>
+                        <div className="logoUsers">
+                            <h3 className="title_infoSorteo">Jugadores:</h3>
+                            <img src={users} className="img_users" />
+                            <p className="infoSorteoText"><strong>{jugadores.length}</strong> de 1000</p>
+                        </div>
+                        <div className="dataInventario">
+                            <p className="infoSorteoText">Jugadores Restantes: <strong>{1000 - jugadores.length}</strong></p>
+                        </div>
+                    </div>
+
+                    <div className="contInfoSorteo">
+                        <div className="logoPuestos">
+                            <h3 className="title_infoSorteo">Puestos:</h3>
+                            <img src={puestos} className="img_puestos" />
+                            <p className="infoSorteoText"><strong>{totalBoletos}</strong> de 1000</p>
+                        </div>
+                        <div className="dataInventario">
+                            <p className="infoSorteoText">Puestos disponibles: <strong>{Math.max(0, 1000 - totalBoletos)}</strong></p>
+                        </div>
                     </div>
 
                     <div className="boxValor">

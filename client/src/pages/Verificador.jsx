@@ -42,23 +42,18 @@ export const Verificador = () => {
             return;
         };
 
-
-
-
         const busquedaNormalizada = Busquedad.trim().toLocaleLowerCase().replace(/\s+/g, '');
 
         const jugador = jugadores.find((j) => {
-
             const celularNormalizado = (j.celular || '').toLocaleLowerCase().replace(/\s+/g, '');
+            if (celularNormalizado === busquedaNormalizada) return true;
 
-            const boletos = (j.boletos || []).some((boleto) =>
-                boleto.toLowerCase().replace(/\s+/g, '') === busquedaNormalizada
+            const boletos = j.boletos || [];
+
+            return boletos.some(boleto =>
+                boleto.toLocaleLowerCase().replace(/\s+/g, '') === busquedaNormalizada
             );
-
-            return celularNormalizado === busquedaNormalizada
-                || boletos;
         });
-
 
         if (jugador) {
             setJugadorEncontrado(jugador);
@@ -79,13 +74,12 @@ export const Verificador = () => {
             return celularClean;
         };
 
-        const primeros_5 = celularClean.slice(0, 5);
+        const primeros_3 = celularClean.slice(0, 3);
         const ultimos_2 = celularClean.slice(-2);
         const numHash = celularClean.length - 7;
 
-        return `${primeros_5}${'#'.repeat(numHash)}${ultimos_2}`
+        return `${primeros_3}${'#'.repeat(numHash)}${ultimos_2}`
     };
-
 
     return (
         <>
@@ -120,7 +114,9 @@ export const Verificador = () => {
                         <label className="lbl_v">Puestos:</label>
                         <div className="contVerificadorBoletos">
                             {jugadorEncontrado.boletos.map((boleto, index) => (
-                                <p className="boletos_verificador" key={index}>{boleto}</p>
+                                <p className="boletos_verificador" key={index}>
+                                    {boleto}
+                                </p>
                             ))}
                         </div>
                     </div>
