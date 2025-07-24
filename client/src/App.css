@@ -52,15 +52,20 @@ body {
 }
 
 .NavBar a {
-    color: var(--colorTexto);
+    color: #f4f4f4;
     text-decoration: none;
     padding: 10px 20px;
-    margin: 5px 5px 5px 15px;
+    margin: 5px 5px 10px 15px;
     width: 310px;
-    border-radius: 8px;
     font-weight: bold;
     font-size: 25px;
-    background-color: var(--fondoEnlaces);
+    box-shadow: 0 0 0 2px rgba(239, 60, 245, 0.3);
+
+    transition: background-color 0.3s ease-in-out;
+
+    &:active {
+        background-color: #fafafa;
+    }
 }
 
 .logo_orquidea {
@@ -69,7 +74,6 @@ body {
     margin-top: 6px;
     object-fit: cover;
 }
-
 
 /* Menu Hamburguesa */
 
@@ -102,8 +106,10 @@ body {
 }
 
 .nav_item a {
-    background: var(--fondoEnlaces);
+    background-color: #37092f;
     opacity: 1;
+    border: 2px solid;
+    border-image: linear-gradient(45deg, #df32c5, #ca2e40) 1;
 }
 
 .nav_toggle {
@@ -156,8 +162,8 @@ body {
 }
 
 
-/* //* Inicio */
 
+/* //* Inicio */
 
 .contTarjeta {
     display: flex;
@@ -789,7 +795,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-bottom: 10px;
 }
 
-.labelForm:nth-child(1){
+.labelForm:nth-child(1) {
     margin-top: 20px;
 }
 
@@ -844,7 +850,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-bottom: 20px;
 }
 
-.contComprobantePago{
+.contComprobantePago {
     background-color: var(--fondoSesion);
     width: 96%;
     margin: 0px 5px 0px 5px;
@@ -1731,20 +1737,20 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: #fafafa;
 }
 
-.dataInventario{
+.dataInventario {
     display: flex;
     flex-direction: column;
     width: 50%;
 }
 
-.logoUsers{
+.logoUsers {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 50%;
 }
 
-.logoPuestos{
+.logoPuestos {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1837,8 +1843,12 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 20px !important;
     font-weight: 520 !important;
     border-radius: 10px !important;
-    width: 350px !important;
+    width: 343px !important;
     cursor: pointer !important;
+}
+
+.privados_toggle {
+    display: none;
 }
 
 /* Estilos de Edicion en los boletos */
@@ -2203,6 +2213,176 @@ input[type="number"]::-webkit-outer-spin-button {
 
 @media(min-width: 768px) {
 
+    /* Menu Hamburguesa */
+    .nav_toggle,
+    .nav_backdrop {
+        display: none !important;
+    }
+
+    /* Convertir menú a navbar horizontal */
+    .nav_item {
+        position: static;
+        flex-direction: row;
+        height: auto;
+        width: 75%;
+        transform: none !important;
+        background: transparent;
+        margin-top: 0;
+    }
+
+    /* Estilo para los enlaces en escritorio */
+    .nav_item a {
+        padding: 10px 10px;
+        text-align: center;
+        margin: 0 5px;
+        background: linear-gradient(225deg, rgb(107, 25, 97) 9%, rgba(122, 16, 16, 0.74) 74%);
+        font-size: 16px;
+        color: white !important;
+    }
+
+    /* Posicionar elementos del navbar */
+    .NavBar {
+        display: flex;
+        height: auto;
+        align-items: center;
+        padding: 0 20px;
+        width: 97.3%;
+    }
+
+    .NavBar a {
+        font-size: 18px;
+        width: 14%;
+    }
+
+    /* Estilos para la sección del admin */
+    .enlaces_admin {
+        position: relative;
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+        padding-left: 15px !important;
+        width: 15% !important;
+    }
+
+    .logout-btn {
+        margin-left: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+
+    .logout-btn label {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .admin-name {
+        margin: 0px;
+        font-size: 14px;
+        opacity: 0.8;
+        font-size: 19px;
+    }
+
+    .itemPrivados {
+        position: absolute;
+        bottom: -84px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 64px;
+        width: 100%;
+        padding: 10px 0px;
+        opacity: 1;
+        background: linear-gradient(225deg, rgb(85, 85, 85) 9%, rgba(23, 22, 22, 0.74) 74%);
+        overflow-x: hidden;
+        /* transition: opacity 0.3s ease-in-out; */
+    }
+
+    .itemPrivados>* {
+        margin: 0px 8px;
+    }
+
+    .enlaces_admin {
+        border-left: none !important;
+        padding-left: 0 !important;
+    }
+
+    .logout-btn {
+        margin-left: 10px !important;
+        margin-right: 12px;
+        width: 10%;
+        font-size: 18px;
+        padding: 10px 0px;
+    }
+
+    /* Toggle */
+
+    .privados_toggle {
+        position: absolute;
+        bottom: -115px;
+        left: 50%;
+        transform: translateX(-50%);
+        cursor: pointer;
+        z-index: 1000;
+        background: #c6c5c6;
+        opacity: 0.8;
+        border-radius: 50%;
+        padding: 5px;
+        width: 35px;
+        height: 35px;
+        object-fit: contain;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+            0.1em 0.1em 1em rgba(201, 200, 200, 0.5);
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .privados_toggle.position_top {
+        bottom: auto;
+        top: 74px;
+        margin-top: 5px;
+    }
+
+    .itemPrivados.NotFondo {
+        height: 0;
+        padding: 0;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .toggle_icon {
+        width: 24px;
+        height: 24px;
+        transition: transform 0.3s ease;
+    }
+
+    .rotated {
+        transform: rotate(180deg);
+        bottom: -90px;
+    }
+
+    .privados_toggle:hover {
+        opacity: 1;
+    }
+
+    .privados_content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 64px;
+        width: 100%;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .privados_content.collapsed {
+        height: 0;
+        opacity: 0;
+        display: flex;
+    }
+
     /* Inicio */
 
     .contTarjeta {
@@ -2218,6 +2398,11 @@ input[type="number"]::-webkit-outer-spin-button {
         width: 10px;
         min-height: 600px;
         height: auto;
+    }
+
+    .itemPrivados.NotFondo {
+        background-color: transparent !important;
+        opacity: 0;
     }
 
     /* inicio */
@@ -2317,7 +2502,7 @@ input[type="number"]::-webkit-outer-spin-button {
         font-size: 21px;
     }
 
-    .labelForm:nth-child(1){
+    .labelForm:nth-child(1) {
         margin-top: 20px;
     }
 
@@ -2325,10 +2510,10 @@ input[type="number"]::-webkit-outer-spin-button {
         margin-left: 20px;
     }
 
-    .span_medioPago{
+    .span_medioPago {
         margin-left: 20px;
     }
-    
+
     .tabs {
         width: 100%;
         gap: 20px;
@@ -2464,12 +2649,12 @@ input[type="number"]::-webkit-outer-spin-button {
         border-radius: 10px;
     }
 
-    .logoUsers{
+    .logoUsers {
         display: flex;
         flex-direction: column;
     }
 
-    .img_users{
+    .img_users {
         height: 59px;
         width: 59px;
     }

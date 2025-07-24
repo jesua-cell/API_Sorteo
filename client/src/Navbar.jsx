@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import logoutIcon from "./assets/cerrar-sesion.png";
 import logo from "./assets/logo_or.png";
+import usuario from "./assets/usuario.png";
+import flecha_arriba_med from "./assets/flecha_arriba_med.png";
 import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
@@ -10,6 +12,7 @@ export const Navbar = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [adminName, setAdminName] = useState('');
+  const [privadoVisible, setPrivadoVisible] = useState(true);
 
   useEffect(() => {
 
@@ -81,21 +84,37 @@ export const Navbar = () => {
           <Link
             to={"/verificador"}
             onClick={closeMenu}
+            className='a_navbar'
           >Verificador</Link>
 
           {/* Enlaces Privados */}
           {adminName && (
             <>
-              <Link className='enlaces_admin' to={"/card_post"} onClick={closeMenu}>Publicación de Sorteo</Link>
-              <Link className='enlaces_admin' to={"/sesion"} onClick={closeMenu}>Inventario</Link>
-              <button onClick={handleLogout} className='logout-btn'>
-                <img className='icon-logout' src={logoutIcon} />
-                Cerrar sesion
-              </button>
-              <span className='admin-name'>{adminName}</span>
+              <div className={`itemPrivados ${!privadoVisible ? 'NotFondo' : ''}`}>
+
+                <div className={`privados_content ${!privadoVisible ? 'collapsed' : ''}`}>
+
+                  <Link className='enlaces_admin' to={"/sesion"} onClick={closeMenu}>Inventario</Link>
+                  <Link className='enlaces_admin' to={"/card_post"} onClick={closeMenu}>Publicación de Sorteo</Link>
+                  <button onClick={handleLogout} className='logout-btn'>
+                    <img className='icon-logout' src={logoutIcon} />
+                    <label>Cerrar sesion</label>
+                  </button>
+                  <span className='admin-name'>{adminName}</span>
+
+                </div>
+
+              </div>
+
+              <div className={`privados_toggle ${!privadoVisible ? 'position_top' : ' '}` } onClick={() => setPrivadoVisible(!privadoVisible)}>
+                <img src={flecha_arriba_med}
+                  alt='toggle menu'
+                  className={`toggle_icon ${!privadoVisible ? 'rotated' : ''}`}
+                />
+              </div>
+
             </>
           )}
-
         </div>
 
         <div className={`nav_toggle ${isOpen && "open"}`} onClick={() => setIsOpen(!isOpen)}>
