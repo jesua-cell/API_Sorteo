@@ -21,29 +21,77 @@ export const mainSorteo = async (req, res) => {
 //GET(Jugadores)
 export const getJugadores = async (req, res) => {
     try {
-        const [jugadores] = await pool.query(`
+
+        const searchTerm = req.query.search || '';
+
+        let query = `
             SELECT 
                 j.*,
-                j.estado_pago,
+                GROUP_CONCAT(nb.numero_boleto) AS boletos,
                 MIN(nb.fecha_asignacion) AS fecha_registro
             FROM jugador j
             LEFT JOIN numeros_boletos nb ON j.id = nb.jugador_id
-            GROUP BY j.id
-        `);
+        `;
 
-        for (const jugador of jugadores) {
-            const [boletos] = await pool.query(
-                'SELECT numero_boleto FROM numeros_boletos WHERE jugador_id = ?',
-                [jugador.id]
-            );
-            jugador.boletos = boletos.map(b => b.numero_boleto)
+        const params = [];
 
-            if (jugador.comprobante_pago) {
-                jugador.comprobante_url = `http://localhost:3000/uploads/${jugador.comprobante_pago}`
-            }
+        if (searchTerm) {
+            query += `
+            WHERE j.id IN (
+                SELECT DISTINCT jugador_id 
+                FROM (
+                    SELECT id AS jugador_id 
+                    FROM jugador
+                    WHERE 
+                        nombres_apellidos LIKE ? OR
+                        celular LIKE ? OR
+                        cedula LIKE ? OR
+                        pais_estado LIKE ? OR
+                        metodo_pago LIKE ? OR
+                        referenciaPago LIKE ?
+                    
+                    UNION
+                    
+                    SELECT jugador_id
+                    FROM numeros_boletos
+                    WHERE numero_boleto LIKE ?
+                ) AS subquery
+            )
+            `;
+
+            const searchPattern = `%${searchTerm}%`;
+
+            for (let i = 0; i < 6; i++) {
+                params.push(searchPattern);
+            };
+            params.push(searchPattern);
         };
 
-        res.json(jugadores);
+        query += ` GROUP BY j.id ORDER BY j.id DESC`;
+
+        const [jugadores] = await pool.query(query, params);
+
+        const poreccedJugadores = jugadores.map(jugador => ({
+            ...jugador,
+            boletos: jugador.boletos ? jugador.boletos.split(',') : [],
+            comprobante_url: jugador.comprobante_pago
+                ? `http://localhost:3000/uploads/${jugador.comprobante_pago}` 
+                : null
+        }));
+
+        // for (const jugador of jugadores) {
+        //     const [boletos] = await pool.query(
+        //         'SELECT numero_boleto FROM numeros_boletos WHERE jugador_id = ?',
+        //         [jugador.id]
+        //     );
+        //     jugador.boletos = boletos.map(b => b.numero_boleto)
+
+        //     if (jugador.comprobante_pago) {
+        //         jugador.comprobante_url = `http://localhost:3000/uploads/${jugador.comprobante_pago}`
+        //     }
+        // };
+
+        res.json(poreccedJugadores);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error al Obtener los Datos de los Jugadores" })
@@ -91,11 +139,15 @@ export const addJugadores = async (req, res) => {
 
         //Insertat boletos
         const numerosArray = JSON.parse(numeros);
+        const jugadorId = jugadorResult.insertId;
+
         const valoresBoletos = numerosArray.map(num => {
             const numInt = parseInt(num);
-            return [
-                isNaN(numInt) ? num.padStart(3, '0') : String(numInt).padStart(3, '0')
-            ];
+            const numeroBoleto = isNaN(numInt)
+                ? num.padStart(3, '0')
+                : String(numInt).padStart(3, '0');
+
+            return [numeroBoleto, jugadorId]
         });
 
         await pool.query(
@@ -401,7 +453,7 @@ export const updateJugador = async (req, res) => {
 
             const toInsert = boletosArray.filter(num => !currentSet.has(num));
             if (toInsert.length > 0) {
-                
+
                 const valoresBoletos = numerosArray.map(num => {
                     const numInt = parseInt(num);
                     return [
