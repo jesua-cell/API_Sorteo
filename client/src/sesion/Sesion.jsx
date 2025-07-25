@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
 //imagenes
 import borrar from "../assets/borrar.png";
 import editar from "../assets/editar.png";
@@ -10,6 +11,7 @@ import buscar from "../assets/buscar.png";
 import zoom from "../assets/zoom.png";
 import users from "../assets/users.png";
 import puestos from "../assets/puestos.png";
+import lupa from "../assets/lupa.png";
 
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
@@ -22,8 +24,11 @@ export const Sesion = () => {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [adminName, setAdminName] = useState('');
-    const [search, setSearch] = useState(""); //Valor de Filtro()
+
+    //Estados para el filtro de busquedad
+    const [search, setSearch] = useState("");
     const [filterJugadores, setFilterJugadores] = useState([]);
+    const [searchTrigger, setSearchTrigger] = useState(false);
 
     const [select, setSelect] = useState();
 
@@ -45,6 +50,11 @@ export const Sesion = () => {
 
     // Estados del modo de Sorteo
     const [modoSorteo, setModoSorteo] = useState('1000');
+
+    // estados de la paginacion
+    const [currentPage, setCurrentPage] = useState(0);
+
+    const itemsPerPage = 5;
 
     const navigate = useNavigate();
 
@@ -122,38 +132,69 @@ export const Sesion = () => {
         fetchModoSorteo();
     }, [])
 
-    //Filtro:
-    const searcher = (e) => {
-        setSearch(e.target.value);
-    }
-    /*TOFO: Agregar valores numericos */
-    useEffect(() => {
+    // //Filtro:
+    // const searcher = (e) => {
+    //     setSearch(e.target.value);
+    // }
 
-        //Funcion del filtro:
+    //  Agregar valores numericos */
+    // useEffect(() => {
+
+    //     //Funcion del filtro:
+    //     if (!search.trim()) {
+    //         setFilterJugadores(jugadores);
+    //     } else {
+    //         const term = search.toLowerCase();
+    //         const result = jugadores.filter((jugador) => {
+    //             return (
+    //                 jugador.nombres_apellidos?.toLowerCase().includes(term) ||
+    //                 jugador.celular?.toString().toLowerCase().includes(term) ||
+    //                 jugador.cedula?.toString().toLowerCase().includes(term) ||
+    //                 jugador.pais_estado?.toLowerCase().includes(term) ||
+    //                 jugador.metodo_pago?.toLowerCase().includes(term) ||
+    //                 jugador.referenciaPago?.toLowerCase().includes(term) ||
+    //                 (jugador.boletos && jugador.boletos.some(boleto =>
+    //                     boleto.toString().includes(term)
+    //                 )) ||
+    //                 new Date(jugador.fecha_registro).toLocaleDateString().toLowerCase().includes(term) ||
+    //                 new Date(jugador.fecha_registro).toLocaleTimeString().toLowerCase().includes(term)
+    //             );
+    //         });
+    //         setFilterJugadores(result)
+    //     };
+
+    // }, [search, jugadores])
+
+
+    const fechtFilterData = useCallback(async (searchTerm) => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem('jwtToken');
+            const response = await axios.get(
+                `http://localhost:3000/jugadores`,
+                {
+                    params: { search: searchTerm },
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+
+            setFilterJugadores(response.data);
+            setCurrentPage(0);
+        } catch (error) {
+            console.error("Error en la busquedad", error);
+        } finally {
+            setLoading(false);
+        };
+
+    }, [jugadores]);
+
+    const handleSearch = () => {
         if (!search.trim()) {
             setFilterJugadores(jugadores);
         } else {
-            const term = search.toLowerCase();
-            const result = jugadores.filter((jugador) => {
-                return (
-                    jugador.nombres_apellidos?.toLowerCase().includes(term) ||
-                    jugador.celular?.toString().toLowerCase().includes(term) ||
-                    jugador.cedula?.toString().toLowerCase().includes(term) ||
-                    jugador.pais_estado?.toLowerCase().includes(term) ||
-                    jugador.metodo_pago?.toLowerCase().includes(term) ||
-                    jugador.referenciaPago?.toLowerCase().includes(term) ||
-                    (jugador.boletos && jugador.boletos.some(boleto =>
-                        boleto.toString().includes(term)
-                    )) ||
-                    new Date(jugador.fecha_registro).toLocaleDateString().toLowerCase().includes(term) ||
-                    new Date(jugador.fecha_registro).toLocaleTimeString().toLowerCase().includes(term)
-                );
-            });
-            setFilterJugadores(result)
+            fechtFilterData(search);
         };
-
-    }, [search, jugadores])
-
+    };
 
     //Funcion para activar Edicion
     const handleActivarEdicion = (jugador) => {
@@ -395,8 +436,9 @@ export const Sesion = () => {
         })
     };
 
+
     if (loading) {
-        return <div><h4>Cargando Jugadores...</h4></div>
+        return <div className="contFetchJugadores"><h4>Cargando Jugadores...</h4></div>
     };
 
     if (!isAuthenticated) {
@@ -405,11 +447,19 @@ export const Sesion = () => {
 
     const totalBoletos = jugadores.flatMap(j => j.boletos || []).length;
 
+    // Manejo de la paginacion
+    const offset = currentPage * itemsPerPage;
+    const currentItems = filterJugadores.slice(offset, offset + itemsPerPage);
+    const pageCount = Math.ceil(filterJugadores.length / itemsPerPage);
+
+    const handlePageClick = (data) => {
+        setCurrentPage(data.selected)
+    };
+
     //TODO* Agregar un nuevo campo de pago en efectivo
     //TODO* Colocar un boton de "pendiente" o "pago hecho" en el campo de monto total
     //TODO* Crear una funcion que muestre 100 o 1000 numeros en el archivo Sorteo.jsx
-
-    //TODO Agregar un componente de paginacion
+    //TODO* Agregar un componente de paginacion
     //TODO Configurar el filtro de busquedad para por medio de una funcion, busque los datos desde el back, y los muestre en el archivo
 
 
@@ -505,24 +555,27 @@ export const Sesion = () => {
                     </div>
 
                 </div>
-                <input
-                    type="text"
-                    placeholder="Buscador..."
-                    className="buscador_sesion"
-                    value={search}
-                    onChange={searcher}
-                />
+
+                <div className="contBuscador">
+                    <input
+                        type="text"
+                        placeholder="Buscador..."
+                        className="buscador_sesion"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <button
+                        onClick={handleSearch}
+                        className="btn_lupa"
+                    >
+                        <img src={lupa} />
+                    </button>
+                </div>
 
                 <div className="contListaJugadores">
                     {filterJugadores.length === 0 ? (
                         <div className="no_result">
                             <p className="text_no_result">No existe el jugador con estos caracteres:  <span>"{search}"</span></p>
-                            <button
-                                className="btn_no_result"
-                                onClick={() => setSearch('')}
-                            >
-                                Limpiar Busquedad
-                            </button>
                         </div>
                     ) : (
                         <div className="contJugadores">
@@ -544,7 +597,7 @@ export const Sesion = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filterJugadores.map(jugador => (
+                                    {currentItems.map(jugador => (
                                         <tr key={`jugador-${jugador.id}`} className="fila-jugador">
 
                                             {/*ID*/}
@@ -765,7 +818,7 @@ export const Sesion = () => {
                                 </tbody>
                             </table>
 
-                            {filterJugadores.map((jugador) => (
+                            {currentItems.map((jugador) => (
                                 <div key={`jugador-mobile-${jugador.id}`} className="table_jugadores">
                                     {/* ID */}
                                     <div className="fila">
@@ -1061,245 +1114,21 @@ export const Sesion = () => {
                                 </div>
                             ))}
 
-                            {/* {filterJugadores.map(jugador => (
-                                <div className="box_jugador" key={`jugador-${jugador.id}`}>
-                                    <dl className="lista-datos" key={`lista-datos-${jugador.id}`}>
-                                        <div className="fila" key={`${jugador.id}-id`}>
-                                            <dt>ID:</dt>
-                                            <dd>{jugador.id}</dd>
-                                        </div>
-                                        <div className="fila" key={`${jugador.id}-nombres`}>
-                                            <dt>Nombres:</dt>
-                                            <dd>
-                                                {editingID === jugador.id ? (
-                                                    <input
-                                                        type="text"
-                                                        className="input_edicion"
-                                                        value={tempData.nombres_apellidos}
-                                                        onChange={(e) => setTempData({ ...tempData, nombres_apellidos: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    <strong>{jugador.nombres_apellidos}</strong>
-                                                )}
-                                            </dd>
-                                        </div>
-                                        <div className="fila" key={`${jugador.id}-celular`}>
-                                            <dt>Celular:</dt>
-                                            <dd>
-                                                {editingID === jugador.id ? (
-                                                    <input
-                                                        type="text"
-                                                        className="input_edicion"
-                                                        value={tempData.celular}
-                                                        onChange={(e) => setTempData({ ...tempData, celular: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    jugador.celular
-                                                )}
-                                            </dd>
-                                        </div>
-                                        <div className="fila" key={`${jugador.id}-cedula`}>
-                                            <dt>Cédula:</dt>
-                                            <dd>
-                                                {editingID === jugador.id ? (
-                                                    <input
-                                                        type="text"
-                                                        className="input_edicion"
-                                                        value={tempData.cedula}
-                                                        onChange={(e) => setTempData({ ...tempData, cedula: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    jugador.cedula
-                                                )}
-                                            </dd>
-                                        </div>
-                                        <div className="fila" key={`${jugador.id}-ciudad`}>
-                                            <dt>Ciudad y Estado:</dt>
-                                            <dd>
-                                                {editingID === jugador.id ? (
-                                                    <input
-                                                        type="text"
-                                                        value={tempData.pais_estado}
-                                                        className="input_edicion"
-                                                        onChange={(e) => setTempData({ ...tempData, pais_estado: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    jugador.pais_estado
-                                                )}
-                                            </dd>
-                                        </div>
-                                        <div className="fila" key={`${jugador.id}-metodo`}>
-                                            <dt>Método de Pago:</dt>
-                                            <dd>
-                                                {editingID === jugador.id ? (
-                                                    <input
-                                                        type="text"
-                                                        className="input_edicion"
-                                                        value={tempData.metodo_pago}
-                                                        onChange={(e) => setTempData({ ...tempData, metodo_pago: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    jugador.metodo_pago
-                                                )}
-                                            </dd>
-                                        </div>
-                                        <div className="fila" key={`${jugador.id}-comprobante`}>
-                                            <dt>Comprobante:</dt>
-                                            <dd>
-                                                {jugador.comprobante_url ? (
-                                                    <div className="cont_comprobante_img">
-                                                        <a
-                                                            className="targe_comprobante"
-                                                            href={jugador.comprobante_url}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            key={`comprobante-link${jugador.id}`}
-                                                        >
-                                                            <img
-                                                                src={zoom}
-                                                                className="zoom_comprobante"
-                                                                key={`comprobante-link-zoom-${jugador.id}`}
-                                                            />
-                                                            <img
-                                                                className="comprobante_img"
-                                                                src={jugador.comprobante_url}
-                                                                alt="Comprobante de pago"
-                                                                key={`comprobante-img-${jugador.id}`}
-                                                            />
-                                                        </a>
-                                                    </div>
-                                                ) : (
-                                                    "Comprobante de pago"
-                                                )}
-                                            </dd>
-                                        </div>
-                                        <div className="fila" key={`${jugador.id}-referencia`}>
-                                            <dt>Referencia:</dt>
-                                            <dd>
-                                                {editingID === jugador.id ? (
-                                                    <input
-                                                        type="text"
-                                                        className="input_edicion"
-                                                        value={tempData.referenciaPago}
-                                                        onChange={(e) => setTempData({ ...tempData, referenciaPago: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    jugador.referenciaPago
-                                                )}
-                                            </dd>
-                                        </div>
-                                        <div className="fila" key={`${jugador.id}-boletos`}>
-                                            <dt>Numeros de Boletos:</dt>
-                                            <dd>
-                                                {editingID === jugador.id ? (
-                                                    <textarea
-                                                        type="text"
-                                                        key={`${jugador.id}-textarea${editingID === jugador.id}`}
-                                                        className="input_edicion_area"
-                                                        value={tempData.boletos}
-                                                        onChange={(e) => setTempData({ ...tempData, boletos: e.target.value })}
-                                                        placeholder="Separar por comas (ej: 0123, 0789)"
-                                                    />
-                                                ) : (
-                                                    jugador.boletos && jugador.boletos.map((boleto, index) => (
-                                                        <p className="fila_num" key={`${jugador.id}-${index}`}>{boleto}</p>
-                                                    ))
-                                                )}
-                                            </dd>
-                                        </div>
-
-                                        <div key={`${jugador.id}-monto`} className={`fila_monto ${jugador.estado_pago === 'pendiente' ? 'estado-pendiente' : 'estado-pagado'}`}>
-                                            <dt>Monto Total:</dt>
-                                            <dd>
-                                                {editingID === jugador.id ? (
-                                                    <input
-                                                        type="text"
-                                                        className="input_edicion"
-                                                        value={tempData.monto_total}
-                                                        onChange={(e) => setTempData({ ...tempData, monto_total: e.target.value })}
-                                                        placeholder="Monto Total"
-                                                    />
-                                                ) : (
-                                                    <div className="contPagos">
-                                                        <strong>{formatoLatino(jugador.monto_total)}</strong>
-                                                        <div className={`contBtnPagos`}>
-                                                            <button
-                                                                className="btn_pago_pendiente"
-                                                                onClick={() => togglePago(jugador.id, 'pendiente')}
-                                                            >
-                                                                <img
-                                                                    src={reloj}
-                                                                    className="img_btn_pendiente"
-                                                                />
-                                                            </button>
-                                                            <div className="contBotonesPago">
-                                                                <button
-                                                                    className="btn_pago_pagado"
-                                                                    onClick={() => togglePago(jugador.id, 'pagado')}
-                                                                >
-                                                                    <img
-                                                                        src={cheque}
-                                                                        className="img_btn_pagado"
-                                                                    />
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </dd>
-                                        </div>
-
-                                        <div className="fila" key={`${jugador.id}-fecha`}>
-                                            <dt>Fecha:</dt>
-                                            <dd><strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
-                                                <br />
-                                                {new Date(jugador.fecha_registro).toLocaleTimeString()}
-                                            </dd>
-                                        </div>
-
-                                        <div className="lista_btns" key={`${jugador.id}-botones`}>
-                                            <button
-                                                className="btn_eliminar_sesion"
-                                                onClick={() => handleEliminar(jugador.id)}
-                                                key={`$btn-eliminar-${jugador.id}`}
-                                            >
-                                                <img
-                                                    src={borrar}
-                                                    alt="Borrar"
-                                                    key={`img-eliminar-${jugador.id}`}
-                                                />
-                                            </button>
-                                            {editingID === jugador.id ? (
-                                                <>
-                                                    <button
-                                                        className="btn_guardar_sesion"
-                                                        onClick={() => handleguardarCambios(jugador.id)}
-                                                    >
-                                                        <img src={sav} />
-                                                    </button>
-
-                                                    <button
-                                                        className="btn_cancel_sesion"
-                                                        onClick={handleCancelEditar}
-                                                    >
-                                                        <img src={error} />
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <button
-                                                    className="btn_editar_sesion"
-                                                    onClick={() => handleActivarEdicion(jugador)}
-                                                >
-                                                    <img
-                                                        src={editar}
-                                                        alt="Borrar"
-                                                    />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </dl>
-                                </div>
-                            ))} */}
+                            {pageCount > 1 && (
+                                <ReactPaginate
+                                    breakLabel="..."
+                                    nextLabel="siguiente >"
+                                    previousLabel="< anterior"
+                                    onPageChange={handlePageClick}
+                                    marginPagesDisplayed={2}
+                                    pageRangeDisplayed={5}
+                                    pageCount={pageCount}
+                                    renderOnZeroPageCount={null}
+                                    containerClassName={"pagination"}
+                                    activeClassName={"active"}
+                                    forcePage={currentPage}
+                                />
+                            )}
                         </div>
                     )}
                 </div>

@@ -1,4 +1,5 @@
 body {
+    height: 100%;
     margin: 0;
     padding: 0;
     font-family: var(--FunnelSans);
@@ -1313,7 +1314,7 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Sesion Admins */
 .cont_admins {
     color: var(--colorTextoOscuro);
-    background-color: #c5c7c9;
+    background-color: #a4a5a5;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1335,6 +1336,7 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     width: 100%;
 }
+
 
 .inventario {
     display: none;
@@ -1449,7 +1451,7 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: bold;
     font-size: 18px;
     margin: 4px 4px;
-    background-color: #b91ed4;
+    background-color: #74105f;
     color: #fff;
     border-radius: 5px;
     text-align: center;
@@ -1532,16 +1534,42 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 3px;
 }
 
+.contBuscador {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.btn_lupa {
+    height: 42px;
+    border-radius: 0px 10px 10px 0px;
+    border: none;
+    background-color: none;
+    transition: background-color 0.3s ease-in;
+}
+
+.btn_lupa:active {
+    background-color: #00030f;
+    filter: invert(1);
+}
+
 .buscador_sesion {
     padding: 10px;
     font-size: 20px;
     width: 86%;
     background-color: #f4f4fa;
-    border: 1px solid #00030f;
+    border: 1px solid;
+    box-shadow: none;
     font-weight: 600;
-    margin: 5px 0px;
-    margin-bottom: 25px;
-    border-radius: 9px;
+    margin: 5px 0;
+    border-radius: 10px 0 0 10px;
+    outline: none;
+    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.buscador_sesion:active {
+    border: 1px solid #95b5ff;
+    box-shadow: 0 0 0 3px rgba(47, 84, 140, 0.3);
 }
 
 .boxValor {
@@ -1801,12 +1829,61 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    margin-bottom: 27px;
+    margin-bottom: 20px;
     height: auto;
 }
 
 .select_component {
     width: 300px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 5px 0;
+    z-index: 10;
+    height: 60px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination li a {
+    padding: 6px 12px;
+    border: 1px solid #780f6a;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #780f6a;
+}
+
+.pagination li a:hover {
+    background-color: #eee;
+}
+
+.pagination li.active a {
+    background-color: #701676;
+    color: white;
+    border-color: #ffc8fb;
+    font-size: 15px;
+}
+
+.pagination li.disabled a {
+    color: #780f6a;
+    cursor: not-allowed;
+    background-color: #eee;
+    font-size: 15px;
+}
+
+.pagination li a {
+    color: #780f6a;
+    background-color: #eee;
+    font-size: 15px;
 }
 
 /* Contenedor del boton del filter */
@@ -2383,6 +2460,12 @@ input[type="number"]::-webkit-outer-spin-button {
         display: flex;
     }
 
+    /* Cargar jugadores */
+
+    .contFetchJugadores {
+        height: 100vh   ;
+    }
+
     /* Inicio */
 
     .contTarjeta {
@@ -2611,8 +2694,8 @@ input[type="number"]::-webkit-outer-spin-button {
     /* Sesion */
 
     .cont_admins {
-        background-color: #c5c7c9;
-        overflow: auto;
+        background-color: #8c8e8f;
+        flex: 1;
     }
 
     .cont_admins::-webkit-scrollbar {
@@ -2622,6 +2705,7 @@ input[type="number"]::-webkit-outer-spin-button {
     .contInventario {
         display: flex;
         flex-direction: row;
+        margin-bottom: 10px;
     }
 
     .conntValorVef {
@@ -2839,10 +2923,48 @@ input[type="number"]::-webkit-outer-spin-button {
         padding: 2px;
     }
 
+    .contBuscador {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+        margin-bottom: 10px;
+    }
+
     .buscador_sesion {
         width: 40%;
         outline: none;
+        border: 1px solid;
+        transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .buscador_sesion:active {
+        border: 1px solid #95b5ff;
+        box-shadow: 0 0 0 3px rgba(47, 84, 140, 0.3);
+    }
+
+    .btn_lupa {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 42px;
+        width: 45px;
+        border-radius: 0px 10px 10px 0px;
         border: none;
+        background-color: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in;
+    }
+
+    .btn_lupa img {
+        height: 20px;
+        width: 20px;
+    }
+
+    .btn_lupa:active {
+        background-color: #00030f;
+        filter: invert(1);
     }
 
     .cont_comprobante_img {
@@ -2858,12 +2980,14 @@ input[type="number"]::-webkit-outer-spin-button {
         display: flex;
         justify-content: center;
         width: 100%;
+        height: 100%;
     }
 
     .contJugadores {
         display: flex;
         width: 100%;
         margin-bottom: 10px;
+        min-height: 500px;
     }
 
     .table_jugadores {
@@ -2933,6 +3057,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
     .no_result {
         width: 100%;
+        height: 50vh;
     }
 
     .box_jugador {
