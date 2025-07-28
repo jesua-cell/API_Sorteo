@@ -54,6 +54,10 @@ export const Sesion = () => {
     // estados de la paginacion
     const [currentPage, setCurrentPage] = useState(0);
 
+    // estados para el modal del modo de sorteo
+    const [showModalConfirm, setShowModalConfirm] = useState(false);
+    const [pendingMode, setPendingMode] = useState(null);
+
     const itemsPerPage = 5;
 
     const navigate = useNavigate();
@@ -93,13 +97,6 @@ export const Sesion = () => {
                 setJugadores(response.data);
                 setFilterJugadores(response.data);
                 setLoading(false);
-
-                //Datos iniciales del estado_pago
-                // const estadosIniciales = {};
-                // response.data.forEach(jugador => {
-                //     estadosIniciales[jugador.id] = jugador.estado_pago || 'pendiente'
-                // });
-                // setPagoEstados(estadosIniciales);
             } catch (error) {
                 console.error("Error al obtener jugadores en el Admin", error);
                 setLoading(false);
@@ -372,16 +369,27 @@ export const Sesion = () => {
     };
 
     const actualizarModoSorteo = async (modo) => {
+        // si esta seleccionado, no hacer nada
+        if (modoSorteo === modo) return;
+
+        setPendingMode(modo);
+        setShowModalConfirm(true);
+    };
+
+    const confirmChange = async () => {
+
+        if (!pendingMode) return;
 
         try {
             const token = localStorage.getItem('jwtToken');
             await axios.put(
                 'http://localhost:3000/modo_sorteo',
-                { modo },
+                { pendingMode },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            toast(`${modo} Puestos`,
+            setModoSorteo(pendingMode);
+            toast(`${pendingMode} Puestos`,
                 {
                     icon: '',
                     style: {
@@ -400,8 +408,12 @@ export const Sesion = () => {
         } catch (error) {
             console.error("Error en al cambio de modo", error);
             toast.error("Error en el cambio de modo");
-        }
-    }
+        } finally {
+            setShowModalConfirm(false);
+            setPendingMode(null);
+        };
+    };
+
 
     const formatoLatino = (numero) => {
 
@@ -519,17 +531,44 @@ export const Sesion = () => {
                     <div className="countNumSorteoPub">
                         <h3 className="title_countNumSorteoPub">Cantidad de Puestos:</h3>
                         <button
-                            className="btn_countPub_mil"
+                            className={`btn_countPub_mil ${modoSorteo === '1000' ? 'active' : ''}`}
                             onClick={() => actualizarModoSorteo('1000')}
                         >1000
                         </button>
 
                         <button
-                            className="btn_countPub_cien"
+                            className={`btn_countPub_cien ${modoSorteo === '100' ? 'active' : ''}`}
                             onClick={() => actualizarModoSorteo('100')}
                         >100
                         </button>
                     </div>
+
+                    {showModalConfirm && (
+                        <div className="modal_overlay">
+                            <div className="modal_confirm">
+                                <h3>Confirmar Cambio</h3>
+                                <p>
+                                    ¿Estas seguro de cambiar a <strong>{pendingMode}</strong> puestos?
+                                    <br />
+                                    Se reiniciaran todos los numeros del sorteo!
+                                </p>
+                                <div className="modal_button">
+                                    <button 
+                                    className="modal_cancel_btn"
+                                    onClick={() => setShowModalConfirm(false)}
+                                    >
+                                        cancelar
+                                    </button>
+                                    <button 
+                                    className="modal_confirm_btn"
+                                    onClick={confirmChange}
+                                    >
+                                        Confirmar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                 </div>
 

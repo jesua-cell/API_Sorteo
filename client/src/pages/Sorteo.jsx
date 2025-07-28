@@ -41,42 +41,6 @@ export const Sorteo = () => {
     // Estados para los mil o cien puestos
     const [modoSorteo, setModoSorteo] = useState('1000');
 
-    //Funcion para seleccionar los numeros en la lista
-    // useEffect(() => {
-
-    //     const handleClick = (e) => {
-
-    //         const numemeroElement = e.target.closest('.listaNumero');
-
-    //         if (numemeroElement) {
-
-    //             if (numemeroElement.dataset.used === 'true') return
-
-    //             const numero = numemeroElement.textContent;
-
-    //             toggleNumberSelec(numero);
-
-    //             setSearchTerm('');
-    //             setRawInput('');
-
-    //             //Mostrar todos los numeros
-    //             if (listaRef.current) {
-    //                 Array.from(listaRef.current.children).forEach(child => {
-    //                     child.style.display = 'block'
-    //                 })
-    //             };
-    //         };
-    //     };
-
-    //     //Manjador de eventos para para la ejecucion de HandleClick()
-    //     const lista = listaRef.current;
-    //     lista?.addEventListener('click', handleClick);
-
-    //     return () => {
-    //         lista?.removeEventListener('click', handleClick)
-    //     }
-    // }, [])
-
     //Funcion para seleccionar y desseleccionar
     const toggleNumberSelec = (numMostrado) => {
 
