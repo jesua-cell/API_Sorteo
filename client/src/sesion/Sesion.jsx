@@ -46,7 +46,7 @@ export const Sesion = () => {
     const [currentId, setCurrentId] = useState(null);
 
     //Estados de los botones toggle del "monto total"
-    const [pagoEstados, setPagoEstados] = useState({});
+    // const [pagoEstados, setPagoEstados] = useState({});
 
     // Estados del modo de Sorteo
     const [modoSorteo, setModoSorteo] = useState('1000');
@@ -95,11 +95,11 @@ export const Sesion = () => {
                 setLoading(false);
 
                 //Datos iniciales del estado_pago
-                const estadosIniciales = {};
-                response.data.forEach(jugador => {
-                    estadosIniciales[jugador.id] = jugador.estado_pago || 'pendiente'
-                });
-                setPagoEstados(estadosIniciales);
+                // const estadosIniciales = {};
+                // response.data.forEach(jugador => {
+                //     estadosIniciales[jugador.id] = jugador.estado_pago || 'pendiente'
+                // });
+                // setPagoEstados(estadosIniciales);
             } catch (error) {
                 console.error("Error al obtener jugadores en el Admin", error);
                 setLoading(false);
@@ -132,40 +132,7 @@ export const Sesion = () => {
         fetchModoSorteo();
     }, [])
 
-    // //Filtro:
-    // const searcher = (e) => {
-    //     setSearch(e.target.value);
-    // }
-
-    //  Agregar valores numericos */
-    // useEffect(() => {
-
-    //     //Funcion del filtro:
-    //     if (!search.trim()) {
-    //         setFilterJugadores(jugadores);
-    //     } else {
-    //         const term = search.toLowerCase();
-    //         const result = jugadores.filter((jugador) => {
-    //             return (
-    //                 jugador.nombres_apellidos?.toLowerCase().includes(term) ||
-    //                 jugador.celular?.toString().toLowerCase().includes(term) ||
-    //                 jugador.cedula?.toString().toLowerCase().includes(term) ||
-    //                 jugador.pais_estado?.toLowerCase().includes(term) ||
-    //                 jugador.metodo_pago?.toLowerCase().includes(term) ||
-    //                 jugador.referenciaPago?.toLowerCase().includes(term) ||
-    //                 (jugador.boletos && jugador.boletos.some(boleto =>
-    //                     boleto.toString().includes(term)
-    //                 )) ||
-    //                 new Date(jugador.fecha_registro).toLocaleDateString().toLowerCase().includes(term) ||
-    //                 new Date(jugador.fecha_registro).toLocaleTimeString().toLowerCase().includes(term)
-    //             );
-    //         });
-    //         setFilterJugadores(result)
-    //     };
-
-    // }, [search, jugadores])
-
-
+    // Funcion del filtro de busquedad
     const fechtFilterData = useCallback(async (searchTerm) => {
         try {
             setLoading(true);
@@ -188,6 +155,7 @@ export const Sesion = () => {
 
     }, [jugadores]);
 
+    // Funcion del boton de buscar
     const handleSearch = () => {
         if (!search.trim()) {
             setFilterJugadores(jugadores);
@@ -236,6 +204,7 @@ export const Sesion = () => {
                     };
                 }
                 return j;
+
             });
 
             setJugadores(updateJugadores);
@@ -252,6 +221,9 @@ export const Sesion = () => {
                     },
                 }
             );
+            setFilterJugadores(prev => prev.map(j =>
+                j.id === id ? { ...j, estado_pago: tempData.estado_pago } : j
+            ));
 
         } catch (error) {
             console.error("Error en la actualizacion", error);
@@ -389,6 +361,11 @@ export const Sesion = () => {
             setJugadores(prev => prev.map(j =>
                 j.id === jugadorId ? { ...j, estado_pago: nuevoEstado } : j
             ));
+
+            setFilterJugadores(prev => prev.map(j =>
+                j.id === jugadorId ? { ...j, estado_pago: nuevoEstado } : j
+            ));
+
         } catch (error) {
             console.error('Error en la actualizacion de datos del estado de pago', error);
         }
@@ -460,7 +437,7 @@ export const Sesion = () => {
     //TODO* Colocar un boton de "pendiente" o "pago hecho" en el campo de monto total
     //TODO* Crear una funcion que muestre 100 o 1000 numeros en el archivo Sorteo.jsx
     //TODO* Agregar un componente de paginacion
-    //TODO Configurar el filtro de busquedad para por medio de una funcion, busque los datos desde el back, y los muestre en el archivo
+    //TODO* Configurar el filtro de busquedad para por medio de una funcion, busque los datos desde el back, y los muestre en el archivo
 
 
     return (

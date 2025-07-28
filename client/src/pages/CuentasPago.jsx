@@ -15,11 +15,11 @@ export const CuentasPago = () => {
 
     const cuentas = {
         zelle: "6153625428\nFrancisco Javier Caicedo",
-        nequi: "3154854020\nDonney Caicedo",
-        bancolombia: "82000002819\nDonney Caicedo",
-        paypal: "tonny1620@gmail.com\nDonney Caicedo",
-        pagomovil: "04147014646\nDonney Caicedo",
-        bancovenezuela: "V-21453387\nDonney Caicedo"
+        nequi: "3223223329\nMaria Alejandra Garcia",
+        bancolombia: "82000002819\nVanessa Rincón",
+        paypal: "magc290598@gmail.com\nMaría Alejandra Garcia",
+        pagomovil: "04147014646\nVanessa Rincón\n21453387",
+        bancovenezuela: "V-21453387\nVannesa Rincón"
     };
 
     return (

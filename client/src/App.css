@@ -162,6 +162,11 @@ body {
     visibility: visible;
 }
 
+.privados_content {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
 
 
 /* //* Inicio */
@@ -1358,9 +1363,10 @@ input[type="number"]::-webkit-outer-spin-button {
 .contenido {
     display: flex;
     justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
     background-color: var(--fondoSesion);
     text-align: center;
-    flex-direction: column;
     align-items: center;
     font-size: 22px;
 }
@@ -1538,38 +1544,50 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+    background-color: #f4f4fa;
+    height: 49px;
+    width: 90%;
+    border-radius: 30px;
+    padding-right: 10px;
+    margin-bottom: 10px;
+    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .btn_lupa {
-    height: 42px;
-    border-radius: 0px 10px 10px 0px;
+    height: 40px;
     border: none;
-    background-color: none;
+    background-color: #5558f9;
+    border-radius: 50%;
     transition: background-color 0.3s ease-in;
+}
+
+.btn_lupa img {
+    filter: invert(1);
+    height: 16px;
+    width: 25px;
+    object-fit: contain;
 }
 
 .btn_lupa:active {
     background-color: #00030f;
-    filter: invert(1);
 }
 
 .buscador_sesion {
     padding: 10px;
-    font-size: 20px;
-    width: 86%;
-    background-color: #f4f4fa;
-    border: 1px solid;
+    font-size: 18px;
+    width: 80%;
+    background-color: transparent;
+    border: none;
+    outline: none;
     box-shadow: none;
     font-weight: 600;
-    margin: 5px 0;
-    border-radius: 10px 0 0 10px;
-    outline: none;
-    transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    color: #707070;
+    border-radius: 20px 0 0 20px;
 }
 
-.buscador_sesion:active {
-    border: 1px solid #95b5ff;
-    box-shadow: 0 0 0 3px rgba(47, 84, 140, 0.3);
+.contBuscador:active {
+    box-shadow: 0 0 0 3px rgba(50, 117, 216, 0.3);
 }
 
 .boxValor {
@@ -1737,7 +1755,7 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 20px;
     font-weight: 520;
     border-radius: 10px;
-    width: 371px;
+    width: 358px;
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 10px;
@@ -1751,7 +1769,8 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 5px;
     color: var(--colorTextoOscuro);
     font-weight: bold;
-    margin-top: 20px;
+    margin-top: 5px;
+    text-align: center;
 }
 
 .contInfoSorteo {
@@ -1916,7 +1935,7 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: #623467 !important;
     border: none !important;
     color: var(--colorTexto) !important;
-    padding: 10px !important;
+    padding: 10px 5px !important;
     font-size: 20px !important;
     font-weight: 520 !important;
     border-radius: 10px !important;
@@ -2446,6 +2465,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
     .privados_content {
         display: flex;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
         height: 64px;
@@ -2463,7 +2483,7 @@ input[type="number"]::-webkit-outer-spin-button {
     /* Cargar jugadores */
 
     .contFetchJugadores {
-        height: 100vh   ;
+        height: 100vh;
     }
 
     /* Inicio */
@@ -2814,13 +2834,13 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .btn_countPub_cien {
-        font-size: 18px;
+        font-size: 17px;
         cursor: pointer;
         margin-bottom: 0px;
     }
 
     .btn_countPub_mil {
-        font-size: 18px;
+        font-size: 17px;
         cursor: pointer;
     }
 
@@ -2927,20 +2947,22 @@ input[type="number"]::-webkit-outer-spin-button {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
-        width: 80%;
+        justify-content: space-between;
+        width: 78%;
         margin-bottom: 10px;
-    }
-
-    .buscador_sesion {
-        width: 40%;
-        outline: none;
-        border: 1px solid;
+        box-shadow: none;
         transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     }
 
-    .buscador_sesion:active {
-        border: 1px solid #95b5ff;
+    .buscador_sesion {
+        width: 80%;
+        outline: none;
+        border: none;
+        background-color: transparent;
+        font-size: 20px;
+    }
+
+    .contBuscador:active {
         box-shadow: 0 0 0 3px rgba(47, 84, 140, 0.3);
     }
 
@@ -2950,7 +2972,7 @@ input[type="number"]::-webkit-outer-spin-button {
         justify-content: center;
         height: 42px;
         width: 45px;
-        border-radius: 0px 10px 10px 0px;
+        border-radius: 50%;
         border: none;
         background-color: none;
         cursor: pointer;
@@ -2964,7 +2986,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
     .btn_lupa:active {
         background-color: #00030f;
-        filter: invert(1);
     }
 
     .cont_comprobante_img {
