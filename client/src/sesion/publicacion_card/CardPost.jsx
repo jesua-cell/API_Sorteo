@@ -38,7 +38,8 @@ export const CardPost = () => {
         titulo_p: '',
         subtitulo_p: '',
         descripcion_p: '',
-        imagen_pub: null
+        imagen_pub: null,
+        fecha_juego: new Date()
     });
 
     //Estado para bloquear la creacuib durante la edicion
@@ -109,7 +110,7 @@ export const CardPost = () => {
         };
 
         // fecha en español
-        const fechaEs = format(starDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
+        const fechaISO = format(starDate, "yyyy-MM-dd");
 
         setLoading(true);
 
@@ -119,7 +120,7 @@ export const CardPost = () => {
             formData.append('subtitulo_p', subtitulo);
             formData.append('descripcion_p', descripcion);
             formData.append('imagen', selectedFile);
-            formData.append('fecha', fechaEs);
+            formData.append('fecha_juego', fechaISO);
             const response = await axios.post(
                 'http://localhost:3000/cardpub',
                 formData,
@@ -136,7 +137,7 @@ export const CardPost = () => {
                     subtitulo_p: subtitulo,
                     descripcion_p: descripcion,
                     imagen: selectedFile,
-                    fecha: fechaEs
+                    fecha_juego: fechaISO
                 }
             });
 
@@ -214,7 +215,8 @@ export const CardPost = () => {
             titulo_p: card.titulo_p,
             subtitulo_p: card.subtitulo_p,
             descripcion_p: card.descripcion_p,
-            imagen_pub: null
+            imagen_pub: null,
+            fecha_juego: card.fecha_juego ? new Date(card.fecha_juego) : new Date()
         });
         //Mostrar imagenes en la previsualizacion
         if (card.imagen_pub) {
@@ -236,6 +238,7 @@ export const CardPost = () => {
             formData.append('titulo_p', tempData.titulo_p);
             formData.append('subtitulo_p', tempData.subtitulo_p);
             formData.append('descripcion_p', tempData.descripcion_p);
+            formData.append('fecha_juego', format(tempData.fecha_juego, "yyyy-MM-dd"));
 
             if (ediSelectedFile) {
                 formData.append('imagen', ediSelectedFile);
@@ -252,8 +255,10 @@ export const CardPost = () => {
                     titulo_p: tempData.titulo_p,
                     subtitulo_p: tempData.subtitulo_p,
                     descripcion_p: tempData.descripcion_p,
-                    imagen_pub: response.data.imagen_pub || card.imagen_pub
+                    imagen_pub: response.data.imagen_pub || card.imagen_pub,
+                    fecha_juego: response.data.fecha_juego
                 } : card
+
             ));
 
             setEditingID(null);
@@ -431,6 +436,15 @@ export const CardPost = () => {
                                             style={{ marginBottom: '25px' }}
                                         />
 
+                                        <DatePicker
+                                            selected={tempData.fecha_juego}
+                                            onChange={(date) => setTempData({ ...tempData, fecha_juego: date })}
+                                            locale={es}
+                                            dateFormat="dd 'de' MMMM 'del' yyyy"
+                                            className='DatePicker_calendario'
+                                            calendarClassName={`calendario-animado`}
+                                        />
+
                                         <div className="cont_inputs_card">
                                             <button
                                                 type="submit"
@@ -468,6 +482,13 @@ export const CardPost = () => {
                                         <label style={{ fontWeight: '700', opacity: '0.7', marginBottom: '20px' }}>
                                             "Botón solo de referencia"
                                         </label>
+
+                                        <p className='fecha_juego'>
+                                            {card.fecha_juego instanceof Date
+                                                ? format(card.fecha_juego, "dd 'de' MMMM 'de' yyyy", { locale: es })
+                                                : format(new Date(card.fecha_juego), "dd 'de' MMMM 'de' yyyy", { locale: es })
+                                            }
+                                        </p>
 
                                         <div className="cont_inputs_card">
                                             <button

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { format } from "date-fns";
+import es from "date-fns/locale/es";
 //Imagenes
 import carro2 from '../assets/carro2.png';
 import whatsapp_alt from '../assets/whatsapp_alt.png';
@@ -25,6 +27,17 @@ export const Inicio = () => {
         fetchCardData();
     }, []);
 
+    const formaDate = (dateString) => {
+        if (!dateString) return '';
+
+        try {
+            const date = new Date(dateString);
+            return format(date, "dd 'de' MMMM 'de' yyyy", { locale: es });
+        } catch (error) {
+            console.error("Error en el formato de la fecha", error);
+            return dateString;
+        }
+    };
 
     return (
         <>
@@ -49,6 +62,7 @@ export const Inicio = () => {
                             />
                             <h2>{card.subtitulo_p}</h2>
                             <p>{card.descripcion_p}</p>
+                            <p className="p_fecha">{formaDate(card.fecha_juego)}</p>
                             <button className='btn-inicio' type="button">
                                 <Link to={"/sorteo"}>Lista de Boletos</Link>
                             </button>
@@ -61,10 +75,10 @@ export const Inicio = () => {
 
                         <div className="box_img">
                             <a
-                            className="a_inicio" 
-                            href="https://www.instagram.com/laorquidea2025?igsh=cjN5MXpqam9ja2g2" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
+                                className="a_inicio"
+                                href="https://www.instagram.com/laorquidea2025?igsh=cjN5MXpqam9ja2g2"
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <img
                                     src={instagram_alt}
@@ -72,11 +86,11 @@ export const Inicio = () => {
                                     alt="instamgram"
                                 />
                             </a>
-                            <a 
-                            className="a_inicio"
-                            href="https://wa.me/584121373761" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
+                            <a
+                                className="a_inicio"
+                                href="https://wa.me/584121373761"
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <img
                                     src={whatsapp_alt}
@@ -85,11 +99,11 @@ export const Inicio = () => {
                                 />
                             </a>
 
-                            <a 
-                            className="a_inicio"
-                            href="" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
+                            <a
+                                className="a_inicio"
+                                href=""
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <img
                                     src={telegrama_alt}
@@ -98,11 +112,11 @@ export const Inicio = () => {
                                 />
                             </a>
 
-                            <a 
-                            className="a_inicio"
-                            href="https://www.tiktok.com/@la.orquidea38?_t=ZS-8xhSaTav4XR&_r=1" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
+                            <a
+                                className="a_inicio"
+                                href="https://www.tiktok.com/@la.orquidea38?_t=ZS-8xhSaTav4XR&_r=1"
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <img
                                     src={tiktok}
