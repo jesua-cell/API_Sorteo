@@ -496,25 +496,26 @@ export const postCardPub = async (req, res) => {
         const {
             titulo_p,
             subtitulo_p,
-            descripcion_p
+            descripcion_p,
+            fecha_juego
         } = req.body;
         const imagen_pub = req.file;
         console.log('Imagen recibida:', req.file);
 
-        if (!titulo_p || !subtitulo_p || !descripcion_p || !imagen_pub.path) {
+        if (!titulo_p || !subtitulo_p || !descripcion_p || !imagen_pub.path || !fecha_juego) {
             return res.status(404).json({ error: 'Error en los campos del CardPub' });
         };
 
         const imageBuffer = fs.readFileSync(imagen_pub.path);
 
         const [result] = await pool.query(
-            'INSERT INTO card_pub (titulo_p, subtitulo_p, descripcion_p, imagen_pub) VALUES (?, ?, ?, ?)',
-            [titulo_p, subtitulo_p, descripcion_p, imageBuffer]
+            'INSERT INTO card_pub (titulo_p, subtitulo_p, descripcion_p, imagen_pub, fecha_juego) VALUES (?, ?, ?, ?, ?)',
+            [titulo_p, subtitulo_p, descripcion_p, imageBuffer, fecha_juego]
         );
 
         //Obtener el registro recien insertado 
         const [newValuesCard] = await pool.query(
-            'SELECT id, titulo_p, subtitulo_p, descripcion_p, imagen_pub FROM card_pub WHERE id = ?',
+            'SELECT id, titulo_p, subtitulo_p, descripcion_p, imagen_pub, fecha_juego FROM card_pub WHERE id = ?',
             [result.insertId]
         );
 
@@ -537,7 +538,8 @@ export const postCardPub = async (req, res) => {
             titulo_p: card.titulo_p,
             subtitulo_p: card.subtitulo_p,
             descripcion_p: card.descripcion_p,
-            imagen_pub: imageBase64
+            imagen_pub: imageBase64,
+            fecha_juego: card.fecha_juego
         });
 
     } catch (error) {
@@ -579,7 +581,7 @@ export const getCardPub = async (req, res) => {
 export const getAllCardPub = async (req, res) => {
     try {
         const [rows] = await pool.query(
-            'SELECT id ,titulo_p, subtitulo_p, descripcion_p, imagen_pub FROM card_pub'
+            'SELECT id ,titulo_p, subtitulo_p, descripcion_p, imagen_pub, fecha_juego FROM card_pub'
         );
 
         const cards = rows.map(card => {
@@ -595,7 +597,8 @@ export const getAllCardPub = async (req, res) => {
                 titulo_p: card.titulo_p,
                 subtitulo_p: card.subtitulo_p,
                 descripcion_p: card.descripcion_p,
-                imagen_pub: imageBase64
+                imagen_pub: imageBase64,
+                fecha_juego: card.fecha_juego
             };
         });
 
@@ -642,7 +645,8 @@ export const updateCardPub = async (req, res) => {
     const {
         titulo_p,
         subtitulo_p,
-        descripcion_p
+        descripcion_p,
+        fecha_juego
     } = req.body;
 
     const file = req.file;
@@ -651,7 +655,8 @@ export const updateCardPub = async (req, res) => {
         let updateFields = {
             titulo_p,
             subtitulo_p,
-            descripcion_p
+            descripcion_p,
+            fecha_juego
         };
 
         //Si se subio una imagen; cambiarla
@@ -672,7 +677,7 @@ export const updateCardPub = async (req, res) => {
 
         //Obtener el registro recien actualido
         const [newValuesCardPut] = await pool.query(
-            'SELECT id, titulo_p, subtitulo_p, descripcion_p, imagen_pub FROM card_pub WHERE id = ?',
+            'SELECT id, titulo_p, subtitulo_p, descripcion_p, imagen_pub, fecha_juego FROM card_pub WHERE id = ?',
             [id]
         );
 
@@ -694,7 +699,8 @@ export const updateCardPub = async (req, res) => {
             titulo_p: card.titulo_p,
             subtitulo_p: card.subtitulo_p,
             descripcion_p: card.descripcion_p,
-            imagen_pub: imageBase64
+            imagen_pub: imageBase64,
+            fecha_juego: card.fecha_juego
         });
 
     } catch (error) {
