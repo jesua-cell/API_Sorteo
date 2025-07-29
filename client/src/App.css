@@ -1688,8 +1688,13 @@ input[type="number"]::-webkit-outer-spin-button {
     z-index: 1000;
 }
 
-.modal_overlay h3,
-p {
+.modal_overlay h3 {
+    color: #00030f;
+    padding: 5px 20px;
+    text-align: center;
+}
+
+.modal_overlay p {
     color: #00030f;
     padding: 5px 20px;
     text-align: center;
@@ -2075,14 +2080,17 @@ p {
     display: flex;
     align-items: center;
     padding: 5px;
+    height: auto;
 }
 
 .contPagos {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: auto;
     width: 100%;
+    flex: 1;
 }
 
 .btn_pago_pendiente,
@@ -2266,6 +2274,80 @@ p {
     display: flex;
     gap: 12px;
     margin-bottom: 15px;
+}
+
+.DatePicker_calendario {
+    padding: 5px;
+    border-radius: 10px;
+    height: 32px;
+    text-align: center;
+    font-weight: 600;
+    color: #747474;
+    border: 2px solid #8c418c;
+}
+
+.DatePicker_calendario:focus {
+    border: 2px solid #b032b0;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(176, 50, 176, 0.3);
+}
+
+.react-datepicker__header {
+    font-weight: 700;
+    background-color: #b032b0;
+    padding: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+    color: #fafafa;
+}
+
+.react-datepicker__day.react-datepicker__day--selected {
+    color: #fafafa;
+    background-color: #a510a5;
+    transition: background-color 0.1s ease;
+}
+
+.react-datepicker__day--selected:hover,
+.react-datepicker__day--keyboard-selected:hover {
+    background-color: #550855 !important;
+    color: #ffffff !important;
+}
+
+.react-datepicker__day--selected.react-datepicker__day--outside-month:hover {
+    background-color: #550855 !important;
+    color: #ffffff !important;
+}
+
+.react-datepicker__day.react-datepicker__day--keyboard-selected {
+    color: #f1f1f1;
+    background-color: #b971b9;
+}
+
+.react-datepicker__day {
+    font-weight: 700;
+}
+
+.react-datepicker__navigation.react-datepicker__navigation--previous {
+    color: #fff;
+}
+
+.react-datepicker__month {
+    animation: fadeSlideIn 300ms ease-in-out;
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .btn-cardPost {
@@ -2958,7 +3040,7 @@ p {
 
     .btn_pago_pendiente {
         cursor: pointer;
-        padding: 5px;
+        margin: 0px;
     }
 
     .btn_pago_pendiente:active {
@@ -3012,17 +3094,25 @@ p {
 
     .contBtnPagos {
         display: flex;
+        flex-direction: column;
+        align-items: center;
         width: 100%;
     }
 
+    .btn_pagos {
+        display: flex;
+    }
+
     .estado-pendiente {
-        height: 80px;
+        min-height: 95px;
+        height: auto;
         display: flex;
         align-items: center;
     }
 
     .estado-pagado {
-        height: 80px;
+        min-height: 95px;
+        height: auto;
         display: flex;
         align-items: center;
     }
@@ -3292,6 +3382,13 @@ p {
 
     .btn-cardPost {
         cursor: pointer;
+    }
+
+    .DatePicker_calendario {
+        padding: 5px;
+        border-radius: 10px;
+        height: 32px;
+        text-align: center;
     }
 
     .contContendido {

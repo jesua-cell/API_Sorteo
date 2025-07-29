@@ -1,7 +1,12 @@
 import axios from 'axios'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import SelectImage from "../../components/SelectImage.jsx";
+import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+import { format } from "date-fns";
+import "react-datepicker/dist/react-datepicker.css";
+import es from 'date-fns/locale/es';
+
 import imageCard from "../../assets/ima_sorteo_card_ejemplo.png";
 
 import borrar from "../../assets/borrar.png";
@@ -38,6 +43,10 @@ export const CardPost = () => {
 
     //Estado para bloquear la creacuib durante la edicion
     const [isEditing, setIsEditing] = useState(false);
+
+    //Estados del componente Calendario
+    const [starDate, setStarDate] = useState(new Date());
+    const [animClass, setAnimClass] = useState("");
 
     //Input de la seleccion de la imagen
     const handleImageUpload = (file) => {
@@ -99,6 +108,9 @@ export const CardPost = () => {
             toast.error("Completar los campos correctamente")
         };
 
+        // fecha en español
+        const fechaEs = format(starDate, "dd 'de' MMMM 'de' yyyy", { locale: es });
+
         setLoading(true);
 
         try {
@@ -107,7 +119,7 @@ export const CardPost = () => {
             formData.append('subtitulo_p', subtitulo);
             formData.append('descripcion_p', descripcion);
             formData.append('imagen', selectedFile);
-
+            formData.append('fecha', fechaEs);
             const response = await axios.post(
                 'http://localhost:3000/cardpub',
                 formData,
@@ -117,6 +129,16 @@ export const CardPost = () => {
                     }
                 }
             )
+
+            console.log({
+                Publicacion: {
+                    titulo: titulo,
+                    subtitulo_p: subtitulo,
+                    descripcion_p: descripcion,
+                    imagen: selectedFile,
+                    fecha: fechaEs
+                }
+            });
 
             setCardData(prevData => [...prevData, response.data]);
 
@@ -283,11 +305,13 @@ export const CardPost = () => {
         setEditingID(null);
     };
 
-
+    registerLocale('es', es); // Modo español del calendario
 
 
     /**
      * TODO: Validar errors en el las peticiones de las consultas en los contenedores
+     * 
+     * TODO: Agregar un calendario, obtener el valor, guardarlo en la BD y mostrar en el archivo Inicio.jsx y el Verificador.jsx
      */
 
     return (
@@ -297,16 +321,11 @@ export const CardPost = () => {
                 reverseOrder={false}
             />
 
-            {/* Formulario para CREAR nueva publicación */}
             <div className="contContenidoCardPub" style={{ opacity: isEditing ? 0.5 : 1, pointerEvents: isEditing ? 'none' : 'all' }}>
+
                 <h1 className="title_card_post">Publicaciones del Sorteo</h1>
-                {/* <div className="contContendidoCardEjemplo">
-                    <label style={{ fontWeight: '700', opacity: '0.8', textAlign: 'center' }}>Referencia de Publicación</label>
-                    <img className="img_ejemplo_card" src={imageCard} alt="Sorteo" />
-                </div> */}
 
                 <div className='contContendidoCard'>
-
                     <textarea
                         type="text"
                         name="titulo_card"
@@ -341,6 +360,15 @@ export const CardPost = () => {
                         onChange={(e) => setDescripcion(e.target.value)}
                         className="input_card"
                         placeholder="Descripción:"
+                    />
+
+                    <DatePicker
+                        selected={starDate}
+                        onChange={(date) => setStarDate(date)}
+                        locale={es}
+                        dateFormat="dd 'de' MMMM 'del' yyyy"
+                        className='DatePicker_calendario'
+                        calendarClassName={`calendario-animado`}
                     />
 
                     <div className="cont_inputs_card">

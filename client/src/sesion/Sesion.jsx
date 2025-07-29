@@ -553,15 +553,15 @@ export const Sesion = () => {
                                     Se reiniciaran todos los numeros del sorteo!
                                 </p>
                                 <div className="modal_button">
-                                    <button 
-                                    className="modal_cancel_btn"
-                                    onClick={() => setShowModalConfirm(false)}
+                                    <button
+                                        className="modal_cancel_btn"
+                                        onClick={() => setShowModalConfirm(false)}
                                     >
                                         cancelar
                                     </button>
-                                    <button 
-                                    className="modal_confirm_btn"
-                                    onClick={confirmChange}
+                                    <button
+                                        className="modal_confirm_btn"
+                                        onClick={confirmChange}
                                     >
                                         Confirmar
                                     </button>
@@ -766,20 +766,22 @@ export const Sesion = () => {
                                                         />
                                                     ) : (
                                                         <div className="contPagos">
-                                                            <strong>{formatoLatino(jugador.monto_total)}</strong>
                                                             <div className="contBtnPagos">
-                                                                <button
-                                                                    className="btn_pago_pendiente"
-                                                                    onClick={() => togglePago(jugador.id, 'pendiente')}
-                                                                >
-                                                                    <img src={reloj} className="img_btn_pendiente" alt="Pendiente" />
-                                                                </button>
-                                                                <button
-                                                                    className="btn_pago_pagado"
-                                                                    onClick={() => togglePago(jugador.id, 'pagado')}
-                                                                >
-                                                                    <img src={cheque} className="img_btn_pagado" alt="Pagado" />
-                                                                </button>
+                                                                <strong>{formatoLatino(jugador.monto_total)}</strong>
+                                                                <div className="btn_pagos">
+                                                                    <button
+                                                                        className="btn_pago_pendiente"
+                                                                        onClick={() => togglePago(jugador.id, 'pendiente')}
+                                                                    >
+                                                                        <img src={reloj} className="img_btn_pendiente" alt="Pendiente" />
+                                                                    </button>
+                                                                    <button
+                                                                        className="btn_pago_pagado"
+                                                                        onClick={() => togglePago(jugador.id, 'pagado')}
+                                                                    >
+                                                                        <img src={cheque} className="img_btn_pagado" alt="Pagado" />
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     )}
