@@ -119,6 +119,12 @@ export const Verificador = () => {
                                 </p>
                             ))}
                         </div>
+                        
+                        <p className={jugadorEncontrado.estado_pago === 'pendiente' ? 'est-pendiente' : 'est-pagado'}>
+                            {jugadorEncontrado.estado_pago === 'pendiente'
+                                ? 'Pendiente'
+                                : 'Verificado'}
+                        </p>
                     </div>
                 )}
 

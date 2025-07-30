@@ -1197,6 +1197,32 @@ input[type="number"]::-webkit-outer-spin-button {
     opacity: 0.9;
 }
 
+.est-pendiente {
+    margin: 20px 0px 10px 0px;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: #b57600;
+    width: 70%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 5px 2px;
+}
+
+.est-pagado {
+    margin: 20px 0px 10px 0px;
+    font-weight: bold;
+    font-size: 20px;
+    background-color: #006905;
+    width: 70%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 5px 2px;
+}
+
+.pendiente {
+    background-color: #8f4f00;
+}
+
 .p_verificador:nth-child(4) {
     margin-bottom: 20px;
 }
@@ -3342,6 +3368,10 @@ input[type="number"]::-webkit-outer-spin-button {
         width: 28%;
     }
 
+    .icon-btn {
+        cursor: pointer;
+    }
+
     /* CardPost */
 
     .card {
@@ -3475,6 +3505,16 @@ input[type="number"]::-webkit-outer-spin-button {
 
     .btn_verificador {
         cursor: pointer;
+    }
+
+    .est-pagado {
+        width: 50%;
+        font-size: 22px;
+    }
+
+    .est-pendiente {
+        width: 50%;
+        font-size: 22px;
     }
 
 }

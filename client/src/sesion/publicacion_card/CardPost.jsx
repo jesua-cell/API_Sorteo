@@ -479,7 +479,7 @@ export const CardPost = () => {
                                         <button className='btn-inicio' type="button">
                                             <>Lista de Boletos</>
                                         </button>
-                                        <label style={{ fontWeight: '700', opacity: '0.7', marginBottom: '20px' }}>
+                                        <label style={{ fontWeight: '700', opacity: '0.7', marginBottom: '0px' }}>
                                             "Botón solo de referencia"
                                         </label>
 

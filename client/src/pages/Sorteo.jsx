@@ -71,12 +71,12 @@ export const Sorteo = () => {
 
     // Actualizar periodicamente los numeros
     useEffect(() => {
-        const interval = setInterval(()=>{
+        const interval = setInterval(() => {
             getUsedNumbers().then(nums => setUsedNumbers(nums));
         }, 10000);
         return () => clearInterval(interval);
     }, [])
-    
+
     //Filtro(input) para buscar numeros de la "lista"
     const handleSearch = (e) => {
 
@@ -258,6 +258,48 @@ export const Sorteo = () => {
     const handleLogin = async (e) => {
 
         e.preventDefault();
+
+        //Validacion de envio del sorteo
+        const errors = {};
+        if (!nombre.trim()) { 
+            toast.error("Nombre Requerido");
+            return;
+        };
+
+        if(!celular.trim()){
+            toast.error("Celular Requerido");
+            return;
+        };
+
+        if(!cedula.trim()){
+            toast.error("Cedúla Requerida");
+            return;
+        };
+
+        if(!paisEstado.trim()){
+            toast.error("Ciudad y País Requeridos");
+            return;
+        };
+
+        if(!referenciaPago.trim()){
+            toast.error("Referencia de Pago Requerido");
+            return;
+        };
+
+        if(!selectedFile){
+            toast.error("Imágen Requerida ");
+            return;
+        };
+
+        if(!selectNumbers){
+            toast.error("Elegir minimo un puesto");
+            return;
+        };
+
+        if(Object.keys(errors).length > 0) {
+            console.error("Error en la validacion", errors);
+            toast.error("Completar los campos correctamente")
+        };
 
         const metodosPago = ["Zelle", "Nequi", "Bancolombia", "PayPal", "PagoMovil", "Banco Venezuela", "Pago Efectivo"];
 
