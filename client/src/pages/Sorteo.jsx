@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import axios from "axios";
+import axios, { toFormData } from "axios";
 //Imagenes:
 import zelle from '../assets/zelle.png'
 import nequi from '../assets/nequi.png'
@@ -12,7 +12,7 @@ import pago_efectivo from '../assets/pago_efectivo.png'
 import { createJugador, getUsedNumbers } from "../api/submit.server.js";
 import { Modal } from '../components/Modal.jsx'
 import SelectImage from "../components/SelectImage.jsx";
-import toast from 'react-hot-toast';
+import { Toaster, toast } from "react-hot-toast";
 
 export const Sorteo = () => {
 
@@ -259,59 +259,64 @@ export const Sorteo = () => {
 
         e.preventDefault();
 
+        //validacion de todos los campos vacios:
+        const allVoid = !nombre.trim() &&
+            !celular.trim() &&
+            !cedula.trim() &&
+            !paisEstado.trim() &&
+            !referenciaPago.trim() &&
+            !selectedFile &&
+            selectNumbers.length === 0;
+
+        if (allVoid) {
+            toast.error("Por favor, complete todos los campos");
+            return;
+        }
+
         //Validacion de envio del sorteo
-        const errors = {};
-        if (!nombre.trim()) { 
+        let hasError = false;
+        if (!nombre.trim()) {
             toast.error("Nombre Requerido");
-            return;
+            hasError = true;
         };
 
-        if(!celular.trim()){
+        if (!celular.trim()) {
             toast.error("Celular Requerido");
-            return;
+            hasError = true;
         };
 
-        if(!cedula.trim()){
+        if (!cedula.trim()) {
             toast.error("Cedúla Requerida");
-            return;
+            hasError = true;
         };
 
-        if(!paisEstado.trim()){
+        if (!paisEstado.trim()) {
             toast.error("Ciudad y País Requeridos");
-            return;
+            hasError = true;
         };
 
-        if(!referenciaPago.trim()){
+        if (!referenciaPago.trim()) {
             toast.error("Referencia de Pago Requerido");
-            return;
+            hasError = true;
         };
 
-        if(!selectedFile){
-            toast.error("Imágen Requerida ");
-            return;
+        if (!selectedFile) {
+            toast.error("Foto o Captura de Pantalla Requerida");
+            hasError = true;
         };
 
-        if(!selectNumbers){
-            toast.error("Elegir minimo un puesto");
-            return;
+        if (selectNumbers.length === 0) {
+            toast.error("Elegir minímo un puesto");
+            hasError = true;
         };
 
-        if(Object.keys(errors).length > 0) {
-            console.error("Error en la validacion", errors);
-            toast.error("Completar los campos correctamente")
-        };
+        if (hasError) return;
 
         const metodosPago = ["Zelle", "Nequi", "Bancolombia", "PayPal", "PagoMovil", "Banco Venezuela", "Pago Efectivo"];
 
         const metodoPago = metodosPago[activeTab] || "Desconocido";
 
         const montoTotal = calcularMontoTotal();
-
-        if (selectNumbers.length === 0) {
-            setModalMessage('Selecciona un numero');
-            setIsError(true)
-            return setShowModal(true);
-        };
 
         try {
 
@@ -375,6 +380,11 @@ export const Sorteo = () => {
 
     return (
         <>
+            <Toaster
+                position="top-center"
+                reverseOrder={false}
+            />
+
             <div className='contSorteo'>
                 <div className='contenidoSorteo'>
 
@@ -454,7 +464,6 @@ export const Sorteo = () => {
                             {`COP: ${(selectNumbers.length * 35000).toLocaleString('es-CO')}`}
                         </div>
                     </div>
-                    {/* //TODO agregarle una animacion al contenedor cuando haya numeros */}
 
                     <form className='formDatos'>
                         <label className='labelForm'>Nombres y Apellidos:</label>
@@ -481,6 +490,7 @@ export const Sorteo = () => {
                             placeholder='Cédula'
                             value={cedula}
                             onChange={(e) => setCedula(e.target.value)}
+                            onWheel={(e) => e.target.blur()}
                             required
                         />
 
