@@ -24,7 +24,7 @@ body {
     --fondoNumerosLista: #ffefff;
     --fondoNumerosSeleccionados: linear-gradient(166deg, rgb(199, 106, 199) 0%, rgba(214, 137, 214, 1) 100%);
     --fondoSesion: #fafbfd;
-    --fondoTarjeraCuentasPago: linear-gradient(64deg, rgb(27, 28, 33) 7%, rgb(18, 12, 17) 50%, rgb(43, 32, 43) 90%);
+    --fondoTarjeraCuentasPago: linear-gradient(64deg, rgb(8, 0, 6) 7%, rgb(30, 9, 26) 50%, rgb(20, 14, 20) 90%);
     --fondoBtnEnviar: linear-gradient(139deg, rgba(97, 136, 255, 1) 9%, rgba(0, 0, 143, 1) 45%, rgba(40, 100, 161, 1) 84%);
     /* texto */
     --colorTexto: #fafbfd;
@@ -265,6 +265,11 @@ a {
     font-weight: 700;
     padding: 8px;
     color: #793072;
+}
+
+.p_fecha {
+    font-weight: 700;
+    opacity: 0.8;
 }
 
 .label_img_inicio {
@@ -1109,7 +1114,7 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100dvh;
+    min-height: 100vh;
     width: 100%;
     overflow-y: hidden;
 }
@@ -1155,11 +1160,14 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 53%;
+    height: auto;
+    min-height: 500px;
     width: 80%;
-    background: var(--fondoTarjeraCuentasPago);
     border-radius: 15px;
+    background: var(--fondoTarjeraCuentasPago);
     overflow-y: hidden;
+    box-sizing: border-box;
+    margin-bottom: 50px;
 }
 
 .h4_verificador {

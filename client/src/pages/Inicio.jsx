@@ -62,10 +62,10 @@ export const Inicio = () => {
                             />
                             <h2>{card.subtitulo_p}</h2>
                             <p>{card.descripcion_p}</p>
-                            <p className="p_fecha">{formaDate(card.fecha_juego)}</p>
                             <button className='btn-inicio' type="button">
                                 <Link to={"/sorteo"}>Lista de Boletos</Link>
                             </button>
+                            <p className="p_fecha">{formaDate(card.fecha_juego)}</p>
                         </div>
                     ))
                 ) : (
