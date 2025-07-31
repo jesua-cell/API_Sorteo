@@ -367,7 +367,8 @@ export const updateJugador = async (req, res) => {
         referenciaPago,
         boletos,
         monto_total,
-        estado_pago
+        estado_pago,
+        monto_abonado
     } = req.body;
 
     //convertir boletos en Arrays
@@ -402,7 +403,8 @@ export const updateJugador = async (req, res) => {
                 metodo_pago = ?,
                 referenciaPago = ?,
                 monto_total = ?,
-                estado_pago = ?
+                estado_pago = ?,
+                monto_abonado = ?
                 WHERE id = ?`,
             [
                 nombres_apellidos,
@@ -413,6 +415,7 @@ export const updateJugador = async (req, res) => {
                 referenciaPago,
                 monto_total,
                 estado_pago,
+                monto_abonado,
                 id
             ]
         );
@@ -489,7 +492,6 @@ export const updateJugador = async (req, res) => {
     }
 
 };
-
 
 export const postCardPub = async (req, res) => {
     try {
