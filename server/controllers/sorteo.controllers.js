@@ -23,6 +23,26 @@ export const getJugadores = async (req, res) => {
     try {
 
         const searchTerm = req.query.search || '';
+        // Obtener el modo actual
+        const [modoResult] = await pool.query('SELECT modo FROM configuracion_sorteo LIMIT 1');
+        const modo = modoResult[0]?.modo || '1000';
+         const normalizeSearchTerm = (term, modo) => {
+            if (!isNaN(term)) {
+                const num = parseInt(term);
+                
+                // Manejar caso especial para 0 en modo 100
+                if (modo === '100') {
+                    if (num === 0) return '00';
+                    if (num <= 99) return String(num).padStart(2, '0');
+                    return String(num).padStart(3, '0');
+                } else {
+                    return String(num).padStart(3, '0');
+                }
+            }
+            return term;
+        };
+
+        const normalizedSearchTerm  = searchTerm ? normalizeSearchTerm(searchTerm.trim(), modo) : '';
 
         let query = `
             SELECT 
@@ -35,7 +55,7 @@ export const getJugadores = async (req, res) => {
 
         const params = [];
 
-        if (searchTerm) {
+        if (normalizedSearchTerm) {
             query += `
             WHERE j.id IN (
                 SELECT DISTINCT jugador_id 
@@ -59,7 +79,7 @@ export const getJugadores = async (req, res) => {
             )
             `;
 
-            const searchPattern = `%${searchTerm}%`;
+            const searchPattern = `%${normalizedSearchTerm}%`;
 
             for (let i = 0; i < 6; i++) {
                 params.push(searchPattern);
@@ -75,21 +95,9 @@ export const getJugadores = async (req, res) => {
             ...jugador,
             boletos: jugador.boletos ? jugador.boletos.split(',') : [],
             comprobante_url: jugador.comprobante_pago
-                ? `http://localhost:3000/uploads/${jugador.comprobante_pago}` 
+                ? `http://localhost:3000/uploads/${jugador.comprobante_pago}`
                 : null
         }));
-
-        // for (const jugador of jugadores) {
-        //     const [boletos] = await pool.query(
-        //         'SELECT numero_boleto FROM numeros_boletos WHERE jugador_id = ?',
-        //         [jugador.id]
-        //     );
-        //     jugador.boletos = boletos.map(b => b.numero_boleto)
-
-        //     if (jugador.comprobante_pago) {
-        //         jugador.comprobante_url = `http://localhost:3000/uploads/${jugador.comprobante_pago}`
-        //     }
-        // };
 
         res.json(poreccedJugadores);
     } catch (error) {
