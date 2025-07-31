@@ -1432,56 +1432,6 @@ input[type="number"]::-webkit-outer-spin-button {
     width: 60%;
 }
 
-
-/* .box_jugador {
-    width: 90%;
-    height: auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    border-top: 1px solid #191919;
-} */
-
-/* .lista-datos {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-content: center;
-    gap: 0px;
-    width: 350px;
-    border-radius: 5px;
-    box-sizing: border-box;
-    border: 1px solid #333;
-
-} */
-
-/* .fila,
-.fila_monto {
-    display: grid;
-    align-items: center;
-    grid-template-columns: 0.7fr 1fr;
-    padding: 3px;
-    width: 100%;
-    border-radius: 5px;
-    box-sizing: border-box;
-    padding-left: 8px;
-}
-
-.fila:nth-child(odd) {
-    background: var(--fondoSorteo);
-}
-
-.fila dt {
-    font-weight: 200;
-    opacity: 0.8;
-}
-
-.fila dd {
-    font-weight: 400;
-    font-size: 20px;
-} */
-
 .fila_num {
     display: flex;
     flex-direction: column;
@@ -1534,8 +1484,6 @@ input[type="number"]::-webkit-outer-spin-button {
     justify-content: center;
     align-items: center;
 }
-
-
 
 .btn_editar_sesion img {
     width: 21px;
@@ -2161,17 +2109,25 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .estado-pendiente {
     background-color: #fffce6;
-    height: 100%;
+    height: auto;
     width: 100%;
 }
 
 .estado-pagado {
-    background-color: #caffcc;
-    height: 100%;
+    background-color: #cefdc8;
+    height: auto;
     width: 100%;
 }
 
 .input_edicion_mb {
+    width: 90%;
+    height: 30px;
+    border-radius: 5px;
+    outline: 1px;
+    padding: 4px;
+}
+
+.input_edicion {
     width: 90%;
     height: 30px;
     border-radius: 5px;
@@ -3110,7 +3066,77 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .input_edicion {
-        width: 90%;
+        width: 88%;
+    }
+
+
+    .textArea_puestos {
+        max-height: auto;
+        resize: none;
+        text-align: center;
+        font-family: var(--FunnelSans);
+        border-radius: 8px;
+        border: 1px solid #989797;
+        overflow-y: scroll;
+    }
+    .textArea_puestos::-webkit-scrollbar {
+        display: none;
+    }
+
+    .textarea_boletos {
+        width: 132px;
+        min-height: 78px;
+        margin-top: 5px;
+    }
+
+    .textArea_nombres {
+        width: 88px;
+        min-height: 75px;
+    }
+
+    .textarea_celular {
+        width: 88px;
+        min-height: 60px;
+    }
+
+    .textarea_cedula {
+        width: 88px;
+        min-height: 60px;
+    }
+
+    .textarea_ciudad {
+        width: 100px;
+        min-height: 70px;
+        overflow-y: scroll;
+    }
+
+    .textarea_ciudad::-webkit-scrollbar {
+        display: none;
+    }
+
+    .textarea_metodoPago {
+        width: 100px;
+        min-height: 50px;
+    }
+
+    .textarea_referencia {
+        width: 105px;
+        min-height: 50px;
+        overflow-y: scroll;
+    }
+
+    .textarea_referencia::-webkit-scrollbar {
+        display: none;
+    }
+
+    .td_referencia {
+        word-break: break-all;
+        white-space: normal;
+    }
+
+    .textarea_pendiente {
+        width: 80px;
+        min-height: 50px;
     }
 
     .contPagos {
@@ -3119,7 +3145,7 @@ input[type="number"]::-webkit-outer-spin-button {
         align-items: center;
         height: auto;
         width: 100%;
-        height: 100%;
+        height: auto;
     }
 
     .contPagos strong {
@@ -3162,6 +3188,15 @@ input[type="number"]::-webkit-outer-spin-button {
         padding: 2px;
     }
 
+    .monto_res_p {
+        padding: 0px 10px;
+    }
+
+    .txt_montoAbonado {
+        font-size: 15px;
+        padding-top: 0px !important;
+    }
+
     .contBuscador {
         display: flex;
         flex-direction: row;
@@ -3170,7 +3205,8 @@ input[type="number"]::-webkit-outer-spin-button {
         width: 78%;
         margin-bottom: 10px;
         box-shadow: none;
-        transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        border: 1px transparent;
+        transition: all 0.3s ease-in-out;
     }
 
     .buscador_sesion {
@@ -3181,8 +3217,12 @@ input[type="number"]::-webkit-outer-spin-button {
         font-size: 20px;
     }
 
-    .contBuscador:active {
-        box-shadow: 0 0 0 3px rgba(47, 84, 140, 0.3);
+    .contBuscador:hover {
+        box-shadow: 0 0 0 2px rgba(53, 128, 239, 0.781);
+    }
+
+    .buscador_sesion:active {
+        color: #094293;
     }
 
     .btn_lupa {
@@ -3262,7 +3302,7 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .fila-jugador td {
-        font-size: 19px;
+        font-size: 18px;
         font-weight: 600;
         text-align: center;
         border-bottom: 3px solid #e2e3e4;
@@ -3291,7 +3331,7 @@ input[type="number"]::-webkit-outer-spin-button {
         display: flex;
         justify-content: center;
         width: 60px;
-        padding: 4px 0px;
+        padding: 2px 0px;
         border-bottom: 1px solid #ccc;
     }
 

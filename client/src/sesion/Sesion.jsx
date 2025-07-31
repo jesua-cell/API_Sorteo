@@ -173,7 +173,8 @@ export const Sesion = () => {
             referenciaPago: jugador.referenciaPago,
             boletos: jugador.boletos.join(", "),
             monto_total: jugador.monto_total,
-            estado_pago: jugador.estado_pago
+            estado_pago: jugador.estado_pago,
+            monto_abonado: jugador.monto_abonado || 0
         });
     };
 
@@ -197,7 +198,8 @@ export const Sesion = () => {
                             ? tempData.boletos.split(",")
                                 .map(b => b.trim())
                                 .filter(b => b !== "")
-                            : []
+                            : [],
+                        monto_abonado: tempData.monto_abonado || 0
                     };
                 }
                 return j;
@@ -362,6 +364,13 @@ export const Sesion = () => {
             setFilterJugadores(prev => prev.map(j =>
                 j.id === jugadorId ? { ...j, estado_pago: nuevoEstado } : j
             ));
+
+            if (editingID === jugadorId) {
+                setTempData(prev => ({
+                    ...prev,
+                    estado_pago: nuevoEstado
+                }));
+            };
 
         } catch (error) {
             console.error('Error en la actualizacion de datos del estado de pago', error);
@@ -588,6 +597,7 @@ export const Sesion = () => {
                     </button>
                 </div>
 
+                {/** Escritoio */}
                 <div className="contListaJugadores">
                     {filterJugadores.length === 0 ? (
                         <div className="no_result">
@@ -608,6 +618,8 @@ export const Sesion = () => {
                                         <th>Referencia</th>
                                         <th>Boletos</th>
                                         <th>Monto Total</th>
+                                        <th>Monto Abonado</th>
+                                        <th>Monto Pendiente</th>
                                         <th>Fecha</th>
                                         <th>Acciones</th>
                                     </tr>
@@ -621,9 +633,9 @@ export const Sesion = () => {
                                             <td>
                                                 {/*Nombres*/}
                                                 {editingID === jugador.id ? (
-                                                    <input
+                                                    <textarea
                                                         type="text"
-                                                        className="input_edicion"
+                                                        className="textArea_puestos textArea_nombres"
                                                         value={tempData.nombres_apellidos}
                                                         onChange={(e) => setTempData({ ...tempData, nombres_apellidos: e.target.value })}
                                                     />
@@ -634,9 +646,9 @@ export const Sesion = () => {
                                             <td>
                                                 {/* Celular*/}
                                                 {editingID === jugador.id ? (
-                                                    <input
+                                                    <textarea
                                                         type="text"
-                                                        className="input_edicion"
+                                                        className="textArea_puestos textarea_celular"
                                                         value={tempData.celular}
                                                         onChange={(e) => setTempData({ ...tempData, celular: e.target.value })}
                                                     />
@@ -647,9 +659,9 @@ export const Sesion = () => {
                                             <td>
                                                 {/* Cedula */}
                                                 {editingID === jugador.id ? (
-                                                    <input
+                                                    <textarea
                                                         type="text"
-                                                        className="input_edicion"
+                                                        className="textArea_puestos textarea_cedula"
                                                         value={tempData.cedula}
                                                         onChange={(e) => setTempData({ ...tempData, cedula: e.target.value })}
                                                     />
@@ -660,9 +672,9 @@ export const Sesion = () => {
                                             <td>
                                                 {/* Ciudad-Pais */}
                                                 {editingID === jugador.id ? (
-                                                    <input
+                                                    <textarea
                                                         type="text"
-                                                        className="input_edicion"
+                                                        className="textArea_puestos textarea_ciudad"
                                                         value={tempData.pais_estado}
                                                         onChange={(e) => setTempData({ ...tempData, pais_estado: e.target.value })}
                                                     />
@@ -673,9 +685,9 @@ export const Sesion = () => {
                                             <td>
                                                 {/* Metodo de pago */}
                                                 {editingID === jugador.id ? (
-                                                    <input
+                                                    <textarea
                                                         type="text"
-                                                        className="input_edicion"
+                                                        className="textArea_puestos textarea_metodoPago"
                                                         value={tempData.metodo_pago}
                                                         onChange={(e) => setTempData({ ...tempData, metodo_pago: e.target.value })}
                                                     />
@@ -705,12 +717,12 @@ export const Sesion = () => {
                                                     "Sin Comprobante"
                                                 )}
                                             </td>
-                                            <td>
+                                            <td className="td_referencia">
                                                 {/* Referencia */}
                                                 {editingID === jugador.id ? (
-                                                    <input
+                                                    <textarea
                                                         type="text"
-                                                        className="input_edicion"
+                                                        className="textArea_puestos textarea_referencia"
                                                         value={tempData.referenciaPago}
                                                         onChange={(e) => setTempData({ ...tempData, referenciaPago: e.target.value })}
                                                     />
@@ -720,9 +732,9 @@ export const Sesion = () => {
                                             </td>
                                             <td className="td_boletos">
                                                 {editingID === jugador.id ? (
-                                                    <input
+                                                    <textarea
                                                         type="text"
-                                                        className="input_edicion"
+                                                        className="textArea_puestos textarea_boletos"
                                                         value={tempData.boletos}
                                                         onChange={(e) => setTempData({ ...tempData, boletos: e.target.value })}
                                                     />
@@ -756,54 +768,76 @@ export const Sesion = () => {
                                             {/* Monto Total */}
                                             <td>
                                                 <div className={jugador.estado_pago === 'pendiente' ? 'estado-pendiente' : 'estado-pagado'}>
-                                                    {editingID === jugador.id ? (
-                                                        <input
-                                                            type="text"
-                                                            className="input_edicion"
-                                                            value={tempData.monto_total}
-                                                            onChange={(e) => setTempData({ ...tempData, monto_total: e.target.value })}
-                                                            placeholder="Monto"
-                                                        />
-                                                    ) : (
-                                                        <div className="contPagos">
-                                                            <div className="contBtnPagos">
-                                                                <strong>{formatoLatino(jugador.monto_total)}</strong>
-                                                                <div className="btn_pagos">
-                                                                    <button
-                                                                        className="btn_pago_pendiente"
-                                                                        onClick={() => togglePago(jugador.id, 'pendiente')}
-                                                                    >
-                                                                        <img src={reloj} className="img_btn_pendiente" alt="Pendiente" />
-                                                                    </button>
-                                                                    <button
-                                                                        className="btn_pago_pagado"
-                                                                        onClick={() => togglePago(jugador.id, 'pagado')}
-                                                                    >
-                                                                        <img src={cheque} className="img_btn_pagado" alt="Pagado" />
-                                                                    </button>
-                                                                </div>
+                                                    <div className="contPagos">
+                                                        <div className="contBtnPagos">
+                                                            <strong>{formatoLatino(jugador.monto_total)}</strong>
+                                                            <div className="btn_pagos">
+                                                                <button
+                                                                    className="btn_pago_pendiente"
+                                                                    onClick={() => togglePago(jugador.id, 'pendiente')}
+                                                                >
+                                                                    <img src={reloj} className="img_btn_pendiente" alt="Pendiente" />
+                                                                </button>
+                                                                <button
+                                                                    className="btn_pago_pagado"
+                                                                    onClick={() => togglePago(jugador.id, 'pagado')}
+                                                                >
+                                                                    <img src={cheque} className="img_btn_pagado" alt="Pagado" />
+                                                                </button>
                                                             </div>
                                                         </div>
-                                                    )}
+                                                    </div>
                                                 </div>
                                             </td>
+
+                                            {/* Monto Pendiente */}
+                                            <td>
+                                                {editingID === jugador.id ? (
+                                                    <textarea
+                                                        type="text"
+                                                        className="textArea_puestos textarea_pendiente"
+                                                        value={tempData.monto_abonado}
+                                                        onChange={(e) => setTempData({ ...tempData, monto_abonado: e.target.value })}
+                                                        placeholder="Monto"
+                                                    />
+                                                ) : (
+
+                                                    <strong className="monto_res_p">{jugador.monto_abonado || 0}</strong>
+                                                )}
+                                            </td>
+
+                                            {/* Monto pendiente */}
+                                            <td>
+                                                {
+                                                    (jugador.monto_total - jugador.monto_abonado) === 0
+                                                        ? <strong>Pagado</strong>
+                                                        : <strong className="txt_montoAbonado">
+                                                            {formatoLatino(jugador.monto_total - jugador.monto_abonado)}
+                                                        </strong>
+                                                }
+                                            </td>
+
                                             <td>
                                                 {/*Fecha y Hora*/}
                                                 <strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
                                                 <br />
                                                 {new Date(jugador.fecha_registro).toLocaleTimeString()}
                                             </td>
+
                                             <td>
                                                 <div className="lista_btns">
                                                     {/**Botones: */}
 
                                                     {/**Borrar: */}
-                                                    <button
-                                                        className="btn_eliminar_sesion"
-                                                        onClick={() => handleEliminar(jugador.id)}
-                                                    >
-                                                        <img src={borrar} alt="borrar" />
-                                                    </button>
+                                                    {editingID !== jugador.id && (
+                                                        <button
+                                                            className="btn_eliminar_sesion"
+                                                            onClick={() => handleEliminar(jugador.id)}
+                                                        >
+                                                            <img src={borrar} alt="borrar" />
+                                                        </button>
+                                                    )}
+                                                    
                                                     {/**Editar */}
                                                     {editingID === jugador.id ? (
                                                         <>
@@ -836,6 +870,7 @@ export const Sesion = () => {
                                 </tbody>
                             </table>
 
+                            {/** Movil */}
                             {currentItems.map((jugador) => (
                                 <div key={`jugador-mobile-${jugador.id}`} className="table_jugadores">
                                     {/* ID */}
@@ -1034,7 +1069,7 @@ export const Sesion = () => {
                                     <div className="fila">
                                         <div className="columna">
                                             <div className="header">Monto Total</div>
-                                            <div className="contenido">
+                                            <div className="contenido" style={{ padding: "0px" }}>
                                                 {editingID === jugador.id ? (
                                                     <input
                                                         type="text"
@@ -1065,8 +1100,29 @@ export const Sesion = () => {
                                         </div>
                                     </div>
 
-                                    {/*Fecha */}
+                                    {/* Monto Restante */}
                                     <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Abono del Monto</div>
+                                            <div className="contenido">
+                                                <div className="monto_restante">
+                                                    {editingID === jugador.id ? (
+                                                        <input
+                                                            type="text"
+                                                            className="input_edicion"
+                                                            value={tempData.monto_abonado}
+                                                            onChange={(e) => setTempData({ ...tempData, monto_abonado: e.target.value })}
+                                                        />
+                                                    ) : (
+                                                        <strong className="monto_res_p">{formatoLatino(jugador.monto_abonado || 0)}</strong>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/*Fecha */}
+                                    <div className="fila" >
                                         <div className="columna">
                                             <div className="header">Fecha</div>
                                             <div className="contenido">
@@ -1078,7 +1134,13 @@ export const Sesion = () => {
                                                         onChange={(e) => setTempData({ ...tempData, fecha_registro: e.target.value })}
                                                     />
                                                 ) : (
-                                                    jugador.fecha_registro
+                                                    <>
+                                                        <div className="fecha_hora_mbl">
+                                                            <strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
+                                                            <br />
+                                                            {new Date(jugador.fecha_registro).toLocaleTimeString()}
+                                                        </div>
+                                                    </>
                                                 )}
                                             </div>
                                         </div>
@@ -1149,7 +1211,7 @@ export const Sesion = () => {
                             )}
                         </div>
                     )}
-                </div>
+                </div >
             </div >
 
         </>
