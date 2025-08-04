@@ -42,15 +42,6 @@ export const Inicio = () => {
     return (
         <>
             <div className='contTarjeta'>
-                <div className='contContendido'>
-                    <h1 className='titulo_sorteo'>Sorteo</h1>
-                    <img src={carro2} alt='Carro' />
-                    <h2 className='subtitulo_inicio'>Toyota</h2>
-                    <p className='descrip_inicio'>
-                        23, Marzo del 2025
-                    </p>
-                    <button className='btn-inicio' type="button"><Link to={"/sorteo"}>Lista de Boletos</Link></button>
-                </div>
 
                 {cardData.length > 0 ? (
                     cardData.map((card, index) => (

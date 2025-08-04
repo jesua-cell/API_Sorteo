@@ -12,6 +12,7 @@ import zoom from "../assets/zoom.png";
 import users from "../assets/users.png";
 import puestos from "../assets/puestos.png";
 import lupa from "../assets/lupa.png";
+import efectivo from "../assets/efectivo.png";
 
 import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
@@ -57,6 +58,9 @@ export const Sesion = () => {
     // estados para el modal del modo de sorteo
     const [showModalConfirm, setShowModalConfirm] = useState(false);
     const [pendingMode, setPendingMode] = useState(null);
+
+    //estados para monto abonado
+    const [abonos, setAbonos] = useState({});
 
     const itemsPerPage = 5;
 
@@ -294,6 +298,70 @@ export const Sesion = () => {
         }
     };
 
+    //metodo de abonar
+    const handleAbonar = async (jugadorId) => {
+
+        // convertir y limpiar el input
+        const montoInput = abonos[jugadorId] || '';
+        const montoAbono = parseFloat(montoInput.replace(',', '.'));
+
+        //validaciones
+        if (isNaN(montoAbono)) {
+            toast.error("Ingrese un valor numerico valido")
+        };
+
+        if (montoAbono <= 0) {
+            toast.error("El monto debe ser mayor a cero");
+            return;
+        };
+
+        const jugador = jugadores.find(j => j.id === jugadorId);
+        const pendienteActual = parseFloat(jugador.monto_total) - parseFloat(jugador.monto_abonado || 0);
+
+        if (montoAbono > pendienteActual) {
+            toast.error(`Monto Completado`);
+            return;
+        };
+
+        try {
+            const response = await axios.put(
+                `http://localhost:3000/abonar/${jugadorId}`,
+                { monto_abonado: montoAbono }
+            );
+
+            const nuevoAbono = parseFloat(jugador.monto_abonado || 0) + montoAbono;
+
+            //actualizar estado local
+            const updateJugadores = jugadores.map(j =>
+                j.id === jugadorId ? {
+                    ...j,
+                    monto_abonado: nuevoAbono,
+                    estado_pago: nuevoAbono >= j.monto_total ? 'pagado' : 'pendiente'
+                } : j
+            );
+
+            //actualizar estados
+            setJugadores(updateJugadores);
+            setFilterJugadores(updateJugadores);
+            setAbonos({ ...abonos, [jugadorId]: '' })
+
+            // Limpiar input
+            setAbonos(prev => ({ ...prev, [jugadorId]: '' }));
+
+            toast.success('Abono registrado!', {
+                icon: '✅',
+                style: {
+                    borderRadius: '10px',
+                    background: '#fff',
+                    color: '#000',
+                }
+            });
+
+        } catch (error) {
+            alert(error.response?.data?.error || "Error al registrar abono");
+        }
+    };
+
     const normalizarNumero = (valorStr) => {
 
         if (!valorStr) return '';
@@ -426,9 +494,14 @@ export const Sesion = () => {
 
     const formatoLatino = (numero) => {
 
-        if (numero == null) return '';
+        // Si es null/undefined o no es número, retornar '0,00'
+        if (numero === null || numero === undefined || isNaN(numero)) {
+            return '0,00';
+        }
 
-        return numero.toLocaleString('es-VE', {
+        const num = typeof numero === 'string' ? parseFloat(numero) : numero;
+
+        return num.toLocaleString('es-VE', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2
         })
@@ -465,17 +538,8 @@ export const Sesion = () => {
         <>
 
             <Toaster
-                position="top-right"
-                toastOptions={{
-                    duration: 3000,
-                    position: 'top-center',
-                    icon: '🗑️',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#ff5454',
-                        color: '#fff',
-                    },
-                }}
+                position="top-center"
+                reverseOrder={false}
             />
 
             <div className="cont_admins">
@@ -552,6 +616,17 @@ export const Sesion = () => {
                         </button>
                     </div>
 
+                    <div className="contDeleteAll">
+                        <div className="box_btnDelete">
+                            <h3 className="h3_DeleteAll">Eliminar todos todos los jugadores</h3>
+                            <button
+                                className="img_eliminar_all"
+                            >
+                                <img src={borrar} alt="borrar" />
+                            </button>
+                        </div>
+                    </div>
+
                     {showModalConfirm && (
                         <div className="modal_overlay">
                             <div className="modal_confirm">
@@ -620,8 +695,9 @@ export const Sesion = () => {
                                         <th>Monto Total</th>
                                         <th>Monto Abonado</th>
                                         <th>Monto Pendiente</th>
+                                        <th>Abono del Monto</th>
                                         <th>Fecha</th>
-                                        <th>Acciones</th>
+                                        <th style={{ width: '130px' }}>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -802,7 +878,7 @@ export const Sesion = () => {
                                                     />
                                                 ) : (
 
-                                                    <strong className="monto_res_p">{jugador.monto_abonado || 0}</strong>
+                                                    <strong className="monto_res_p">{formatoLatino(jugador.monto_abonado || 0)}</strong>
                                                 )}
                                             </td>
 
@@ -817,11 +893,35 @@ export const Sesion = () => {
                                                 }
                                             </td>
 
+                                            {/* Abono y manejo */}
                                             <td>
+                                                <div className="cont_btnMonto">
+                                                    <textarea
+                                                        type="number"
+                                                        className="textArea_puestos textarea_abonoMonto"
+                                                        min="0.01"
+                                                        max="0.01"
+                                                        value={abonos[jugador.id] || ''}
+                                                        onChange={(e) => setAbonos({
+                                                            ...abonos,
+                                                            [jugador.id]: e.target.value
+                                                        })}
+                                                        placeholder="Monto a abonar"
+                                                    />
+
+                                                    <button
+                                                        className="btn_abonarMonto"
+                                                        onClick={() => handleAbonar(jugador.id)} >
+                                                        <img src={efectivo} />
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <td className="td_fecha">
                                                 {/*Fecha y Hora*/}
                                                 <strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
                                                 <br />
-                                                {new Date(jugador.fecha_registro).toLocaleTimeString()}
+                                                <strong>{new Date(jugador.fecha_registro).toLocaleTimeString()}</strong>
                                             </td>
 
                                             <td>
@@ -837,7 +937,7 @@ export const Sesion = () => {
                                                             <img src={borrar} alt="borrar" />
                                                         </button>
                                                     )}
-                                                    
+
                                                     {/**Editar */}
                                                     {editingID === jugador.id ? (
                                                         <>
@@ -1031,9 +1131,9 @@ export const Sesion = () => {
                                             <div className="header">Boleto</div>
                                             <div className="contenido">
                                                 {editingID === jugador.id ? (
-                                                    <input
+                                                    <textarea
                                                         type="text"
-                                                        className="input_edicion"
+                                                        className="textArea_puestos textArea_boletos_mb"
                                                         value={tempData.boletos}
                                                         onChange={(e) => setTempData({ ...tempData, boletos: e.target.value })}
                                                     />
@@ -1103,19 +1203,64 @@ export const Sesion = () => {
                                     {/* Monto Restante */}
                                     <div className="fila">
                                         <div className="columna">
+                                            <div className="header">Monto Restante</div>
+                                            <div className="contenido">
+                                                {editingID === jugador.id ? (
+                                                    <textarea
+                                                        type="text"
+                                                        className="textArea_puestos textarea_pendiente"
+                                                        value={tempData.monto_abonado}
+                                                        onChange={(e) => setTempData({ ...tempData, monto_abonado: e.target.value })}
+                                                        placeholder="Monto"
+                                                    />
+                                                ) : (
+
+                                                    <strong className="monto_res_p">{formatoLatino(jugador.monto_abonado || 0)}</strong>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Monto pendiente */}
+                                    <div className="fila">
+                                        <div className="columna">
+                                            <div className="header">Monto Pendiente</div>
+                                            <div className="contenido">
+                                                {
+                                                    (jugador.monto_total - jugador.monto_abonado) === 0
+                                                        ? <strong>Pagado</strong>
+                                                        : <strong className="txt_montoAbonado">
+                                                            {formatoLatino(jugador.monto_total - jugador.monto_abonado)}
+                                                        </strong>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Abono y manejo */}
+                                    <div className="fila">
+                                        <div className="columna">
                                             <div className="header">Abono del Monto</div>
                                             <div className="contenido">
-                                                <div className="monto_restante">
-                                                    {editingID === jugador.id ? (
-                                                        <input
-                                                            type="text"
-                                                            className="input_edicion"
-                                                            value={tempData.monto_abonado}
-                                                            onChange={(e) => setTempData({ ...tempData, monto_abonado: e.target.value })}
-                                                        />
-                                                    ) : (
-                                                        <strong className="monto_res_p">{formatoLatino(jugador.monto_abonado || 0)}</strong>
-                                                    )}
+                                                <div className="cont_btnMonto">
+                                                    <textarea
+                                                        type="number"
+                                                        className="textArea_puestos textarea_abonoMonto"
+                                                        min="0.01"
+                                                        max="0.01"
+                                                        value={abonos[jugador.id] || ''}
+                                                        onChange={(e) => setAbonos({
+                                                            ...abonos,
+                                                            [jugador.id]: e.target.value
+                                                        })}
+                                                        placeholder="Monto a abonar"
+                                                    />
+
+                                                    <button
+                                                        className="btn_abonarMonto"
+                                                        onClick={() => handleAbonar(jugador.id)} >
+                                                        <img src={efectivo} />
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1126,22 +1271,11 @@ export const Sesion = () => {
                                         <div className="columna">
                                             <div className="header">Fecha</div>
                                             <div className="contenido">
-                                                {editingID === jugador.id ? (
-                                                    <input
-                                                        type="text"
-                                                        className="input_edicion_mb"
-                                                        value={tempData.fecha_registro}
-                                                        onChange={(e) => setTempData({ ...tempData, fecha_registro: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    <>
-                                                        <div className="fecha_hora_mbl">
-                                                            <strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
-                                                            <br />
-                                                            {new Date(jugador.fecha_registro).toLocaleTimeString()}
-                                                        </div>
-                                                    </>
-                                                )}
+                                                <div className="fecha_hora_mbl">
+                                                    <strong>{new Date(jugador.fecha_registro).toLocaleDateString()}</strong>
+                                                    <br />
+                                                    {new Date(jugador.fecha_registro).toLocaleTimeString()}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

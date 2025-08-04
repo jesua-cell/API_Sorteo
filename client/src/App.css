@@ -29,8 +29,8 @@ body {
     /* texto */
     --colorTexto: #fafbfd;
     --colorTextoOscuro: #191919;
-    --fondoModalSuccess: linear-gradient(77deg, rgba(67, 224, 70, 1) 7%, rgba(90, 232, 77, 1) 45%, rgba(42, 219, 95, 1) 90%);
-    --fondoModalSucces_2: linear-gradient(1deg, rgba(27, 87, 27, 1) 31%, rgba(39, 145, 28, 1) 69%, rgba(12, 171, 60, 1) 99%);
+    --fondoModalSuccess: linear-gradient(77deg, rgb(25, 245, 29) 7%, rgb(33, 126, 25) 45%, rgb(65, 191, 103) 90%);
+    --fondoModalSucces_2: linear-gradient(5deg, rgb(12, 161, 12) 11%, rgba(9, 113, 19, 0.74) 74%);
     --fondoModalError: linear-gradient(64deg, rgba(217, 142, 139, 1) 7%, rgba(232, 113, 77, 1) 45%, rgba(204, 126, 108, 1) 90%);
     --fondoRosadoAzul: linear-gradient(45deg, rgba(235, 174, 238, 1) 0%, rgba(148, 187, 233, 1) 100%);
 }
@@ -1264,21 +1264,40 @@ input[type="number"]::-webkit-outer-spin-button {
     z-index: 1000;
 }
 
+.contMessage {
+    background-color: #00030f;
+    box-shadow: 0 20px 30px rgba(32, 32, 32, 0.4);
+    width: 360px;
+    height: 100px;
+    margin-bottom: 30px;
+    border-radius: 10px 10px 0px 0px;
+}
+
 .modal-content {
+    display: flex;
+    flex-direction: column;
     background: var(--fondoModalSucces_2);
-    padding: 15px;
     border-radius: 10px;
-    min-width: 300px;
+    min-width: 360px;
     max-width: 50%;
+    min-height: 390px;
+    height: auto;
     text-align: center;
     position: relative;
     color: var(--colorTexto);
     font-family: var(--FunnelSans);
     font-size: 37px;
-    border: 1px solid #cdfabb;
-    font-weight: 700;
+    font-weight: 900;
     white-space: pre-line;
     animation: modalAppear 0.3s ease-out;
+}
+
+.title_modal_father {
+    font-size: 40px;
+    background: linear-gradient(90deg, #65db63, #5dde88, #19ef0e, #88e0b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 24px;
 }
 
 .title_modal {
@@ -1286,15 +1305,11 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 0;
     font-weight: bold;
     font-size: 27px;
-
 }
 
 .value_modal {
     font-weight: 500;
-    color: #ffffff;
-    /* background: #1f710c; */
-    border-bottom: 1px solid #4fc135;
-    box-shadow: 0 5px 5px -4px #02d758;
+    color: #e6e6e6;
     font-size: 27px;
     border-radius: 5px;
     padding: 5px;
@@ -1824,6 +1839,46 @@ input[type="number"]::-webkit-outer-spin-button {
     opacity: 0.8;
 }
 
+/* Boton de eliminar todo */
+.contDeleteAll {
+    background-color: #fafafa;
+    height: auto;
+    width: 94%;
+    border-radius: 10px;
+}
+
+.box_btnDelete {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.h3_DeleteAll {
+    font-size: 23px;
+    width: 70%;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.img_eliminar_all {
+    width: 43px;
+    height: 43px;
+    border-radius: 30px;
+    margin: 6px 6px;
+    border: none;
+    background-color: #fde5e5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:active {
+        background-color: #b03434;
+    }
+}
+
 /* Sesion de admin */
 
 .logout-btn {
@@ -1993,10 +2048,13 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 50vh;
 }
 
-.text_no_result span {
+.text_no_result {
     font-weight: 700;
+    text-align: center;
+    width: 70%;
 }
 
 .btn_no_result {
@@ -2119,20 +2177,55 @@ input[type="number"]::-webkit-outer-spin-button {
     width: 100%;
 }
 
+.cont_btnMonto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.textArea_puestos {
+    width: 140px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    font-family: var(--FunnelSans);
+    text-align: center;
+}
+
+.btn_abonarMonto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    height: 34px;
+    width: 39px;
+    margin-left: 5px;
+    padding-left: 8px;
+    border: none;
+    cursor: pointer;
+    background-color: #9abceb;
+}
+
 .input_edicion_mb {
     width: 90%;
     height: 30px;
     border-radius: 5px;
     outline: 1px;
     padding: 4px;
+    border: 1px solid #383838;
+}
+
+.textArea_boletos_mb {
+    width: 160px;
+    padding: 4px;
 }
 
 .input_edicion {
-    width: 90%;
+    width: 80%;
     height: 30px;
     border-radius: 5px;
     outline: 1px;
     padding: 4px;
+    border: 1px solid #383838;
 }
 
 /* Contenedor de Publicaicon del Sorteo */
@@ -2160,12 +2253,11 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: column;
     align-items: center;
     height: 100%;
-    background-color: #9b9a9a;
-    border-bottom: 2px solid #00030f;
+    background: linear-gradient(178deg, rgb(123, 123, 123) 9%, rgba(0, 0, 0, 0.74) 74%);
 }
 
 .contPubUpload {
-    background-color: #b8b8b8;
+    background: linear-gradient(-1deg, rgb(123, 123, 123) 9%, rgba(0, 0, 0, 0.74) 74%);
 }
 
 
@@ -2206,7 +2298,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .title_card_post {
     font-size: 35px;
-    color: #28282a;
+    color: #efefef;
     text-align: center;
     margin: 0px;
     padding-top: 20px;
@@ -2263,7 +2355,8 @@ input[type="number"]::-webkit-outer-spin-button {
 .cont_inputs_card {
     display: flex;
     gap: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    margin-top: 20px;
 }
 
 .DatePicker_calendario {
@@ -2916,7 +3009,7 @@ input[type="number"]::-webkit-outer-spin-button {
         font-size: 18px;
         min-height: 150px;
         height: 90%;
-        width: 40%;
+        width: 25%;
         border-radius: 10px;
     }
 
@@ -2933,7 +3026,7 @@ input[type="number"]::-webkit-outer-spin-button {
     .boxValor {
         font-size: 18px;
         height: 99%;
-        width: 30%;
+        width: 18%;
         border-radius: 10px;
         background-color: #fafafa;
     }
@@ -2942,7 +3035,7 @@ input[type="number"]::-webkit-outer-spin-button {
         text-align: center;
         font-size: 18px;
         height: 99%;
-        width: 30%;
+        width: 18%;
         border-radius: 10px;
         background-color: #fafafa;
     }
@@ -2956,6 +3049,21 @@ input[type="number"]::-webkit-outer-spin-button {
         border-radius: 15px;
         box-sizing: border-box;
         transition: all 0.3s linear;
+    }
+
+    .contDeleteAll {
+        width: 15%;
+        height: 165px;
+    }
+
+    .h3_DeleteAll {
+        font-size: 18px;
+    }
+
+    .img_eliminar_all {
+        border-radius: 30px;
+        height: 48px;
+        width: 48px;
     }
 
     /* Animacion de expandir el boton */
@@ -3009,6 +3117,10 @@ input[type="number"]::-webkit-outer-spin-button {
     .btn_countPub_mil {
         font-size: 17px;
         cursor: pointer;
+    }
+
+    .lista_btns {
+        margin: 0px 10px;
     }
 
     .btn_eliminar_sesion {
@@ -3079,6 +3191,7 @@ input[type="number"]::-webkit-outer-spin-button {
         border: 1px solid #989797;
         overflow-y: scroll;
     }
+
     .textArea_puestos::-webkit-scrollbar {
         display: none;
     }
@@ -3139,13 +3252,18 @@ input[type="number"]::-webkit-outer-spin-button {
         min-height: 50px;
     }
 
+    .textarea_abonoMonto {
+        width: 85px;
+        min-height: 50px;
+        font-size: 18px;
+    }
+
     .contPagos {
         display: flex;
         flex-direction: column;
         align-items: center;
         height: auto;
         width: 100%;
-        height: auto;
     }
 
     .contPagos strong {
@@ -3165,7 +3283,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
     .estado-pendiente {
         min-height: 95px;
-        height: auto;
+        height: 100%;
         display: flex;
         align-items: center;
     }
@@ -3281,6 +3399,29 @@ input[type="number"]::-webkit-outer-spin-button {
         margin-left: 10px;
         margin-right: 10px;
         border-radius: 10px;
+        width: 98%;
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+
+    .inventario::-webkit-scrollbar {
+        height: 5px;
+    }
+
+    .inventario::-webkit-scrollbar-track {
+        opacity: 0.8;
+        border-radius: 10px;
+        background: #e3d8d8;
+    }
+
+    .inventario::-webkit-scrollbar-thumb {
+        background: #b457a0;
+        border-radius: 10px;
+        opacity: 0.5;
+    }
+
+    .inventario::-webkit-scrollbar-button {
+        display: none;
     }
 
     .th_titulos {
@@ -3309,6 +3450,15 @@ input[type="number"]::-webkit-outer-spin-button {
         height: auto;
     }
 
+    .fila-jugador {
+        background-color: #fafafa;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+            background-color: #ececec;
+        }
+    }
+
     .td_id {
         font-weight: bold;
     }
@@ -3319,13 +3469,21 @@ input[type="number"]::-webkit-outer-spin-button {
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
+        width: 280px;
     }
 
     .td_boletos {
         vertical-align: top;
-        width: 400px;
+        width: 500px;
         height: auto;
     }
+
+    .td_fecha strong {
+        font-size: 15px;
+        padding: 0px 10px;
+    }
+
+    .td_fecha {}
 
     .fila_num {
         display: flex;
@@ -3555,6 +3713,33 @@ input[type="number"]::-webkit-outer-spin-button {
     .est-pendiente {
         width: 50%;
         font-size: 22px;
+    }
+
+    .cont_btnMonto {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn_abonarMonto {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        height: 32px;
+        width: 35px;
+        margin-left: 5px;
+        border: none;
+        cursor: pointer;
+        background-color: #9abceb;
+    }
+
+    .btn_abonarMonto img {
+        padding: 10px;
+        padding-left: 12px;
+        padding-top: 15px;
+        filter: brightness(4);
     }
 
 }

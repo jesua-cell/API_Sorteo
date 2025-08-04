@@ -6,7 +6,9 @@ export const Modal = ({ nombre, numerosBoletos, message, isError, onClose }) => 
         <>
             <div className="modal-overlay">
                 <div className={`modal-content ${isError ? 'error' : 'success'}`}>
-                    <p>{message}</p>
+                    <div className="contMessage">
+                        <p className='title_modal_father'>{message}</p>
+                    </div>
                     <h3 className='title_modal'>Jugador:</h3>
                     <p className='value_modal'>{nombre}</p>
                     <h3 className='title_modal'>Numeros Seleccionados:</h3>
