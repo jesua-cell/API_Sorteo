@@ -26,10 +26,10 @@ export const getJugadores = async (req, res) => {
         // Obtener el modo actual
         const [modoResult] = await pool.query('SELECT modo FROM configuracion_sorteo LIMIT 1');
         const modo = modoResult[0]?.modo || '1000';
-         const normalizeSearchTerm = (term, modo) => {
+        const normalizeSearchTerm = (term, modo) => {
             if (!isNaN(term)) {
                 const num = parseInt(term);
-                
+
                 // Manejar caso especial para 0 en modo 100
                 if (modo === '100') {
                     if (num === 0) return '00';
@@ -42,7 +42,7 @@ export const getJugadores = async (req, res) => {
             return term;
         };
 
-        const normalizedSearchTerm  = searchTerm ? normalizeSearchTerm(searchTerm.trim(), modo) : '';
+        const normalizedSearchTerm = searchTerm ? normalizeSearchTerm(searchTerm.trim(), modo) : '';
 
         let query = `
             SELECT 
@@ -850,4 +850,58 @@ export const updateModoSorteo = async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener el modo del sorteo' });
     }
-}; 
+};
+
+//manejo de abonos
+export const abonarJugador = async (req, res) => {
+    const { id } = req.params;
+    const { monto_abonado } = req.body;
+
+    if (!monto_abonado || parseFloat(monto_abonado) <= 0) {
+        return res.status(400).json({ error: "Monto Invalido" });
+    };
+
+    try {
+        // obtener el jugador
+        const [jugadores] = await pool.query(
+            'SELECT monto_total, monto_abonado FROM jugador WHERE id = ?',
+            [id]
+        );
+
+        if (jugadores.length === 0) {
+            return res.status(400).json({ error: "Jugador no encontrado" });
+        };
+
+        const jugador = jugadores[0];
+        const nuevoAbono = parseFloat(jugador.monto_abonado) + parseFloat(monto_abonado);
+        const pendiente = parseFloat(jugador.monto_total) - nuevoAbono;
+
+        // validacion: que no exceda el monto total
+        if (pendiente < 0) {
+            return res.status(400).json({
+                error: `Valor maximo del monto`
+            });
+        };
+
+        //determinar estado pagago-pendiente
+        const nuevoEstado = pendiente === 0 ? 'pagado' : 'pendiente'
+
+        //actualizar jugador
+        await pool.query(
+            'UPDATE jugador SET monto_abonado = ?, estado_pago = ? WHERE id = ?',
+            [nuevoAbono, nuevoEstado, id]
+        );
+
+        res.json({
+            success: true,
+            nuevo_abono: nuevoAbono,
+            pendiente: pendiente,
+            estado: nuevoEstado
+        })
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al procesar el abono" });
+    }
+
+};
