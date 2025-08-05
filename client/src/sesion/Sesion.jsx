@@ -62,6 +62,13 @@ export const Sesion = () => {
     //estados para monto abonado
     const [abonos, setAbonos] = useState({});
 
+    //estados para manejar la subida
+    const [uploading, setUploading] = useState({});
+
+    //estados de interfaz de los comprobantes
+    const [comprobantes, setComprobantes] = useState({});
+    const [showComprobantes, setShowComprobantes] = useState({});
+
     const itemsPerPage = 5;
 
     const navigate = useNavigate();
@@ -114,20 +121,6 @@ export const Sesion = () => {
         };
         fetchJugadores();
     }, [navigate])
-
-    // Obtner comprobantes
-    // useEffect(() => {
-    //     const fetchComprobantes = async () => {
-    //         try {
-    //             const response = await axios.get('http://localhost:3000//comprobante/:id')
-    //         } catch (error) {
-    //             console.error("Error en la obtencion del comprobante", error);
-    //         }
-    //     };
-
-    //     fetchComprobantes();
-    // }, []);
-
 
     useEffect(() => {
 
@@ -287,6 +280,85 @@ export const Sesion = () => {
         fetchValorVes();
     }, []);
 
+    // funcion para cargar comprobantes
+    const loadComprobantes = async (jugadorId) => {
+        try {
+            const token = localStorage.getItem('jwtToken');
+            const response = await axios.get(`http://localhost:3000/comprobantes/${jugadorId}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+
+            setComprobantes(prev => ({
+                ...prev,
+                [jugadorId]: response.data
+            }));
+
+            setShowComprobantes(prev => ({
+                ...prev,
+                [jugadorId]: !prev[jugadorId]
+            }));
+
+        } catch (error) {
+            console.error('Error al cargar comprobantes', error);
+        }
+    };
+
+    // funcion para manejar el(los) comprobantes
+    const uploadComprobante = async (jugadorId, file) => {
+        if (!file) return;
+
+        setUploading(prev => ({ ...prev, [jugadorId]: true }));
+
+        try {
+            const formData = new FormData();
+            formData.append('comprobante', file);
+
+            const token = localStorage.getItem('jwtToken');
+            await axios.post(`http://localhost:3000/comprobante/${jugadorId}`, formData,
+                {
+                    headers:
+                    {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+
+            toast.success("Comprobante Subido");
+            loadComprobantes(jugadorId);
+            // Actualizar imagen en la visita
+            const imgElement = document.getElementById(`comprobante-img-${jugadorId}`);
+            if (imgElement) {
+                imgElement.src = `http://localhost:3000/comprobante/${jugadorId}?t=${Date.now()}`;
+            };
+        } catch (error) {
+            console.error("Error al subir comprobante", error);
+            toast.error("Error al subir comprobante");
+        } finally {
+            setUploading(prev => ({ ...prev, [jugadorId]: false }));
+        }
+    };
+
+    // funcion para elimiar comprobantes
+    const handleDeleteComprobante = async (comprobanteId, jugadorId) => {
+        try {
+            const token = localStorage.getItem('jwtToken');
+            await axios.delete(`http://localhost:3000/comprobante/${comprobanteId}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
+            );
+
+            toast.success("Comprobante Eliminado");
+            loadComprobantes(jugadorId);
+
+        } catch (error) {
+            console.error("Error al eliminar comprobante", error);
+            toast.error("Error al eliminar comprobante");
+        }
+    };
 
     //Enviar valor del VES a la BD
     const enviarValor = async () => {
@@ -786,23 +858,54 @@ export const Sesion = () => {
                                             </td>
                                             {/* Comprobante */}
                                             <td>
-                                                {jugador.comprobante_id ? (
-                                                    <div className="cont_comprobante_img">
-                                                        <a
-                                                            href={`http://localhost:3000/comprobante/${jugador.id}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
+                                                <div className="cont_comprobante">
+                                                    <button
+                                                        className="btn_ver_comprobantes"
+                                                        onClick={() => loadComprobantes(jugador.id)}
+                                                    >
+                                                        {showComprobantes[jugador.id] ? "Ocultar" : "Ver"} Comprobantes
+                                                    </button>
+
+                                                    {showComprobantes[jugador.id] && comprobantes[jugador.id] && (
+                                                        <div className="comprobantes_list">
+                                                            {comprobantes[jugador.id].map(comprobante => (
+                                                                <div key={comprobante.id} className="comprobante_item">
+                                                                    <img
+                                                                        src={`data:image/jpeg;base64,${comprobante.comprobante}`}
+                                                                        alt="Comprobante"
+                                                                        className="comprobante_img"
+                                                                    />
+                                                                    <button
+                                                                        className="btn_eliminar_comprobante"
+                                                                        onClick={() => handleDeleteComprobante(comprobante.id, jugador.id)}
+                                                                    >
+                                                                        <img src={borrar} alt="Eliminar" width={16} height={16} />
+                                                                    </button>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+
+                                                    <div className="cont_btn_upload">
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            id={`file-input-${jugador.id}`}
+                                                            style={{ display: 'none' }}
+                                                            onChange={(e) => {
+                                                                if (e.target.files?.[0]) {
+                                                                    uploadComprobante(jugador.id, e.target.files[0]);
+                                                                }
+                                                            }}
+                                                        />
+                                                        <label
+                                                            htmlFor={`file-input-${jugador.id}`}
+                                                            className="btn_upload"
                                                         >
-                                                            <img
-                                                                src={`http://localhost:3000/comprobante/${jugador.id}`}
-                                                                alt="Comprobante"
-                                                                className="comprobante_img"
-                                                            />
-                                                        </a>
+                                                            Subir Nuevo
+                                                        </label>
                                                     </div>
-                                                ) : (
-                                                    "Sin Comprobante"
-                                                )}
+                                                </div>
                                             </td>
                                             <td className="td_referencia">
                                                 {/* Referencia */}

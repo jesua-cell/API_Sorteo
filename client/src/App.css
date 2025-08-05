@@ -3734,4 +3734,73 @@ input[type="number"]::-webkit-outer-spin-button {
         filter: brightness(4);
     }
 
+
+    /* Comprobantes */
+    .cont_comprobante {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn_ver_comprobantes {
+        padding: 5px 10px;
+        background-color: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .comprobantes_list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .comprobante_item {
+        position: relative;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+    }
+
+    .comprobante_img {
+        max-width: 80px;
+        max-height: 80px;
+        display: block;
+    }
+
+    .btn_eliminar_comprobante {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: #f9bebe;
+        border: none;
+        border-radius: 50%;
+        width: 28px;
+        height: 29px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
+    }
+
+    .cont_btn_upload {
+        margin-top: 10px;
+    }
+
+    .btn_upload {
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
 }
