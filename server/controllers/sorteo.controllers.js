@@ -48,9 +48,11 @@ export const getJugadores = async (req, res) => {
             SELECT 
                 j.*,
                 GROUP_CONCAT(nb.numero_boleto) AS boletos,
-                MIN(nb.fecha_asignacion) AS fecha_registro
+                MIN(nb.fecha_asignacion) AS fecha_registro,
+                c.id AS comprobante_id
             FROM jugador j
             LEFT JOIN numeros_boletos nb ON j.id = nb.jugador_id
+            LEFT JOIN comprobantes c ON j.id = c.jugador_id
         `;
 
         const params = [];
@@ -94,9 +96,7 @@ export const getJugadores = async (req, res) => {
         const poreccedJugadores = jugadores.map(jugador => ({
             ...jugador,
             boletos: jugador.boletos ? jugador.boletos.split(',') : [],
-            comprobante_url: jugador.comprobante_pago
-                ? `http://localhost:3000/uploads/${jugador.comprobante_pago}`
-                : null
+            comprobante_id: jugador.comprobante_id ? jugador.id : null
         }));
 
         res.json(poreccedJugadores);
@@ -123,7 +123,7 @@ export const addJugadores = async (req, res) => {
             monto_total
         } = req.body;
 
-        const comprobante_pago = req.file ? req.file.filename : null;
+        // const comprobante_pago = req.file ? req.file.filename : null;
 
         //Validacion
         if (!nombres_apellidos || !cedula || !celular || !numeros) {
@@ -140,10 +140,20 @@ export const addJugadores = async (req, res) => {
                 pais_estado,
                 referenciaPago,
                 metodo_pago,
-                comprobante_pago,
                 monto_total
             }
         );
+
+        //Insertar comprobante si existe
+        if (req.file) {
+            const filePath = path.join(UPLOADS_DIR, req.file.filename);
+            const imageBuffer = fs.readFileSync(filePath);
+
+            await pool.query(
+                'INSERT INTO comprobantes (jugador_id, comprobante_pago) VALUES (?, ?)',
+                [jugadorResult.insertId, imageBuffer]
+            );
+        };
 
         //Insertat boletos
         const numerosArray = JSON.parse(numeros);
@@ -170,7 +180,10 @@ export const addJugadores = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Error en el envio de datos desde el servidor" })
+        res.status(500).json({
+            error: "Error en el envio de datos desde el servidor",
+            details: error.message
+        })
     }
 };
 
@@ -325,16 +338,21 @@ export const deleteJugador = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const [jugadorRows] = await pool.query('SELECT comprobante_pago FROM jugador WHERE id = ?', [id]);
+        // const [jugadorRows] = await pool.query('SELECT comprobante_pago FROM jugador WHERE id = ?', [id]);
 
-        if (jugadorRows.length === 0) {
-            return res.status(404).json({ error: "Jugador no encontrado" });
-        }
+        // if (jugadorRows.length === 0) {
+        //     return res.status(404).json({ error: "Jugador no encontrado" });
+        // }
 
-        const jugador = jugadorRows[0];
+        // const jugador = jugadorRows[0];
 
+        //eliminar comprobantes
+        await pool.query('DELETE FROM comprobantes WHERE jugador_id = ?', [id]);
+
+        //eliminar puestos
         await pool.query('DELETE FROM numeros_boletos WHERE jugador_id = ?', [id]);
 
+        //eliminar jugador
         const [result] = await pool.query('DELETE FROM jugador WHERE id = ?', [id]);
 
         if (result.affectedRows === 0) {
@@ -342,16 +360,16 @@ export const deleteJugador = async (req, res) => {
         }
 
         //Manejo de errores de la peticion:
-        if (jugador.comprobante_pago && UPLOADS_DIR) {
-            try {
-                const comprobante = String(jugador.compare);
-                const filePath = path.join(UPLOADS_DIR, comprobante);
-            } catch (fileError) {
-                console.error("Error al eliminar el archivo", fileError);
-            }
-        } else if (jugador.comprobante_pago) {
-            console.error("UPLOADS_DIR no existe")
-        }
+        // if (jugador.comprobante_pago && UPLOADS_DIR) {
+        //     try {
+        //         const comprobante = String(jugador.compare);
+        //         const filePath = path.join(UPLOADS_DIR, comprobante);
+        //     } catch (fileError) {
+        //         console.error("Error al eliminar el archivo", fileError);
+        //     }
+        // } else if (jugador.comprobante_pago) {
+        //     console.error("UPLOADS_DIR no existe")
+        // }
 
         res.json({ success: true, message: "Jugador Eliminado" })
     } catch (error) {
@@ -904,4 +922,30 @@ export const abonarJugador = async (req, res) => {
         res.status(500).json({ error: "Error al procesar el abono" });
     }
 
+};
+
+
+export const getComprobantes = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [rows] = await pool.query(
+            'SELECT comprobante_pago FROM comprobantes WHERE jugador_id = ?',
+            [id]
+        );
+
+        if (!rows.length || !rows[0].comprobante_pago) {
+            return res.status(404).json({ error: "Comprobante no encontrado" });
+        };
+
+        const imageBuffer = rows[0].comprobante_pago;
+
+        const mimeType = 'image/jpeg';
+        res.setHeader('Content-Type', mimeType);
+        res.end(imageBuffer);
+
+    } catch (error) {
+        console.error('Error al obtener imagen:', error);
+        res.status(500).json({ error: 'Error al cargar imagen' });
+    }
 };
