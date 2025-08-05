@@ -1276,6 +1276,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .modal-content {
     display: flex;
     flex-direction: column;
+    align-items: center;
     background: var(--fondoModalSucces_2);
     border-radius: 10px;
     min-width: 360px;
@@ -1310,12 +1311,28 @@ input[type="number"]::-webkit-outer-spin-button {
 .value_modal {
     font-weight: 500;
     color: #e6e6e6;
+    background-color: #00030f;
+    width: 80%;
+    height: 42px;
+    font-weight: bold;
     font-size: 27px;
-    border-radius: 5px;
+    border-radius: 8px;
     padding: 5px;
     margin-bottom: 10px;
     margin-top: 10px;
+}
 
+.value_modal_num {
+    font-weight: 500;
+    color: #e6e6e6;
+    background-color: #00030f;
+    font-weight: bold;
+    font-size: 27px;
+    width: 60%;
+    border-radius: 8px;
+    padding: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 /* 
@@ -1718,6 +1735,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .modal_confirm {
     background-color: #f6f6f6;
     border-radius: 15px;
+    width: 80%;
 }
 
 .modal_cancel_btn,
@@ -3284,6 +3302,7 @@ input[type="number"]::-webkit-outer-spin-button {
     .estado-pendiente {
         min-height: 95px;
         height: 100%;
+        width: 100px;
         display: flex;
         align-items: center;
     }
@@ -3372,6 +3391,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
     .comprobante_img {
         cursor: zoom-in;
+    }
+
+    .modal_confirm {
+        width: 30%;
     }
 
     .contListaJugadores {
@@ -3483,8 +3506,6 @@ input[type="number"]::-webkit-outer-spin-button {
         padding: 0px 10px;
     }
 
-    .td_fecha {}
-
     .fila_num {
         display: flex;
         justify-content: center;
@@ -3515,35 +3536,6 @@ input[type="number"]::-webkit-outer-spin-button {
         margin-bottom: 5px;
         border-radius: 10px;
     }
-
-    /* .lista-datos {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        align-content: center;
-        gap: 0px;
-        width: 320px;
-        border-radius: 10px;
-        box-sizing: border-box;
-        border: 1px solid #333;
-        background: #ffffff;
-    } */
-
-    /* .fila,
-    .fila_monto {
-        display: grid;
-        align-items: center;
-        grid-template-columns: 0.7fr 1fr;
-        padding: 3px;
-        width: 100%;
-        min-height: auto;
-        border-radius: 0px;
-        box-sizing: border-box;
-        padding-left: 8px;
-    } */
-
-
-
 
     /* Cuentas de pago */
     .contCuentasPago {

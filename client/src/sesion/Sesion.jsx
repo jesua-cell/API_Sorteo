@@ -115,6 +115,19 @@ export const Sesion = () => {
         fetchJugadores();
     }, [navigate])
 
+    // Obtner comprobantes
+    // useEffect(() => {
+    //     const fetchComprobantes = async () => {
+    //         try {
+    //             const response = await axios.get('http://localhost:3000//comprobante/:id')
+    //         } catch (error) {
+    //             console.error("Error en la obtencion del comprobante", error);
+    //         }
+    //     };
+
+    //     fetchComprobantes();
+    // }, []);
+
 
     useEffect(() => {
 
@@ -771,21 +784,19 @@ export const Sesion = () => {
                                                     jugador.metodo_pago
                                                 )}
                                             </td>
+                                            {/* Comprobante */}
                                             <td>
-                                                {/*Comporbante de Pago*/}
-                                                {jugador.comprobante_url ? (
+                                                {jugador.comprobante_id ? (
                                                     <div className="cont_comprobante_img">
                                                         <a
-                                                            className="targe_comprobante"
-                                                            href={jugador.comprobante_url}
+                                                            href={`http://localhost:3000/comprobante/${jugador.id}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                         >
-                                                            <img src={zoom} className="zoom_comprobante" />
                                                             <img
-                                                                className="comprobante_img"
-                                                                src={jugador.comprobante_url}
+                                                                src={`http://localhost:3000/comprobante/${jugador.id}`}
                                                                 alt="Comprobante"
+                                                                className="comprobante_img"
                                                             />
                                                         </a>
                                                     </div>
@@ -1083,19 +1094,17 @@ export const Sesion = () => {
                                         <div className="columna">
                                             <div className="header">Comprobante</div>
                                             <div className="contenido">
-                                                {jugador.comprobante_url ? (
+                                                {jugador.comprobante_id ? (
                                                     <div className="cont_comprobante_img">
                                                         <a
-                                                            className="targe_comprobante"
-                                                            href={jugador.comprobante_url}
+                                                            href={`http://localhost:3000/comprobante/${jugador.id}`}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                         >
-                                                            <img src={zoom} className="zoom_comprobante" />
                                                             <img
-                                                                className="comprobante_img"
-                                                                src={jugador.comprobante_url}
+                                                                src={`http://localhost:3000/comprobante/${jugador.id}`}
                                                                 alt="Comprobante"
+                                                                className="comprobante_img"
                                                             />
                                                         </a>
                                                     </div>

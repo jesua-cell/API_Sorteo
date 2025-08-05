@@ -12,7 +12,7 @@ export const Modal = ({ nombre, numerosBoletos, message, isError, onClose }) => 
                     <h3 className='title_modal'>Jugador:</h3>
                     <p className='value_modal'>{nombre}</p>
                     <h3 className='title_modal'>Numeros Seleccionados:</h3>
-                    <p className='value_modal'>{numerosBoletos}</p>
+                    <p className='value_modal_num'>{numerosBoletos}</p>
                     {/* <button
                         onClick={onClose}
                         className='modal-close-btn'
