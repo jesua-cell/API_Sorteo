@@ -28,7 +28,11 @@ import {
     getModoSorteo,
     updateModoSorteo,
     abonarJugador,
-    getComprobantes
+    getComprobantes,
+    updateComprobante,
+    addComprobantes,
+    getAllComprobantes,
+    deleteComprobante
 } from '../controllers/sorteo.controllers.js';
 
 
@@ -141,5 +145,13 @@ router.put('/modo_sorteo', updateModoSorteo);
 router.put('/abonar/:id', abonarJugador);
 
 router.get('/comprobante/:id', getComprobantes);
+
+router.post('/comprobante/:id', upload.single('comprobante'), addComprobantes);
+
+router.get('/comprobantes/:jugador_id', getAllComprobantes);
+
+router.put('/comprobante/:id', upload.single('comprobante'), updateComprobante);
+
+router.delete('/comprobante/:comprobanteId', deleteComprobante);
 
 export default router;

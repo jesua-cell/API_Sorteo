@@ -925,6 +925,54 @@ export const abonarJugador = async (req, res) => {
 };
 
 
+export const addComprobantes = async (req, res) => {
+    const { id } = req.params;
+    const file = req.file;
+
+    if (!file) {
+        return res.status(400).json({ error: "No se subio ningún archivo" })
+    };
+
+    try {
+
+        const filePath = path.join(UPLOADS_DIR, file.filename);
+        const imageBuffer = fs.readFileSync(filePath);
+
+        await pool.query('INSERT INTO comprobantes (jugador_id, comprobante_pago) VALUES (?, ?)', [id, imageBuffer]);
+
+        fs.unlinkSync(filePath);
+        res.json({
+            success: true,
+            message: "Archivo Subido"
+        })
+    } catch (error) {
+        console.error('Error al agregar comprobante:', error);
+        res.status(500).json({ error: 'Error al agregar comprobante' });
+    };
+};
+
+export const getAllComprobantes = async (req, res) => {
+    const { jugador_id } = req.params;
+
+    try {
+        const [rows] = await pool.query('SELECT id, comprobante_pago FROM comprobantes WHERE jugador_id = ?', [jugador_id]);
+
+        if (rows.length === 0) {
+            return res.json([]);
+        };
+
+        const comprobantes = rows.map(row => ({
+            id: row.id,
+            comprobante: row.comprobante_pago.toString('base64')
+        }));
+
+        res.json(comprobantes);
+    } catch (error) {
+        console.error('Error al obtener comprobantes:', error);
+        res.status(500).json({ error: 'Error al obtener comprobantes' });
+    };
+};
+
 export const getComprobantes = async (req, res) => {
     const { id } = req.params;
 
@@ -947,5 +995,58 @@ export const getComprobantes = async (req, res) => {
     } catch (error) {
         console.error('Error al obtener imagen:', error);
         res.status(500).json({ error: 'Error al cargar imagen' });
+    }
+};
+
+export const updateComprobante = async (req, res) => {
+
+    const { id } = req.params;
+    const file = req.file;
+
+    if (!file) {
+        res.status(400).json({ error: "No se ha subido ningún archivo" })
+    };
+
+    try {
+        const filePath = path.join(UPLOADS_DIR, file.filename);
+        const imageBuffer = fs.readFileSync(filePath);
+
+        // Verificar si existe un comprobante
+        const [existing] = await pool.query('SELECT * FROM comprobantes WHERE jugador_id = ?', [id]);
+
+        if (existing.length > 0) {
+            await pool.query('UPDATE comprobantes SET comprobante_pago = ? WHERE jugador_id = ?', [imageBuffer, id]);
+        } else {
+            await pool.query('INSERT INTO comprobantes (jugador_id, comprobante_pago) VALUES (?, ?)', [id, imageBuffer]);
+        };
+
+        //eliminar archivo temporal
+        fs.unlinkSync(filePath);
+
+        res.json({
+            success: true,
+            message: "Comprobante Actualizado"
+        })
+
+    } catch (error) {
+        console.error('Error al actualizar el comprobante:', error);
+        res.status(500).json({ error: 'Error al actualizar el comprobante' });
+    };
+};
+
+export const deleteComprobante = async (req, res) => {
+
+    const { comprobanteId } = req.params;
+
+    try {
+        await pool.query('DELETE FROM comprobantes WHERE id = ?', [comprobanteId]);
+
+        res.json({
+            success: true,
+            message: "Archivo Eliminado"
+        });
+    } catch (error) {
+        console.error('Error al eliminar comprobante:', error);
+        res.status(500).json({ error: 'Error al eliminar comprobante' });
     }
 };
