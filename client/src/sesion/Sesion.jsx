@@ -8,6 +8,10 @@ import error from "../assets/error.png";
 import reloj from "../assets/reloj.png";
 import cheque from "../assets/cheque.png";
 import buscar from "../assets/buscar.png";
+import visual from "../assets/visual.png";
+import abrir from "../assets/abrir.png";
+import subir_imagen from "../assets/subir_imagen.png";
+import subir_img from "../assets/subir_img.png";
 import zoom from "../assets/zoom.png";
 import users from "../assets/users.png";
 import puestos from "../assets/puestos.png";
@@ -18,6 +22,7 @@ import axios from "axios";
 import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 import Select from 'react-select'
+import { ModalComprobante } from "../components/ModalComprobante";
 
 export const Sesion = () => {
 
@@ -46,9 +51,6 @@ export const Sesion = () => {
     const [editValue, setEditValue] = useState('');
     const [currentId, setCurrentId] = useState(null);
 
-    //Estados de los botones toggle del "monto total"
-    // const [pagoEstados, setPagoEstados] = useState({});
-
     // Estados del modo de Sorteo
     const [modoSorteo, setModoSorteo] = useState('1000');
 
@@ -68,6 +70,12 @@ export const Sesion = () => {
     //estados de interfaz de los comprobantes
     const [comprobantes, setComprobantes] = useState({});
     const [showComprobantes, setShowComprobantes] = useState({});
+
+    //estados para el manejo del modal de los comprobantes
+    const [modalComprobanteData, setModalComprobanteData] = useState({
+        isOpen: false,
+        jugadorId: null
+    });
 
     const itemsPerPage = 5;
 
@@ -326,13 +334,18 @@ export const Sesion = () => {
                 }
             );
 
+            setComprobantes(prev => ({
+                ...prev,
+                [jugadorId]: [...(prev[jugadorId] || []), { id: Date.now(), url: URL.createObjectURL(file) }]
+            }));
+
             toast.success("Comprobante Subido");
-            loadComprobantes(jugadorId);
+
             // Actualizar imagen en la visita
-            const imgElement = document.getElementById(`comprobante-img-${jugadorId}`);
-            if (imgElement) {
-                imgElement.src = `http://localhost:3000/comprobante/${jugadorId}?t=${Date.now()}`;
-            };
+            // const imgElement = document.getElementById(`comprobante-img-${jugadorId}`);
+            // if (imgElement) {
+            //     imgElement.src = `http://localhost:3000/comprobante/${jugadorId}?t=${Date.now()}`;
+            // };
         } catch (error) {
             console.error("Error al subir comprobante", error);
             toast.error("Error al subir comprobante");
@@ -344,6 +357,16 @@ export const Sesion = () => {
     // funcion para elimiar comprobantes
     const handleDeleteComprobante = async (comprobanteId, jugadorId) => {
         try {
+
+            if (typeof comprobanteId === 'number') {
+                setComprobantes(prev => ({
+                    ...prev,
+                    [jugadorId]: prev[jugadorId].filter(c => c.id !== comprobanteId)
+                }));
+                toast.success("Comprobante Eliminado")
+                return;
+            };
+
             const token = localStorage.getItem('jwtToken');
             await axios.delete(`http://localhost:3000/comprobante/${comprobanteId}`,
                 {
@@ -859,33 +882,6 @@ export const Sesion = () => {
                                             {/* Comprobante */}
                                             <td>
                                                 <div className="cont_comprobante">
-                                                    <button
-                                                        className="btn_ver_comprobantes"
-                                                        onClick={() => loadComprobantes(jugador.id)}
-                                                    >
-                                                        {showComprobantes[jugador.id] ? "Ocultar" : "Ver"} Comprobantes
-                                                    </button>
-
-                                                    {showComprobantes[jugador.id] && comprobantes[jugador.id] && (
-                                                        <div className="comprobantes_list">
-                                                            {comprobantes[jugador.id].map(comprobante => (
-                                                                <div key={comprobante.id} className="comprobante_item">
-                                                                    <img
-                                                                        src={`data:image/jpeg;base64,${comprobante.comprobante}`}
-                                                                        alt="Comprobante"
-                                                                        className="comprobante_img"
-                                                                    />
-                                                                    <button
-                                                                        className="btn_eliminar_comprobante"
-                                                                        onClick={() => handleDeleteComprobante(comprobante.id, jugador.id)}
-                                                                    >
-                                                                        <img src={borrar} alt="Eliminar" width={16} height={16} />
-                                                                    </button>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    )}
-
                                                     <div className="cont_btn_upload">
                                                         <input
                                                             type="file"
@@ -902,9 +898,27 @@ export const Sesion = () => {
                                                             htmlFor={`file-input-${jugador.id}`}
                                                             className="btn_upload"
                                                         >
-                                                            Subir Nuevo
+                                                            +
                                                         </label>
                                                     </div>
+
+                                                    <button className="btn_verComprobante" onClick={() => {
+                                                        loadComprobantes(jugador.id);
+                                                        setModalComprobanteData({
+                                                            isOpen: true,
+                                                            jugadorId: jugador.id
+                                                        })
+                                                    }}>
+                                                        <img src={abrir} alt="buscar" className="lgs_comprobantes" />
+                                                    </button>
+
+                                                    <ModalComprobante
+                                                        isOpen={modalComprobanteData.isOpen}
+                                                        closeModal={() => setModalComprobanteData({ isOpen: false, jugadorId: null })}
+                                                        comprobantes={comprobantes[modalComprobanteData.jugadorId] || []}
+                                                        onDelete={(comprobanteId) => handleDeleteComprobante(comprobanteId, modalComprobanteData.jugadorId)}
+                                                    />
+
                                                 </div>
                                             </td>
                                             <td className="td_referencia">
@@ -920,6 +934,7 @@ export const Sesion = () => {
                                                     jugador.referenciaPago
                                                 )}
                                             </td>
+                                            {/* boletos */}
                                             <td className="td_boletos">
                                                 {editingID === jugador.id ? (
                                                     <textarea
@@ -947,7 +962,7 @@ export const Sesion = () => {
                                                             }
 
                                                             return (
-                                                                <div key={`${jugador.id}-${index}`} className="fila_num">
+                                                                <div key={`${jugador.id}-boleto-${index}`} className="fila_num">
                                                                     {numVisual}
                                                                 </div>
                                                             );
@@ -1197,26 +1212,48 @@ export const Sesion = () => {
                                         <div className="columna">
                                             <div className="header">Comprobante</div>
                                             <div className="contenido">
-                                                {jugador.comprobante_id ? (
-                                                    <div className="cont_comprobante_img">
-                                                        <a
-                                                            href={`http://localhost:3000/comprobante/${jugador.id}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
+                                                <div className="cont_comprobante">
+                                                    <div className="cont_btn_upload">
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            id={`file-input-${jugador.id}`}
+                                                            style={{ display: 'none' }}
+                                                            onChange={(e) => {
+                                                                if (e.target.files?.[0]) {
+                                                                    uploadComprobante(jugador.id, e.target.files[0]);
+                                                                }
+                                                            }}
+                                                        />
+                                                        <label
+                                                            htmlFor={`file-input-${jugador.id}`}
+                                                            className="btn_upload"
                                                         >
-                                                            <img
-                                                                src={`http://localhost:3000/comprobante/${jugador.id}`}
-                                                                alt="Comprobante"
-                                                                className="comprobante_img"
-                                                            />
-                                                        </a>
+                                                            +
+                                                        </label>
                                                     </div>
-                                                ) : (
-                                                    "Sin Comprobante"
-                                                )}
+
+                                                    <button className="btn_verComprobante" onClick={() => {
+                                                        loadComprobantes(jugador.id);
+                                                        setModalComprobanteData({
+                                                            isOpen: true,
+                                                            jugadorId: jugador.id
+                                                        })
+                                                    }}>
+                                                        <img src={abrir} alt="buscar" className="lgs_comprobantes" />
+                                                    </button>
+
+
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <ModalComprobante
+                                        isOpen={modalComprobanteData.isOpen}
+                                        closeModal={() => setModalComprobanteData({ isOpen: false, jugadorId: null })}
+                                        comprobantes={comprobantes[modalComprobanteData.jugadorId] || []}
+                                        onDelete={(comprobanteId) => handleDeleteComprobante(comprobanteId, modalComprobanteData.jugadorId)}
+                                    />
 
                                     {/*Referencia */}
                                     <div className="fila">
@@ -1250,7 +1287,7 @@ export const Sesion = () => {
                                                         onChange={(e) => setTempData({ ...tempData, boletos: e.target.value })}
                                                     />
                                                 ) : (
-                                                    jugador.boletos.map((boleto, index) => {
+                                                    jugador.boletos && jugador.boletos.map((boleto, index) => {
                                                         const num = parseInt(boleto);
 
                                                         let numVisual;
@@ -1267,7 +1304,7 @@ export const Sesion = () => {
                                                         }
 
                                                         return (
-                                                            <div key={`${jugador.id}-${index}`} className="fila_num">
+                                                            <div key={`${jugador.id}-boleto-${index}`} className="fila_num">
                                                                 {numVisual}
                                                             </div>
                                                         );

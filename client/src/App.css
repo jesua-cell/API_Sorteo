@@ -1250,8 +1250,56 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 /* Componentes: Modal */
+.contComprobantes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
-.modal-overlay {
+.comprobantes-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.boxComprobantes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 600px;
+    width: 80%;
+    border-radius: 15px;
+    background: #fff;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.comprobante-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #adadad;
+    width: 90%;
+    height: 100%;
+    margin: 15px 10px;
+    border-radius: 10px;
+}
+
+.comprobante-img-modal{
+    height: 100%;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.modal-overlay-succesJugador {
     position: fixed;
     top: 0;
     left: 0;
@@ -1273,7 +1321,7 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 10px 10px 0px 0px;
 }
 
-.modal-content {
+.modal-content-jug {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1333,6 +1381,14 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 5px;
     margin-bottom: 10px;
     margin-top: 10px;
+}
+
+.btn-eliminar-modal {
+    background-color: #ec4646;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 10px 0px;
 }
 
 /* 
@@ -1484,6 +1540,80 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: row;
     align-items: center;
     height: auto;
+}
+
+.cont_btn_upload {
+    margin: 8px 0px;
+}
+
+.btn_upload {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 22px;
+    font-weight: bold;
+    width: 100%;
+    background-color: #0d6510;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btn_verComprobante {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    background-color: #0520a4;
+    color: #f0f0f0;
+    font-size: 16px;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+}
+
+.lgs_comprobantes {
+    height: 20px;
+    width: 20px;
+}
+
+/* Modal Comprobantes */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.close-button {
+    position: absolute;
+    border: none;
+    cursor: pointer;
+    background-color: #ca1002;
+    color: #fafafa;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 36px;
+    height: 39px;
+    top: 25px;
+    right: 25px;
+    font-size: 24px;
 }
 
 /* Botones De Consultar: Editar - Guardar - Eliminar */
@@ -2213,14 +2343,19 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
-    height: 34px;
-    width: 39px;
+    border-radius: 8px;
+    height: 42px;
+    width: 42px;
     margin-left: 5px;
     padding-left: 8px;
     border: none;
     cursor: pointer;
-    background-color: #9abceb;
+    background-color: #bbd7fe;
+}
+
+.btn_abonarMonto img {
+    height: 28px;
+    width: 28px;
 }
 
 .input_edicion_mb {
@@ -3428,7 +3563,7 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .inventario::-webkit-scrollbar {
-        height: 5px;
+        height: 7px;
     }
 
     .inventario::-webkit-scrollbar-track {
@@ -3719,19 +3854,17 @@ input[type="number"]::-webkit-outer-spin-button {
         align-items: center;
         justify-content: center;
         border-radius: 10px;
-        height: 32px;
-        width: 35px;
+        height: 42px;
+        width: 43px;
         margin-left: 5px;
         border: none;
         cursor: pointer;
-        background-color: #9abceb;
+        background-color: #bbd7fe;
     }
 
     .btn_abonarMonto img {
-        padding: 10px;
-        padding-left: 12px;
-        padding-top: 15px;
-        filter: brightness(4);
+        height: 24px;
+        width: 24px;
     }
 
 
@@ -3739,7 +3872,8 @@ input[type="number"]::-webkit-outer-spin-button {
     .cont_comprobante {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        align-items: center;
+        gap: 4px;
     }
 
     .btn_ver_comprobantes {
@@ -3750,21 +3884,6 @@ input[type="number"]::-webkit-outer-spin-button {
         border-radius: 4px;
         cursor: pointer;
         font-size: 12px;
-    }
-
-    .comprobantes_list {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .comprobante_item {
-        position: relative;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 5px;
     }
 
     .comprobante_img {
@@ -3790,17 +3909,156 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .cont_btn_upload {
-        margin-top: 10px;
+        margin: 4px 0px;
     }
 
     .btn_upload {
-        padding: 5px 10px;
-        background-color: #4CAF50;
+        padding: 5px 13px;
+        border-radius: 10px;
+        font-size: 20px;
+        opacity: 0.8;
+        font-weight: bold;
+        background-color: #0d6510;
         color: white;
         border: none;
-        border-radius: 4px;
         cursor: pointer;
-        font-size: 12px;
+    }
+
+    .contComprobantes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .boxComprobantes {
+        display: flex;
+        flex-direction: column;
+        height: 600px;
+        width: 60%;
+        border-radius: 15px;
+        background: #fff;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    .boxComprobantes::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .boxComprobantes::-webkit-scrollbar-track {
+        opacity: 0.8;
+        border-radius: 10px;
+        background: #e3d8d8;
+    }
+
+    .boxComprobantes::-webkit-scrollbar-thumb {
+        background: #b457a0;
+        border-radius: 10px;
+        opacity: 0.5;
+    }
+
+    .boxComprobantes::-webkit-scrollbar-button {
+        display: none;
+    }
+    
+    .comprobantes-container{ 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .comprobantes {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .comprobante-img-modal {
+        height: 60%;
+        width: 400px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .comprobante-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1px solid #adadad;
+        margin: 15px 0px;
+        height: 100%;
+        width: 80%;
+        border-radius: 10px;
+    }
+
+    .comprobante-img-modal {
+        height: 100%;
+        width: 100%;
+    }
+
+    .close-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        font-weight: bold;
+        top: 75px;
+        right: 290px;
+        background: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    .btn-eliminar-modal {
+        background: #ff4d4d;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin: 15px 0px;
+        width: 45px;
+        height: 50px;
+    }
+
+    .btn_verComprobante {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        cursor: pointer;
+        background-color: #0520a4;
+        color: #f0f0f0;
+        font-size: 16px;
+        width: 37px;
+        height: 34px;
+        border-radius: 10px;
+    }
+
+    .lgs_comprobantes {
+        height: 22px;
+        width: 22px;
+        opacity: 0.9;
     }
 
 }

@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 export const Modal = ({ nombre, numerosBoletos, message, isError, onClose }) => {
     return (
         <>
-            <div className="modal-overlay">
-                <div className={`modal-content ${isError ? 'error' : 'success'}`}>
+            <div className="modal-overlay-succesJugador">
+                <div className={`modal-content-jug ${isError ? 'error' : 'success'}`}>
                     <div className="contMessage">
                         <p className='title_modal_father'>{message}</p>
                     </div>
