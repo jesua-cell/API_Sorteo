@@ -45,15 +45,20 @@ export const getJugadores = async (req, res) => {
         const normalizedSearchTerm = searchTerm ? normalizeSearchTerm(searchTerm.trim(), modo) : '';
 
         let query = `
-            SELECT 
-                j.*,
-                GROUP_CONCAT(nb.numero_boleto) AS boletos,
-                MIN(nb.fecha_asignacion) AS fecha_registro,
-                c.id AS comprobante_id
-            FROM jugador j
-            LEFT JOIN numeros_boletos nb ON j.id = nb.jugador_id
-            LEFT JOIN comprobantes c ON j.id = c.jugador_id
-        `;
+      SELECT 
+        j.*,
+        (
+          SELECT GROUP_CONCAT(nb.numero_boleto) 
+          FROM numeros_boletos nb 
+          WHERE nb.jugador_id = j.id
+        ) AS boletos,
+        (
+          SELECT MIN(nb.fecha_asignacion)
+          FROM numeros_boletos nb
+          WHERE nb.jugador_id = j.id
+        ) AS fecha_registro
+      FROM jugador j
+    `;
 
         const params = [];
 
@@ -95,8 +100,7 @@ export const getJugadores = async (req, res) => {
 
         const poreccedJugadores = jugadores.map(jugador => ({
             ...jugador,
-            boletos: jugador.boletos ? jugador.boletos.split(',') : [],
-            comprobante_id: jugador.comprobante_id ? jugador.id : null
+            boletos: jugador.boletos ? jugador.boletos.split(',') : []
         }));
 
         res.json(poreccedJugadores);
