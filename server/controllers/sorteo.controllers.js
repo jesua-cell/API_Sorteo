@@ -5,7 +5,7 @@ import pool from '../config/db.js';
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken'
 import dotenv from "dotenv";
-import { error } from "node:console";
+import { assert, error } from "node:console";
 
 //Configuracion del archivo UOLOADS_DIR:
 const __filename = fileURLToPath(import.meta.url);
@@ -820,6 +820,12 @@ export const UpdateEstadoPago = async (req, res) => {
 
     try {
 
+        if (!['pendiente', 'pagado'].includes(estado_pago)) {
+            return res.status(400).json({
+                error: "Error del estado de pago"
+            })
+        };
+
         const [result] = await pool.query(
             'UPDATE jugador SET estado_pago = ? WHERE id = ?',
             [estado_pago, id]
@@ -829,12 +835,43 @@ export const UpdateEstadoPago = async (req, res) => {
             return res.status(404).json({ error: 'Jugador no encontrado' })
         };
 
+
+        // obtener los boletos, para menejar el estado completo del jugador
+        const [updateRows] = await pool.query(
+            `SELECT j.*, 
+      (SELECT GROUP_CONCAT(nb.numero_boleto) 
+       FROM numeros_boletos nb 
+       WHERE nb.jugador_id = j.id) AS boletos,
+      (SELECT MIN(nb.fecha_asignacion)   
+       FROM numeros_boletos nb
+       WHERE nb.jugador_id = j.id) AS fecha_registro  
+     FROM jugador j 
+     WHERE j.id = ?`,
+            [id]
+        );
+
+        const jugador = updateRows[0];
+
+        const boletosArray = jugador.boletos ? jugador.boletos.split(',').map(b => b.trim()) : [];
+
+        if (updateRows.length === 0) {
+            return res.status(404).json({ error: 'Jugador no encontrado despues de actualizar' })
+        };
+
         res.json({
             success: true,
-            message: 'Estado de pago actualizado'
+            message: 'Estado de pago actualizado',
+            jugador: {
+                ...jugador,
+                boletos: boletosArray
+            }
         });
     } catch (error) {
         console.error("Error en la actualizacion de estado de pago", error);
+        res.status(500).json({
+            error: 'Error interno del servidor',
+            details: error.message
+        });
     }
 };
 
@@ -1043,7 +1080,12 @@ export const deleteComprobante = async (req, res) => {
     const { comprobanteId } = req.params;
 
     try {
-        await pool.query('DELETE FROM comprobantes WHERE id = ?', [comprobanteId]);
+
+        const [result] = await pool.query('DELETE FROM comprobantes WHERE id = ?', [comprobanteId]);
+
+        if (result.affectedRows === 0) {
+            return res.status(500).json({ error: "Comprobante no encontrado" })
+        }
 
         res.json({
             success: true,
@@ -1051,6 +1093,47 @@ export const deleteComprobante = async (req, res) => {
         });
     } catch (error) {
         console.error('Error al eliminar comprobante:', error);
+
+        if (error.code === 'ER_ROW_IS_REFERENCED_2') {
+            return res.status(500).json({
+                error: 'No se puede eliminar: existen registros dependientes'
+            });
+        };
+
         res.status(500).json({ error: 'Error al eliminar comprobante' });
+    }
+};
+
+export const deleteAllJugadores = async (req, res) => { 
+    
+    const connection = await pool.getConnection();
+
+    try {
+        
+        await connection.beginTransaction();
+
+        await connection.query('DELETE from comprobantes');
+
+        await connection.query('DELETE from numeros_boletos');
+
+        await connection.query('DELETE from jugador');
+
+        await connection.commit();
+
+        res.json({
+            success: true,
+            message: "Todos los jugador fueron eliminados"
+        });
+    } catch (error) {
+        
+        await connection.rollback();
+
+            console.error("Error al intentar eliminar todos los jugadores");
+            res.status(500).json({
+                error: "Error al eliminar todos los jugadores",
+                details: error.message
+            });
+    } finally {
+        connection.release();
     }
 };
