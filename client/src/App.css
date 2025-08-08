@@ -1263,7 +1263,7 @@ input[type="number"]::-webkit-outer-spin-button {
     z-index: 1000;
 }
 
-.comprobantes-container{
+.comprobantes-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1277,7 +1277,8 @@ input[type="number"]::-webkit-outer-spin-button {
     height: 600px;
     width: 80%;
     border-radius: 15px;
-    background: #fff;
+    background: linear-gradient(333deg,rgba(0, 0, 0, 1) 0%, rgba(48, 47, 47, 1) 24%, rgba(26, 19, 19, 1) 47%, rgba(48, 47, 47, 1) 74%, rgba(38, 38, 38, 1) 94%);
+    color: #fafafa;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -1287,13 +1288,14 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: column;
     align-items: center;
     border: 1px solid #adadad;
+    background-color: #dadada;
     width: 90%;
     height: 100%;
     margin: 15px 10px;
     border-radius: 10px;
 }
 
-.comprobante-img-modal{
+.comprobante-img-modal {
     height: 100%;
     width: 100%;
     border-radius: 8px;
@@ -1384,23 +1386,14 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .btn-eliminar-modal {
-    background-color: #ec4646;
+    background-color: #ffa5a5;
     border: none;
     border-radius: 8px;
-    padding: 8px;
     margin: 10px 0px;
+    height: 40px;
+    width: 50px;
+    padding-top: 5px;
 }
-
-/* 
-.value_modal p {
-    margin-bottom: 0;
-    margin-top: 0;
-} */
-
-/* .modal-content.success {
-    border: 3px solid #4CAF50;
-  }
-*/
 
 .modal-content.error {
     background: linear-gradient(64deg, rgb(188, 119, 119) 7%, rgb(227, 37, 37) 45%, rgb(199, 25, 25) 90%);
@@ -1426,6 +1419,49 @@ input[type="number"]::-webkit-outer-spin-button {
     color: #333;
 }
 
+/* Modales Estados */
+
+.modal-confirm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    text-align: center;
+    background: linear-gradient(358deg, rgb(253, 216, 216) 0%, rgba(255, 255, 255, 1) 81%);
+    color: #050305;
+    height: 350px;
+    width: 80%;
+    border-radius: 10px;
+}
+
+.modal-message {
+    padding: 0px 10px;
+}
+
+.title_modal_est {
+    margin: 0px;
+    padding: 0px 9px;
+    font-size: 25px;
+}
+
+.p_modal_est {
+    padding: 0px 15px;
+}
+
+.modal_cancel_btn {
+    margin-right: 5px;
+}
+
+.p_modalEstado {
+    font-size: 20px;
+    margin: 0px;
+}
+
+.p_modal_deleteAll {
+    margin: 0px;
+    font-weight: 700;
+}
+
 @keyframes modalAppear {
     from {
         transform: translateY(-20px);
@@ -1441,7 +1477,7 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Sesion Admins */
 .cont_admins {
     color: var(--colorTextoOscuro);
-    background-color: #a4a5a5;
+    background: linear-gradient(180deg, rgba(168, 168, 168, 1) 2%, rgba(79, 77, 77, 1) 92%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1870,25 +1906,27 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .modal_cancel_btn,
 .modal_confirm_btn {
-    padding: 8px 15px;
-    border-radius: 15px;
-    margin-bottom: 15px;
+    padding: 10px 32px;
+    border-radius: 7px;
+    margin-top: 5px;
     border: none;
     background-color: #8a8a8a;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+    /* box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5); */
     cursor: pointer;
 }
 
 .modal_confirm_btn {
     color: #6d9bfd;
-    background-color: #282828;
+    background-color: #fafafa;
+    border: 2px solid #6d9bfd;
     font-weight: 700;
     font-size: 18px;
 }
 
 .modal_cancel_btn {
-    color: #fd8282;
-    background-color: #242424;
+    color: #ffffff;
+    border: 2px solid #c50000;
+    background-color: #c50000;
     font-weight: 700;
     font-size: 18px;
 }
@@ -2200,9 +2238,25 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .text_no_result {
-    font-weight: 700;
-    text-align: center;
     width: 70%;
+    background: linear-gradient(197deg, rgb(50, 47, 47) 0%, rgb(67, 67, 67) 80%);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+    color: #fafafa;
+    font-weight: 700;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.btn_recargar {
+    font-size: 20px;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 17px;
+    background: linear-gradient(197deg, rgb(30, 30, 59) 0%, rgb(4, 16, 84) 80%);
+    color: #fafafa;
+    border: none;
+    cursor: pointer;
 }
 
 .btn_no_result {
@@ -2406,11 +2460,11 @@ input[type="number"]::-webkit-outer-spin-button {
     flex-direction: column;
     align-items: center;
     height: 100%;
-    background: linear-gradient(178deg, rgb(123, 123, 123) 9%, rgba(0, 0, 0, 0.74) 74%);
+    background: radial-gradient(circle, rgba(158, 158, 158, 1) 0%, rgb(92, 92, 92) 100%);
 }
 
 .contPubUpload {
-    background: linear-gradient(-1deg, rgb(123, 123, 123) 9%, rgba(0, 0, 0, 0.74) 74%);
+    background: radial-gradient(circle, rgba(158, 158, 158, 1) 0%, rgb(92, 92, 92) 100%);
 }
 
 
@@ -2475,10 +2529,12 @@ input[type="number"]::-webkit-outer-spin-button {
     margin-bottom: 7px;
     opacity: 0.9;
     border: 2px solid #8c418c;
+    min-height: 35px;
     height: auto;
     width: 286px;
     overflow-y: auto;
     resize: none;
+    text-align: center;
     outline: 0.5px solid #00030f;
 }
 
@@ -2721,6 +2777,10 @@ input[type="number"]::-webkit-outer-spin-button {
 /* Resolucion de Computador de Mesa */
 
 @media(min-width: 768px) {
+
+    html, body {
+        overflow-x: hidden;
+    }
 
     /* Menu Hamburguesa */
     .nav_toggle,
@@ -3139,6 +3199,7 @@ input[type="number"]::-webkit-outer-spin-button {
         display: flex;
         flex-direction: row;
         margin-bottom: 10px;
+        width: 98%;
     }
 
     .conntValorVef {
@@ -3435,16 +3496,17 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .estado-pendiente {
-        min-height: 95px;
+        min-height: 100px;
         height: 100%;
-        width: 100px;
+        width: 120px;
         display: flex;
         align-items: center;
     }
 
     .estado-pagado {
-        min-height: 95px;
-        height: auto;
+        min-height: 100px;
+        height: 100%;
+        width: 120px;
         display: flex;
         align-items: center;
     }
@@ -3529,7 +3591,7 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .modal_confirm {
-        width: 30%;
+        width: 25%;
     }
 
     .contListaJugadores {
@@ -3582,6 +3644,11 @@ input[type="number"]::-webkit-outer-spin-button {
         display: none;
     }
 
+    .th_head {
+        background-color: #323232;
+        color: #fafafa;
+    }
+
     .th_titulos {
         font-size: 18px;
     }
@@ -3621,12 +3688,46 @@ input[type="number"]::-webkit-outer-spin-button {
         font-weight: bold;
     }
 
+    .td_nombre {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 170px;
+        min-height: 102px;
+    }
+
+    .str_nombres {
+        margin: 0px 5px;
+    }
+
+    .td_celular {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 170px;
+    }
+
+    .td_cedula {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 170px;
+    }
+
+    .td_ciudad_pais {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 220px;
+    }
+
     .cont_boletos {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
+        height: 100px;
         width: 280px;
     }
 
@@ -3847,6 +3948,8 @@ input[type="number"]::-webkit-outer-spin-button {
         flex-direction: row;
         justify-content: center;
         align-items: center;
+        min-width: 120px;
+        margin: 0px 15px;
     }
 
     .btn_abonarMonto {
@@ -3943,7 +4046,9 @@ input[type="number"]::-webkit-outer-spin-button {
         height: 600px;
         width: 60%;
         border-radius: 15px;
-        background: #fff;
+        color: #fafafa;
+        background-color: #050305;
+        border: none;
         overflow-y: scroll;
         overflow-x: hidden;
     }
@@ -3967,13 +4072,14 @@ input[type="number"]::-webkit-outer-spin-button {
     .boxComprobantes::-webkit-scrollbar-button {
         display: none;
     }
-    
-    .comprobantes-container{ 
+
+    .comprobantes-container {
         display: flex;
         flex-direction: column;
         align-items: center;
+        background-color: transparent;
     }
-    
+
     .comprobantes {
         display: flex;
         flex-wrap: wrap;
@@ -3981,7 +4087,7 @@ input[type="number"]::-webkit-outer-spin-button {
         justify-content: center;
         align-items: center;
         text-align: center;
-        background: #fff;
+        background: transparent;
         padding: 20px;
         border-radius: 8px;
         width: 100%;
@@ -4017,8 +4123,8 @@ input[type="number"]::-webkit-outer-spin-button {
         align-items: center;
         position: absolute;
         font-weight: bold;
-        top: 75px;
-        right: 290px;
+        top: 30px;
+        right: 260px;
         background: #ff4d4d;
         color: white;
         border: none;
@@ -4030,15 +4136,17 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .btn-eliminar-modal {
-        background: #ff4d4d;
-        color: white;
-        border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #ffd6d6;
         padding: 5px 10px;
         border-radius: 8px;
-        cursor: pointer;
         margin: 15px 0px;
         width: 45px;
-        height: 50px;
+        height: 45px;
+        border: none;
+        cursor: pointer;
     }
 
     .btn_verComprobante {
@@ -4059,6 +4167,27 @@ input[type="number"]::-webkit-outer-spin-button {
         height: 22px;
         width: 22px;
         opacity: 0.9;
+    }
+
+    /* Modales Confimarcion */
+
+    .modal-confirm {
+        width: 30%;
+        height: 350px;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .modal-button {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        width: 90%;
+    }
+
+    .modal_cancel_btn,
+    .modal_confirm_btn {
+        width: 200px;
     }
 
 }

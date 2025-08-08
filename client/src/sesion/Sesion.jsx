@@ -23,6 +23,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 import Select from 'react-select'
 import { ModalComprobante } from "../components/ModalComprobante";
+import { ModalConsultas } from "../components/ModalConsultas.jsx";
 
 export const Sesion = () => {
 
@@ -57,10 +58,6 @@ export const Sesion = () => {
     // estados de la paginacion
     const [currentPage, setCurrentPage] = useState(0);
 
-    // estados para el modal del modo de sorteo
-    const [showModalConfirm, setShowModalConfirm] = useState(false);
-    const [pendingMode, setPendingMode] = useState(null);
-
     //estados para monto abonado
     const [abonos, setAbonos] = useState({});
 
@@ -77,7 +74,32 @@ export const Sesion = () => {
         jugadorId: null
     });
 
-    const itemsPerPage = 5;
+    // Estados para los modales
+    const [modalEstadoPago, setModalEstadoPago] = useState({
+        isOpen: false,
+        jugadorId: null,
+        nuevoEstado: null,
+        nombreJugador: ''
+    });
+
+    // Modo del Sorteo 100 o 1000
+    const [modalModoSorteo, setModalModoSorteo] = useState({
+        isOpen: false,
+        nuevoModo: ''
+    });
+
+    //Eliminar jugador
+    const [modalEliminar, setModalEliminar] = useState({
+        isOpen: false,
+        jugadorId: null,
+        nombreJugador: ''
+    });
+
+    const [modalDeleteAll, setModalDeleteAll] = useState({
+        isOpen: false
+    });
+
+    const itemsPerPage = 5; // cantidad de filas del inventario
 
     const navigate = useNavigate();
 
@@ -340,12 +362,6 @@ export const Sesion = () => {
             }));
 
             toast.success("Comprobante Subido");
-
-            // Actualizar imagen en la visita
-            // const imgElement = document.getElementById(`comprobante-img-${jugadorId}`);
-            // if (imgElement) {
-            //     imgElement.src = `http://localhost:3000/comprobante/${jugadorId}?t=${Date.now()}`;
-            // };
         } catch (error) {
             console.error("Error al subir comprobante", error);
             toast.error("Error al subir comprobante");
@@ -358,28 +374,62 @@ export const Sesion = () => {
     const handleDeleteComprobante = async (comprobanteId, jugadorId) => {
         try {
 
-            if (typeof comprobanteId === 'number') {
-                setComprobantes(prev => ({
-                    ...prev,
-                    [jugadorId]: prev[jugadorId].filter(c => c.id !== comprobanteId)
-                }));
-                toast.success("Comprobante Eliminado")
-                return;
-            };
+            // if (typeof comprobanteId === 'number') {
+            //     setComprobantes(prev => ({
+            //         ...prev,
+            //         [jugadorId]: prev[jugadorId].filter(c => c.id !== comprobanteId)
+            //     }));
+            //     toast.success("Comprobante Eliminado")
+            //     return;
+            // };
 
             const token = localStorage.getItem('jwtToken');
-            await axios.delete(`http://localhost:3000/comprobante/${comprobanteId}`,
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            );
+
+            // actualizar estado local
+            setComprobantes(prev => ({
+                ...prev,
+                [jugadorId]: prev[jugadorId].filter(c => c.id !== comprobanteId)
+            }));
+
+            // obtener el comprobante unico, no la copia
+            if (!isNaN(comprobanteId)) {
+                await axios.delete(`http://localhost:3000/delete-comprobante/${comprobanteId}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` }
+                    }
+                );
+            };
 
             toast.success("Comprobante Eliminado");
-            loadComprobantes(jugadorId);
 
         } catch (error) {
             console.error("Error al eliminar comprobante", error);
             toast.error("Error al eliminar comprobante");
+            loadComprobantes(jugadorId);
+        }
+    };
+
+    const handleDeleteAll = async () => {
+        try {
+
+            const token = localStorage.getItem('jwtToken');
+            await axios.delete(
+                'http://localhost:3000/delete-all-jugadores',
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+
+            //actualizar estado local
+            setJugadores([]);
+            setFilterJugadores([]);
+            setComprobantes({});
+            setAbonos({});
+
+            toast.success("Todos los jugadores eliminados");
+        } catch (error) {
+            console.error("Error al eliminar todos los jugadores", error);
+            toast.error("Error al eliminar todos los jugadores");
+        } finally {
+            setModalDeleteAll({ isOpen: false })
         }
     };
 
@@ -470,6 +520,13 @@ export const Sesion = () => {
         }
     };
 
+    //Funcion para recargar el el inventario cuando no haya resultado concreto
+    const handleClearSearch = () => {
+        setSearch("");
+        setFilterJugadores(jugadores);
+        setCurrentPage(0);
+    };
+
     const normalizarNumero = (valorStr) => {
 
         if (!valorStr) return '';
@@ -523,58 +580,80 @@ export const Sesion = () => {
     // funcion toggle del campo de monto total
     const togglePago = async (jugadorId, nuevoEstado) => {
 
-        try {
+        const jugador = jugadores.find(j => j.id === jugadorId);
 
+        if (jugador) {
+            setModalEstadoPago({
+                isOpen: true,
+                jugadorId,
+                nuevoEstado,
+                nombreJugador: jugador.nombres_apellidos
+            });
+        };
+    };
+
+    // Funciones Modal
+    // funncion del cambio del estado desde el modal
+    const confirmCambioEstado = async () => {
+        if (!modalEstadoPago.jugadorId || !modalEstadoPago.nuevoEstado) return;
+
+        try {
             const token = localStorage.getItem('jwtToken');
-            await axios.put(
-                `http://localhost:3000/jugador/${jugadorId}/estado_pago`,
-                { estado_pago: nuevoEstado },
+            const response = await axios.put(
+                `http://localhost:3000/jugador/${modalEstadoPago.jugadorId}/estado_pago`,
+                { estado_pago: modalEstadoPago.nuevoEstado },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            //Actualizar lista de estado
-            setJugadores(prev => prev.map(j =>
-                j.id === jugadorId ? { ...j, estado_pago: nuevoEstado } : j
-            ));
 
-            setFilterJugadores(prev => prev.map(j =>
-                j.id === jugadorId ? { ...j, estado_pago: nuevoEstado } : j
-            ));
+            if (!response.data || !response.data.jugador) {
+                console.error("Error en la obtencion del jugador en estado de pagado");
+            };
 
-            if (editingID === jugadorId) {
+            const jugadorActualizado = response.data.jugador;
+
+            //actualizar estado local
+            const jugadoresActualizados = jugadores.map(j =>
+                j.id === jugadorActualizado.id ? jugadorActualizado : j
+            );
+
+            setJugadores(jugadoresActualizados);
+            setFilterJugadores(jugadoresActualizados);
+
+            // actualizar tempData si esta en edicion
+            if (editingID === modalEstadoPago.jugadorId) {
                 setTempData(prev => ({
                     ...prev,
-                    estado_pago: nuevoEstado
+                    estado_pago: jugadorActualizado.estado_pago
                 }));
             };
 
+            // limpiar modal
+            setModalEstadoPago(prev => ({ ...prev, isOpen: false }))
+
         } catch (error) {
-            console.error('Error en la actualizacion de datos del estado de pago', error);
+            console.error('Error en la actualización de estado de pago', error);
+            toast.error("Error al cambiar el estado de pago");
         }
+
     };
 
-    const actualizarModoSorteo = async (modo) => {
-        // si esta seleccionado, no hacer nada
-        if (modoSorteo === modo) return;
+    const confirmCambioModo = async () => {
 
-        setPendingMode(modo);
-        setShowModalConfirm(true);
-    };
+        const { nuevoModo } = modalModoSorteo;
 
-    const confirmChange = async () => {
-
-        if (!pendingMode) return;
+        if (!nuevoModo) return;
 
         try {
             const token = localStorage.getItem('jwtToken');
             await axios.put(
                 'http://localhost:3000/modo_sorteo',
-                { pendingMode },
+                { modo: nuevoModo },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            setModoSorteo(pendingMode);
-            toast(`${pendingMode} Puestos`,
+            setModoSorteo(nuevoModo);
+            toast(`${nuevoModo} Puestos`,
                 {
                     icon: '',
                     style: {
@@ -589,16 +668,39 @@ export const Sesion = () => {
                 }
             );
 
-            //TODO colocar un ventana de alerta al cambiar la cantidad de numeros
+            setModalModoSorteo({ isOpen: false, nuevoModo: null });
         } catch (error) {
             console.error("Error en al cambio de modo", error);
             toast.error("Error en el cambio de modo");
-        } finally {
-            setShowModalConfirm(false);
-            setPendingMode(null);
         };
     };
 
+    const handleOpenModeModal = (modo) => {
+        setModalModoSorteo({
+            isOpen: true,
+            nuevoModo: modo
+        })
+    };
+
+    const openEliminarModal = (jugadorId, nombreJugador) => {
+        setModalEliminar({
+            isOpen: true,
+            jugadorId,
+            nombreJugador
+        });
+    };
+
+    const confirmElimicion = async () => {
+        if (!modalEliminar.jugadorId) return;
+
+        try {
+            await handleEliminar(modalEliminar.jugadorId);
+            setModalEliminar({ isOpen: false, jugadorId: null, nombreJugador: '' });
+        } catch (error) {
+            console.error("Error al eliminar jugador", error);
+            toast.error("Error al eliminar jugador");
+        }
+    };
 
     const formatoLatino = (numero) => {
 
@@ -713,13 +815,13 @@ export const Sesion = () => {
                         <h3 className="title_countNumSorteoPub">Cantidad de Puestos:</h3>
                         <button
                             className={`btn_countPub_mil ${modoSorteo === '1000' ? 'active' : ''}`}
-                            onClick={() => actualizarModoSorteo('1000')}
+                            onClick={() => handleOpenModeModal('1000')}
                         >1000
                         </button>
 
                         <button
                             className={`btn_countPub_cien ${modoSorteo === '100' ? 'active' : ''}`}
-                            onClick={() => actualizarModoSorteo('100')}
+                            onClick={() => handleOpenModeModal('100')}
                         >100
                         </button>
                     </div>
@@ -729,39 +831,12 @@ export const Sesion = () => {
                             <h3 className="h3_DeleteAll">Eliminar todos todos los jugadores</h3>
                             <button
                                 className="img_eliminar_all"
+                                onClick={() => setModalDeleteAll({ isOpen: true })}
                             >
                                 <img src={borrar} alt="borrar" />
                             </button>
                         </div>
                     </div>
-
-                    {showModalConfirm && (
-                        <div className="modal_overlay">
-                            <div className="modal_confirm">
-                                <h3>Confirmar Cambio</h3>
-                                <p>
-                                    ¿Estas seguro de cambiar a <strong>{pendingMode}</strong> puestos?
-                                    <br />
-                                    Se reiniciaran todos los numeros del sorteo!
-                                </p>
-                                <div className="modal_button">
-                                    <button
-                                        className="modal_cancel_btn"
-                                        onClick={() => setShowModalConfirm(false)}
-                                    >
-                                        cancelar
-                                    </button>
-                                    <button
-                                        className="modal_confirm_btn"
-                                        onClick={confirmChange}
-                                    >
-                                        Confirmar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
                 </div>
 
                 <div className="contBuscador">
@@ -780,16 +855,83 @@ export const Sesion = () => {
                     </button>
                 </div>
 
+                <ModalConsultas
+                    isOpen={modalDeleteAll.isOpen}
+                    onClose={() => setModalDeleteAll({ isOpen: false })}
+                    onConfirm={handleDeleteAll}
+                    title="Eliminar todos los jugadores"
+                    message={
+                        <p className="p_modal_deleteAll">
+                            ¿Estas seguro de eliminar todos los jugadores? <br /> Esta acción no se puede revertir
+                        </p>
+                    }
+                    confirmButtonTxt="confirmar"
+                    cancelButtonTxt="cancelar"
+                />
+
+                <ModalConsultas
+                    isOpen={modalModoSorteo.isOpen}
+                    onClose={() => setModalModoSorteo({ isOpen: false, nuevoModo: null })}
+                    onConfirm={confirmCambioModo}
+                    title="Cambiar cantidad de puestos"
+                    message={
+                        <p style={{ fontSize: '20px' }}>
+                            ¿Estas seguro de cambiar a <strong>{modalModoSorteo.nuevoModo}</strong> puestos?
+                            <br />
+                        </p>
+                    }
+                    confirmButtonTxt="confirmar"
+                    cancelButtonTxt="cancelar"
+                />
+
+                <ModalConsultas
+                    isOpen={modalEstadoPago.isOpen}
+                    onClose={() => setModalEstadoPago(prev => ({ ...prev, isOpen: false }))}
+                    onConfirm={confirmCambioEstado}
+                    title="Cambiar el estado de pago"
+                    message={<p className="p_modalEstado">
+                        ¿Estás seguro de cambiar el estado de <strong style={{ fontWeight: 'bold', color: '#000', borderBottom: '3px solid #000' }}>{modalEstadoPago.nombreJugador} </strong>
+                        a <strong>{modalEstadoPago.nuevoEstado}</strong>?
+                    </p>}
+                    confirmButtonTxt="confirmar"
+                    cancelButtonTxt="cancelar"
+                />
+
+                <ModalConsultas
+                    isOpen={modalEliminar.isOpen}
+                    onClose={() => setModalEliminar({ isOpen: false, jugadorId: null, nombreJugador: '' })}
+                    onConfirm={confirmElimicion}
+                    title="Eliminar Jugador"
+                    message={
+                        <p>
+                            ¿Estas seguro de eliminar al jugador <strong >{modalEliminar.nombreJugador}</strong>?
+                        </p>
+                    }
+                    confirmButtonTxt="confirmar"
+                    cancelButtonTxt="cancelar"
+                />
+
                 {/** Escritoio */}
                 <div className="contListaJugadores">
+
                     {filterJugadores.length === 0 ? (
                         <div className="no_result">
-                            <p className="text_no_result">No existe el jugador con estos caracteres:  <span>"{search}"</span></p>
+                            {jugadores.length === 0 ? (
+                                <p className="text_no_result">No hay jugadores guardados</p>
+                            ) : (
+                                <>
+                                    <p className="text_no_result">No existe el jugador con estos caracteres:  <span>"{search}"</span></p>
+                                    <button
+                                    className="btn_recargar"
+                                    onClick={handleClearSearch}
+                                    >Ver todos los jugadores</button>
+                                </>
+                            )}
                         </div>
                     ) : (
                         <div className="contJugadores">
                             <table className="inventario">
-                                <thead>
+                                <thead className="th_head">
                                     <tr className="th_titulos">
                                         <th>ID</th>
                                         <th>Nombres</th>
@@ -816,55 +958,63 @@ export const Sesion = () => {
                                             <td className="td_id">{jugador.id}</td>
                                             <td>
                                                 {/*Nombres*/}
-                                                {editingID === jugador.id ? (
-                                                    <textarea
-                                                        type="text"
-                                                        className="textArea_puestos textArea_nombres"
-                                                        value={tempData.nombres_apellidos}
-                                                        onChange={(e) => setTempData({ ...tempData, nombres_apellidos: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    <strong>{jugador.nombres_apellidos}</strong>
-                                                )}
+                                                <div className="td_nombre">
+                                                    {editingID === jugador.id ? (
+                                                        <textarea
+                                                            type="text"
+                                                            className="textArea_puestos textArea_nombres"
+                                                            value={tempData.nombres_apellidos}
+                                                            onChange={(e) => setTempData({ ...tempData, nombres_apellidos: e.target.value })}
+                                                        />
+                                                    ) : (
+                                                        <strong className="str_nombres">{jugador.nombres_apellidos}</strong>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td>
                                                 {/* Celular*/}
-                                                {editingID === jugador.id ? (
-                                                    <textarea
-                                                        type="text"
-                                                        className="textArea_puestos textarea_celular"
-                                                        value={tempData.celular}
-                                                        onChange={(e) => setTempData({ ...tempData, celular: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    jugador.celular
-                                                )}
+                                                <div className="td_celular">
+                                                    {editingID === jugador.id ? (
+                                                        <textarea
+                                                            type="text"
+                                                            className="textArea_puestos textarea_celular"
+                                                            value={tempData.celular}
+                                                            onChange={(e) => setTempData({ ...tempData, celular: e.target.value })}
+                                                        />
+                                                    ) : (
+                                                        jugador.celular
+                                                    )}
+                                                </div>
                                             </td>
                                             <td>
                                                 {/* Cedula */}
-                                                {editingID === jugador.id ? (
-                                                    <textarea
-                                                        type="text"
-                                                        className="textArea_puestos textarea_cedula"
-                                                        value={tempData.cedula}
-                                                        onChange={(e) => setTempData({ ...tempData, cedula: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    jugador.cedula
-                                                )}
+                                                <div className="td_cedula">
+                                                    {editingID === jugador.id ? (
+                                                        <textarea
+                                                            type="text"
+                                                            className="textArea_puestos textarea_cedula"
+                                                            value={tempData.cedula}
+                                                            onChange={(e) => setTempData({ ...tempData, cedula: e.target.value })}
+                                                        />
+                                                    ) : (
+                                                        jugador.cedula
+                                                    )}
+                                                </div>
                                             </td>
                                             <td>
                                                 {/* Ciudad-Pais */}
-                                                {editingID === jugador.id ? (
-                                                    <textarea
-                                                        type="text"
-                                                        className="textArea_puestos textarea_ciudad"
-                                                        value={tempData.pais_estado}
-                                                        onChange={(e) => setTempData({ ...tempData, pais_estado: e.target.value })}
-                                                    />
-                                                ) : (
-                                                    jugador.pais_estado
-                                                )}
+                                                <div className="td_ciudad_pais">
+                                                    {editingID === jugador.id ? (
+                                                        <textarea
+                                                            type="text"
+                                                            className="textArea_puestos textarea_ciudad"
+                                                            value={tempData.pais_estado}
+                                                            onChange={(e) => setTempData({ ...tempData, pais_estado: e.target.value })}
+                                                        />
+                                                    ) : (
+                                                        jugador.pais_estado
+                                                    )}
+                                                </div>
                                             </td>
                                             <td>
                                                 {/* Metodo de pago */}
@@ -1061,7 +1211,7 @@ export const Sesion = () => {
                                                     {editingID !== jugador.id && (
                                                         <button
                                                             className="btn_eliminar_sesion"
-                                                            onClick={() => handleEliminar(jugador.id)}
+                                                            onClick={() => openEliminarModal(jugador.id, jugador.nombres_apellidos)}
                                                         >
                                                             <img src={borrar} alt="borrar" />
                                                         </button>
@@ -1440,7 +1590,7 @@ export const Sesion = () => {
                                                     {/**Borrar: */}
                                                     <button
                                                         className="btn_eliminar_sesion"
-                                                        onClick={() => handleEliminar(jugador.id)}
+                                                        onClick={() => openEliminarModal(jugador.id, jugador.nombres_apellidos)}
                                                     >
                                                         <img src={borrar} alt="borrar" />
                                                     </button>

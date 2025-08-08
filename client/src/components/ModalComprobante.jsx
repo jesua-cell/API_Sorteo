@@ -1,3 +1,6 @@
+import borrar from "../assets/borrar.png";
+
+
 export const ModalComprobante = ({ isOpen, closeModal, comprobantes, onDelete }) => {
 
     if (!isOpen) return;
@@ -6,7 +9,7 @@ export const ModalComprobante = ({ isOpen, closeModal, comprobantes, onDelete })
             <div className="contComprobantes">
 
                 <div className="boxComprobantes">
-                    <h2>Comprobantes:</h2>
+                    <h2>{comprobantes.length} comprobantes:</h2>
 
                     <div className="comprobantes">
                         <button className="close-button" onClick={closeModal}>×</button>
@@ -26,7 +29,7 @@ export const ModalComprobante = ({ isOpen, closeModal, comprobantes, onDelete })
                                             className="btn-eliminar-modal"
                                             onClick={() => onDelete(comprobante.id)}
                                         >
-                                            🗑️
+                                            <img src={borrar} alt="borrar" />
                                         </button>
                                     </div>
                                 ))}
