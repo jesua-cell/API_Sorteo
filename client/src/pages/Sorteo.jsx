@@ -8,11 +8,14 @@ import paypal from '../assets/paypal.png'
 import pagomovil from '../assets/pagomovil.png'
 import bancovenezuela from '../assets/bancovenezuela.png'
 import pago_efectivo from '../assets/pago_efectivo.png'
+import carroToyota from '../assets/carroToyota.webp'
 
 import { createJugador, getUsedNumbers } from "../api/submit.server.js";
 import { Modal } from '../components/Modal.jsx'
 import SelectImage from "../components/SelectImage.jsx";
 import { Toaster, toast } from "react-hot-toast";
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export const Sorteo = () => {
 
@@ -40,6 +43,9 @@ export const Sorteo = () => {
 
     // Estados para los mil o cien puestos
     const [modoSorteo, setModoSorteo] = useState('1000');
+
+    //estado de la publicacion del CardPub
+    const [cardData, setCardData] = useState([]);
 
     //Funcion para seleccionar y desseleccionar
     const toggleNumberSelec = (numMostrado) => {
@@ -127,6 +133,31 @@ export const Sorteo = () => {
 
     const removeNumSelect = () => {
         setSelectNumbers([]);
+    };
+
+    // Funcion para traer los datos del CardPub
+    useEffect(() => {
+        const fetchCardData = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/cardpub');
+                setCardData(response.data);
+            } catch (error) {
+                console.error('Error en la obtencion de datos del CardGet', error);
+            }
+        }
+        fetchCardData();
+    }, []);
+
+    const formaDate = (dateString) => {
+        if (!dateString) return 'Fecha no definifa';
+
+        try {
+            const date = new Date(dateString);
+            return format(date, "dd 'de' MMMM 'de' yyyy", { locale: es });
+        } catch (error) {
+            console.error("Error en el formato de la fecha", error);
+            return dateString;
+        }
     };
 
 
@@ -387,6 +418,26 @@ export const Sorteo = () => {
 
             <div className='contSorteo'>
                 <div className='contenidoSorteo'>
+
+                    {cardData.length > 0 && cardData.map((card, index) => (
+                        <div className="contPubSorteo" key={index}>
+                            <div className="pubLog">
+                                {/* Si necesitas la imagen aquí también */}
+                                {card.imagen_pub && (
+                                    <div className="contImageSorteoPub">
+                                        <img
+                                            src={`data:image/*;base64,${card.imagen_pub}`}
+                                            className='img_pubSorteo'
+                                            alt="Publicidad del sorteo"
+                                        />
+                                    </div>
+                                )}
+                                <h2 className='title_sorteoPub'>{card.titulo_p}</h2>
+                                <h3 className='fecha_sorteoPub'>{formaDate(card.fecha_juego)}</h3>
+                                <p className='p_sorteoPub'>{card.descripcion_p}</p>
+                            </div>
+                        </div>
+                    ))}
 
                     <h1 className='tituloSorteo'>Lista de Boletos</h1>
 

@@ -13,15 +13,30 @@ export const Contacto = () => {
                         <img src={internet} alt="website" className="img_footer" />
                         <p>laOrquídea.com</p>
                     </a>
-                    <a href="#" className="a_footer">
+                    <a
+                        href="https://wa.me/584121373761"
+                        className="a_footer"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         <img src={whatsapp_alt} alt="whatsApp" className="img_footer" />
                         <p>La Orquídea</p>
                     </a>
-                    <a href="#" className="a_footer">
+                    <a
+                        href="https://www.tiktok.com/@la.orquidea38?_t=ZS-8xhSaTav4XR&_r=1"
+                        className="a_footer"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         <img src={tiktok} alt="Tiktok" className="img_footer" />
                         <p>La Orquídea</p>
                     </a>
-                    <a href="#" className="a_footer">
+                    <a
+                        href="https://www.instagram.com/laorquidea2025?igsh=cjN5MXpqam9ja2g2"
+                        className="a_footer"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         <img src={instagram_alt} alt="Instagram" className="img_footer" />
                         <p>La Orquídea</p>
                     </a>

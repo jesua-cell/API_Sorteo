@@ -39,7 +39,7 @@ export const Inicio = () => {
         }
     };
 
-    return (
+    return ( 
         <>
             <div className='contTarjeta'>
 
@@ -52,7 +52,6 @@ export const Inicio = () => {
                                 alt='Imagen del sorteo'
                             />
                             <h2>{card.subtitulo_p}</h2>
-                            <p>{card.descripcion_p}</p>
                             <button className='btn-inicio' type="button">
                                 <Link to={"/sorteo"}>Lista de Boletos</Link>
                             </button>

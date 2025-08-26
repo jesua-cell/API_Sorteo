@@ -190,6 +190,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 400px;
     height: auto;
     width: 90%;
     min-width: 335px;
@@ -234,7 +235,7 @@ body {
 
 .contContendido h2 {
     font-size: 25px;
-    margin: 15px 1px 5px 0px;
+    margin: 15px 1px 15px 0px;
 }
 
 .contContendido p {
@@ -244,7 +245,7 @@ body {
 }
 
 .contContendido img {
-    height: 190px;
+    height: auto;
     width: 210px;
     object-fit: cover;
     border-radius: 5px;
@@ -270,6 +271,7 @@ a {
 .p_fecha {
     font-weight: 700;
     opacity: 0.8;
+    margin: 5px 0px;
 }
 
 .label_img_inicio {
@@ -555,7 +557,14 @@ a {
     display: flex;
     flex-direction: column;
     background: #ad0a95;
-    background: linear-gradient(178deg, rgb(244, 215, 240) 9%, rgba(177, 47, 151, 0.74) 74%);
+    background: linear-gradient(178deg,
+            rgba(177, 47, 151, 0.74) 9%,
+            /* Primer color */
+            rgb(147, 30, 141) 40%,
+            /* Color intermedio */
+            rgb(244, 215, 240) 74%
+            /* Segundo color */
+        );
     color: var(--colorTextoOscuro);
 }
 
@@ -567,7 +576,7 @@ a {
 
 .tituloSorteo {
     font-size: 45px;
-    background: linear-gradient(90deg, #db63db, #de5dde, #b261b2, #e088e0);
+    background: linear-gradient(90deg, #fda7fd, #ff7aff, #f8b0f8, #ff85ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0;
@@ -575,7 +584,70 @@ a {
 
 .contenidoSorteo h3 {
     margin: 15px 0px;
+    color: #fafafa;
 }
+
+/* Diseño Presentacion del Sorteo en el Sorteo.jsx */
+
+.contPubSorteo {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    background: #2f0531;
+    background: linear-gradient(40deg, rgba(85, 9, 89, 1) 0%, rgba(66, 29, 66, 1) 27%, rgba(34, 12, 36, 1) 57%, rgba(23, 6, 18, 1) 85%);
+    opacity: 0.9;
+    width: 95%;
+    height: auto;
+    border-radius: 10px;
+    margin: 10px 0px;
+}
+
+.contImageSorteoPub{
+    width: 100%;
+}
+
+.pubLog {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.title_sorteoPub {
+    background: linear-gradient(90deg, #db63db, #de5dde, #b261b2, #e088e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0px;
+    margin-top: 20px;
+    padding: 0px 15px;
+}
+
+.fecha_sorteoPub {
+    background: linear-gradient(90deg, #d6a6d6, #e382e3, #f49df4, #ca97ca);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0px !important;
+    padding: 0px 15px;
+    font-size: 19px;
+}
+
+.p_sorteoPub {
+    color: #efefef;
+    font-size: 19px;
+    padding: 0px 15px;
+    font-weight: 500;
+    text-align: start;
+    white-space: pre-line;
+}
+
+.img_pubSorteo {
+    margin: 0px;
+    border-radius: 10px 10px 0px 0px;
+    box-shadow: rgba(240, 46, 170, 0.4) 0px 5px, rgba(240, 46, 170, 0.3) 0px 10px, rgba(240, 46, 170, 0.2) 0px 15px, rgba(240, 46, 170, 0.1) 0px 20px, rgba(240, 46, 170, 0.05) 0px 25px;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
 
 .btnBuscar {
     cursor: pointer;
@@ -620,6 +692,7 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: bold;
     font-size: 17px;
     margin: 0px;
+    color: #fafafa;
 }
 
 .lista {
@@ -855,7 +928,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .image_comprobante img {
-    height: 180px;
+    height: auto;
     width: 290px;
     object-fit: cover;
     margin-bottom: 20px;
@@ -1277,7 +1350,7 @@ input[type="number"]::-webkit-outer-spin-button {
     height: 600px;
     width: 80%;
     border-radius: 15px;
-    background: linear-gradient(333deg,rgba(0, 0, 0, 1) 0%, rgba(48, 47, 47, 1) 24%, rgba(26, 19, 19, 1) 47%, rgba(48, 47, 47, 1) 74%, rgba(38, 38, 38, 1) 94%);
+    background: linear-gradient(333deg, rgba(0, 0, 0, 1) 0%, rgba(48, 47, 47, 1) 24%, rgba(26, 19, 19, 1) 47%, rgba(48, 47, 47, 1) 74%, rgba(38, 38, 38, 1) 94%);
     color: #fafafa;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -1386,12 +1459,12 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .btn-eliminar-modal {
-    background-color: #ffa5a5;
+    background-color: #ffdada;
     border: none;
     border-radius: 8px;
     margin: 10px 0px;
-    height: 40px;
-    width: 50px;
+    height: 38px;
+    width: 44px;
     padding-top: 5px;
 }
 
@@ -2444,6 +2517,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .card {
     /* background: var(--fondoContenedorTarjeta); */
     height: 100vh;
+    width: 100%;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -2464,6 +2538,9 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .contPubUpload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background: radial-gradient(circle, rgba(158, 158, 158, 1) 0%, rgb(92, 92, 92) 100%);
 }
 
@@ -2520,7 +2597,6 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .input_card {
-    border: none;
     border-radius: 7px;
     font-size: 17px;
     font-family: var(--FunnelSans);
@@ -2528,10 +2604,10 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 22px;
     margin-bottom: 7px;
     opacity: 0.9;
-    border: 2px solid #8c418c;
+    border: 2px solid #999999;
     min-height: 35px;
     height: auto;
-    width: 286px;
+    width: 290px;
     overflow-y: auto;
     resize: none;
     text-align: center;
@@ -2555,6 +2631,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .input_card:nth-child(2) {
     margin-bottom: 20px;
+}
+
+.input_card:nth-child(4) {
+    height: 400px;
 }
 
 .input_card::-webkit-scrollbar-button {
@@ -2642,6 +2722,78 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 }
 
+.contContendidoPub {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    width: 90%;
+    margin: 15px 0px;
+}
+
+.img_SorteoPub {
+    width: 50%;
+    border-radius: 10px;
+}
+
+.title_sorteo_Pub {
+    padding-left: 10px;
+    background-color: #454545;
+    padding: 10px;
+    margin: 0px 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    width: 90%;
+    font-size: 23px;
+    text-align: center;
+}
+
+.subt_sorteo_Pub {
+    padding-left: 10px;
+    background-color: #454545;
+    padding: 10px;
+    margin: 0px 10px;
+    border-radius: 8px;
+    width: 90%;
+    font-size: 23px;
+    text-align: center;
+}
+
+.desc_sorteo_Pub {
+    padding-left: 10px;
+    background-color: #454545;
+    padding: 10px;
+    margin: 0px 10px;
+    border-radius: 8px;
+    width: 90%;
+    font-size: 23px;
+    text-align: center;
+    white-space: pre-line;
+}
+
+.fecha_juego {
+    padding-left: 10px;
+    background-color: #454545;
+    padding: 5px;
+    margin: 0px 10px;
+    border-radius: 8px;
+    width: 90%;
+    font-size: 23px;
+    text-align: center;
+}
+
+.indices_sorteoPub {
+    padding: 5px;
+    margin: 0px;
+    font-size: 29px;
+}
+
+.indices_sorteoPub:nth-child(1) {
+    margin-top: 20px;
+}
+
 .btn-cardPost {
     display: flex;
     justify-content: center;
@@ -2704,6 +2856,36 @@ input[type="number"]::-webkit-outer-spin-button {
     width: 42px;
 }
 
+.edit-desc-container {
+    width: 99%;
+}
+
+.edit-desc-textarea {
+    width: 95%;
+    min-height: 300px;
+    height: auto;
+    border-radius: 5px;
+    margin-top: 8px;
+    font-family: var(--FunnelSans);
+    border: none;
+}
+
+.pub-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    margin: 10px 0px;
+}
+
+.cont_inputs_card {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 40px;
+}
+
+
 .btn-cardPost-eliminar img {
     height: 22px;
     width: 22px;
@@ -2739,6 +2921,8 @@ input[type="number"]::-webkit-outer-spin-button {
     cursor: pointer;
     border-radius: 7px !important;
     background-color: #4643fa;
+    width: 43px;
+    height: 40px;
 
     transition: background-color 200ms ease-in-out;
 
@@ -2755,6 +2939,8 @@ input[type="number"]::-webkit-outer-spin-button {
     cursor: pointer;
     border-radius: 7px !important;
     background-color: #d67b04;
+    width: 43px;
+    height: 40px;
 
     transition: background-color 200ms ease-in-out;
 
@@ -2778,7 +2964,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
 @media(min-width: 768px) {
 
-    html, body {
+    html,
+    body {
         overflow-x: hidden;
     }
 
@@ -2964,21 +3151,86 @@ input[type="number"]::-webkit-outer-spin-button {
     .contTarjeta {
         display: flex;
         align-content: center;
-        height: 130vh;
+        height: 100vh;
     }
 
-    .contContendido {
+    .contContendidoPub {
         justify-content: center;
         overflow-y: hidden;
         overflow-x: hidden;
-        width: 10px;
-        min-height: 600px;
+        width: 50%;
         height: auto;
+        gap: 15px;
+    }
+
+    .img_SorteoPub {
+        width: 20%;
+    }
+
+    .fecha_juego {
+        font-weight: 600;
     }
 
     .itemPrivados.NotFondo {
         background-color: transparent !important;
         opacity: 0;
+    }
+
+    /* Contenedor de Proximo Eventos */
+    
+    .box_img {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        width: 99%;
+    }
+    
+    .a_inicio {
+        padding: 0px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .img_inicio{
+        width: 80px;
+    }
+
+    .box_img img {
+        height: 38px;
+        width: 40px !important;
+        border-radius: 50% !important;
+        background-color: #ffffff;
+        padding: 1px;
+    }
+
+
+
+    /* Contenedor del CardPub */
+
+    .contPubSorteo {
+        width: 40%;
+        height: auto;
+        display: inline-flex;
+        box-shadow: rgba(255, 255, 255, 0.311) 0px 10px 50px;
+    }
+
+    .pubLog {
+        width: auto;
+        height: auto;
+        display: inline-block;
+        text-align: start;
+    }
+
+    .contImageSorteoPub {
+        width: 100%;
+        height: auto;
+    }
+
+    .img_pubSorteo {
+        height: 70vh;
+        min-width: auto;
+        max-width: 100%;
+        object-fit: cover;
     }
 
     /* inicio */
@@ -3804,7 +4056,14 @@ input[type="number"]::-webkit-outer-spin-button {
         display: flex;
         flex-direction: column;
         align-content: center;
-        height: 120vh;
+        min-height: 1500px;
+        max-height: auto;
+    }
+
+    .contPubUpload {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
     }
 
     .contContendidoCard {
@@ -3856,16 +4115,23 @@ input[type="number"]::-webkit-outer-spin-button {
     }
 
     .contContendido {
+        min-height: 500px;
         height: auto !important;
         overflow-y: scroll;
         overflow-wrap: break-word;
         word-wrap: break-word;
         text-align: center;
+        width: 20%;
         transition: box-shadow 0.3s ease-in-out;
 
         &:hover {
             box-shadow: 0.1em 0.2em 1em rgba(255, 255, 255, 0.5);
         }
+    }
+
+    .contContendido img {
+        width: 80%;
+        border-radius: 10px;
     }
 
     .contContendido p {
@@ -3896,6 +4162,7 @@ input[type="number"]::-webkit-outer-spin-button {
     .image_comprobante {
         width: 80%;
     }
+
 
     /* .contContendido button {
         border: #793072;
@@ -4123,8 +4390,8 @@ input[type="number"]::-webkit-outer-spin-button {
         align-items: center;
         position: absolute;
         font-weight: bold;
-        top: 30px;
-        right: 260px;
+        top: 70px;
+        right: 280px;
         background: #ff4d4d;
         color: white;
         border: none;
