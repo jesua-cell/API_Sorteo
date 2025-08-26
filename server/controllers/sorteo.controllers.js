@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken'
 import dotenv from "dotenv";
 import { assert, error } from "node:console";
+import { match } from "node:assert";
 
 //Configuracion del archivo UOLOADS_DIR:
 const __filename = fileURLToPath(import.meta.url);
@@ -22,10 +23,15 @@ export const mainSorteo = async (req, res) => {
 export const getJugadores = async (req, res) => {
     try {
 
+        // Lectura de Parametros
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5; //# Cantidad de elementos indicada (n)
+        const offset = (page - 1) * limit;
         const searchTerm = req.query.search || '';
-        // Obtener el modo actual
+
+        // Obtener el modo actual del modo del sorteo (100 o 1000)
         const [modoResult] = await pool.query('SELECT modo FROM configuracion_sorteo LIMIT 1');
-        const modo = modoResult[0]?.modo || '1000';
+        const modo = modoResult[0]?.modo || '1000'; // normalizar el numero: 0 → '00', 7 → '007'
         const normalizeSearchTerm = (term, modo) => {
             if (!isNaN(term)) {
                 const num = parseInt(term);
@@ -44,24 +50,26 @@ export const getJugadores = async (req, res) => {
 
         const normalizedSearchTerm = searchTerm ? normalizeSearchTerm(searchTerm.trim(), modo) : '';
 
+        // Consulta:
         let query = `
-      SELECT 
-        j.*,
-        (
-          SELECT GROUP_CONCAT(nb.numero_boleto) 
-          FROM numeros_boletos nb 
-          WHERE nb.jugador_id = j.id
-        ) AS boletos,
-        (
-          SELECT MIN(nb.fecha_asignacion)
-          FROM numeros_boletos nb
-          WHERE nb.jugador_id = j.id
-        ) AS fecha_registro
-      FROM jugador j
+            SELECT 
+                j.*,
+                (
+                SELECT GROUP_CONCAT(nb.numero_boleto) 
+                FROM numeros_boletos nb 
+                WHERE nb.jugador_id = j.id
+                ) AS boletos,
+                (
+                SELECT MIN(nb.fecha_asignacion)
+                FROM numeros_boletos nb
+                WHERE nb.jugador_id = j.id
+                ) AS fecha_registro
+            FROM jugador j
     `;
 
         const params = [];
-
+        
+        // Filtro de Busquedad(con la configuracion de la normalizacion):
         if (normalizedSearchTerm) {
             query += `
             WHERE j.id IN (
@@ -94,16 +102,63 @@ export const getJugadores = async (req, res) => {
             params.push(searchPattern);
         };
 
-        query += ` GROUP BY j.id ORDER BY j.id DESC`;
+        // Paginacion:
+        query += ` GROUP BY j.id ORDER BY j.id DESC LIMIT ? OFFSET ?`; 
+        params.push(limit, offset);
 
+        // Obtener jugadores con la configuracion del modo y el filtrado
         const [jugadores] = await pool.query(query, params);
-
+        
+        // Convertir boletos a Arreglos:
         const poreccedJugadores = jugadores.map(jugador => ({
             ...jugador,
             boletos: jugador.boletos ? jugador.boletos.split(',') : []
         }));
 
-        res.json(poreccedJugadores);
+        // Consulta para el total de registos:
+        let countQuery = `SELECT COUNT(DISTINCT j.id) as total FROM jugador j`;
+        const countParams = [];
+
+        if (normalizedSearchTerm) {
+            countQuery += `
+                            WHERE j.id IN (
+                    SELECT DISTINCT jugador_id 
+                    FROM (
+                        SELECT id AS jugador_id 
+                        FROM jugador
+                        WHERE 
+                        nombres_apellidos LIKE ? OR
+                        celular LIKE ? OR
+                        cedula LIKE ? OR
+                        pais_estado LIKE ? OR
+                        metodo_pago LIKE ? OR
+                        referenciaPago LIKE ?
+                        
+                        UNION
+                        
+                        SELECT jugador_id
+                        FROM numeros_boletos
+                        WHERE numero_boleto LIKE ?
+                    ) AS subquery
+                    )
+            `;
+
+            const searchPattern = `%${normalizedSearchTerm}%`;
+            for(let i = 0; i < 6; i++) countParams.push(searchPattern);
+            countParams.push(searchPattern);
+        };
+        
+        const [totalRows] = await pool.query(countQuery, countParams);
+        const total = totalRows[0].total;
+
+        // Respuesta al Client:
+        res.json({
+            jugadores: poreccedJugadores,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+            total
+        });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Error al Obtener los Datos de los Jugadores" })
@@ -1104,12 +1159,12 @@ export const deleteComprobante = async (req, res) => {
     }
 };
 
-export const deleteAllJugadores = async (req, res) => { 
-    
+export const deleteAllJugadores = async (req, res) => {
+
     const connection = await pool.getConnection();
 
     try {
-        
+
         await connection.beginTransaction();
 
         await connection.query('DELETE from comprobantes');
@@ -1125,14 +1180,14 @@ export const deleteAllJugadores = async (req, res) => {
             message: "Todos los jugador fueron eliminados"
         });
     } catch (error) {
-        
+
         await connection.rollback();
 
-            console.error("Error al intentar eliminar todos los jugadores");
-            res.status(500).json({
-                error: "Error al eliminar todos los jugadores",
-                details: error.message
-            });
+        console.error("Error al intentar eliminar todos los jugadores");
+        res.status(500).json({
+            error: "Error al eliminar todos los jugadores",
+            details: error.message
+        });
     } finally {
         connection.release();
     }
