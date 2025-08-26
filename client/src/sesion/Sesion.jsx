@@ -57,6 +57,8 @@ export const Sesion = () => {
 
     // estados de la paginacion
     const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalItems, setTotalItems] = useState(0);
 
     //estados para monto abonado
     const [abonos, setAbonos] = useState({});
@@ -99,7 +101,7 @@ export const Sesion = () => {
         isOpen: false
     });
 
-    const itemsPerPage = 5; // cantidad de filas del inventario
+    const itemsPerPage = 5; //# cantidad de filas del inventario
 
     const navigate = useNavigate();
 
@@ -126,31 +128,40 @@ export const Sesion = () => {
         setIsAuthenticated(true)
 
         //Estado para obtener los datos de los jugadores de la BD
-        const fetchJugadores = async () => {
+        fetchJugadores(1);
+    }, [navigate]);
 
-            try {
-                const response = await axios.get('http://localhost:3000/jugadores', {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                console.log("datos recibidos", response.data);
-                setJugadores(response.data);
-                setFilterJugadores(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error al obtener jugadores en el Admin", error);
-                setLoading(false);
+    // Funcion para pedir los datos al Backend: (numero de pagina) y (texto para filtrar)
+    const fetchJugadores = async (page = 1, searchTerm = '') => {
 
-                if (error.response?.status === 401) {
-                    localStorage.removeItem('adminSession');
-                    localStorage.removeItem('jwtToken');
-                    navigate('/login');
-                };
+        try {
+            setLoading(true);
+            const token = localStorage.getItem('jwtToken');                       // lee el Token guarado
+            const response = await axios.get('http://localhost:3000/jugadores', { // Peticion GET 
+                params: { page, limit: itemsPerPage, search: searchTerm },        // Parametros: Busquedad y paginacion
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            // Respuesta del Backend
+            console.log("datos recibidos", response.data);
+            setJugadores(response.data.jugadores);          // jugadores
+            setFilterJugadores(response.data.jugadores);    // filtrado de jugadores
+            setCurrentPage(response.data.currentPage - 1);  // (paginas mostradas)
+            setTotalPages(response.data.totalPages);        // cantidad de pagias
+            setTotalItems(response.data.total);             // datos por pagina
+            setLoading(false);
+        } catch (error) {
+            console.error("Error al obtener jugadores en el Admin", error);
+            setLoading(false);
+
+            // Conficion: Si el token es invalido devuelve al inicio
+            if (error.response?.status === 401) {
+                localStorage.removeItem('adminSession');
+                localStorage.removeItem('jwtToken');
+                navigate('/login');
             };
         };
-        fetchJugadores();
-    }, [navigate])
+    };
 
     useEffect(() => {
 
@@ -194,11 +205,12 @@ export const Sesion = () => {
 
     // Funcion del boton de buscar
     const handleSearch = () => {
-        if (!search.trim()) {
-            setFilterJugadores(jugadores);
-        } else {
-            fechtFilterData(search);
-        };
+        // if (!search.trim()) {
+        //     setFilterJugadores(jugadores);
+        // } else {
+        //     fechtFilterData(search);
+        // };
+        fetchJugadores(1, search);
     };
 
     //Funcion para activar Edicion
@@ -522,9 +534,10 @@ export const Sesion = () => {
 
     //Funcion para recargar el el inventario cuando no haya resultado concreto
     const handleClearSearch = () => {
-        setSearch("");
-        setFilterJugadores(jugadores);
-        setCurrentPage(0);
+        // setSearch("");
+        // setFilterJugadores(jugadores);
+        // setCurrentPage(0);
+        fetchJugadores(1, '');
     };
 
     const normalizarNumero = (valorStr) => {
@@ -727,14 +740,12 @@ export const Sesion = () => {
     }
 
     const totalBoletos = jugadores.flatMap(j => j.boletos || []).length;
+    const currentItems = filterJugadores;
+    const pageCount = totalPages;
 
-    // Manejo de la paginacion
-    const offset = currentPage * itemsPerPage;
-    const currentItems = filterJugadores.slice(offset, offset + itemsPerPage);
-    const pageCount = Math.ceil(filterJugadores.length / itemsPerPage);
-
+    // Manipular la pagina desde el paginador
     const handlePageClick = (data) => {
-        setCurrentPage(data.selected)
+        fetchJugadores(data.selected + 1, search);
     };
 
     //TODO* Agregar un nuevo campo de pago en efectivo
@@ -922,8 +933,8 @@ export const Sesion = () => {
                                 <>
                                     <p className="text_no_result">No existe el jugador con estos caracteres:  <span>"{search}"</span></p>
                                     <button
-                                    className="btn_recargar"
-                                    onClick={handleClearSearch}
+                                        className="btn_recargar"
+                                        onClick={handleClearSearch}
                                     >Ver todos los jugadores</button>
                                 </>
                             )}
