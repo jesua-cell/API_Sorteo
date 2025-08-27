@@ -578,6 +578,22 @@ export const updateJugador = async (req, res) => {
 
 };
 
+export const getJugadorVerificador = async (req, res) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT j.*, 
+                   GROUP_CONCAT(nb.numero_boleto) AS boletos
+            FROM jugador j
+            LEFT JOIN numeros_boletos nb ON j.id = nb.jugador_id
+            GROUP BY j.id
+            `);
+
+            res.json(rows);
+    } catch (error) {
+        res.status(500).json({error: "Error al obtener los jugadores en el Verificador", error});
+    };
+};
+
 export const postCardPub = async (req, res) => {
     try {
         const {

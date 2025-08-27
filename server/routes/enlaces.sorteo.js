@@ -33,7 +33,8 @@ import {
     addComprobantes,
     getAllComprobantes,
     deleteComprobante,
-    deleteAllJugadores
+    deleteAllJugadores,
+    getJugadorVerificador
 } from '../controllers/sorteo.controllers.js';
 
 
@@ -126,6 +127,8 @@ router.get('/cardpub', getAllCardPub);
 router.delete('/cardpub/:id', deleteCardPub);
 
 router.put('/jugador/:id', updateJugador);
+
+router.get('/jugadorVerificador', getJugadorVerificador);
 
 router.put('/cardpub/:id', uploadCardPub.single('imagen'), updateCardPub);
 
