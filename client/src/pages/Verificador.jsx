@@ -17,7 +17,7 @@ export const Verificador = () => {
         const fetchJugadores = async () => {
 
             try {
-                const response = await axios.get('http://localhost:3000/jugadores');
+                const response = await axios.get('http://localhost:3000/jugadorVerificador');
                 setJugadores(response.data);
             } catch (error) {
                 console.error("Error al obtener jugadores en el Verificador", error);
@@ -48,7 +48,7 @@ export const Verificador = () => {
             const celularNormalizado = (j.celular || '').toLocaleLowerCase().replace(/\s+/g, '');
             if (celularNormalizado === busquedaNormalizada) return true;
 
-            const boletos = j.boletos || [];
+            const boletos = j.boletos ? j.boletos.split(',') : [];
 
             return boletos.some(boleto =>
                 boleto.toLocaleLowerCase().replace(/\s+/g, '') === busquedaNormalizada
@@ -56,6 +56,7 @@ export const Verificador = () => {
         });
 
         if (jugador) {
+            jugador.boletos = jugador.boletos ? jugador.boletos.split(',') : [];
             setJugadorEncontrado(jugador);
             setErrorVerificacion('');
         } else {
@@ -119,7 +120,7 @@ export const Verificador = () => {
                                 </p>
                             ))}
                         </div>
-                        
+
                         <p className={jugadorEncontrado.estado_pago === 'pendiente' ? 'est-pendiente' : 'est-pagado'}>
                             {jugadorEncontrado.estado_pago === 'pendiente'
                                 ? 'Pendiente'
