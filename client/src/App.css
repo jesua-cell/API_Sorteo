@@ -3071,6 +3071,10 @@ input[type="number"]::-webkit-outer-spin-button {
         padding: 10px 0px;
     }
 
+    .logout-btn label {
+        cursor: pointer;
+    }
+
     /* Toggle */
 
     .privados_toggle {

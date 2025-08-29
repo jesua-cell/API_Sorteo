@@ -22,6 +22,7 @@ export const Login = () => {
             localStorage.setItem('adminSession', JSON.stringify({
                 nombre: response.data.nombre
             }));
+            console.log("Contreña: ", password);
             navigate('/sesion');
         } catch (error) {
             setError('Credenciales Incorrectas');
