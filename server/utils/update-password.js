@@ -4,8 +4,8 @@ import pool from '../config/db.js';
 async function hashPasswords() {
     const saltRounds = 8;
     const admins = [
-        { id: 1, password: 'adminDonney1999' },
-        { id: 2, password: 'adminAlejandra1888' }
+        { id: 1, password: 'alejandra1555pin' },
+        { id: 2, password: 'donney1666pin' }
     ];
 
     for (const admin of admins) {
