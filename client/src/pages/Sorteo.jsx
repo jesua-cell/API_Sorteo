@@ -426,7 +426,7 @@ export const Sorteo = () => {
                                 {card.imagen_pub && (
                                     <div className="contImageSorteoPub">
                                         <img
-                                            src={`data:image/*;base64,${card.imagen_pub}`}
+                                            src={`http://localhost:3000/cardpub/${card.imagen_pub}`}
                                             className='img_pubSorteo'
                                             alt="Publicidad del sorteo"
                                         />

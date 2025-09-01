@@ -5,7 +5,7 @@ export const ModalComprobante = ({ isOpen, closeModal, comprobantes, onDelete })
 
     if (!isOpen) return;
 
-    const handleImageClick = (imageData) => {
+    const handleImageClick = (imageUrl) => {
         const newWindow = window.open("", "_blank");
         newWindow.document.write(`
         <html>
@@ -17,7 +17,7 @@ export const ModalComprobante = ({ isOpen, closeModal, comprobantes, onDelete })
                 </style>
             </head>
             <body>
-                <img src="data:image/jpeg;base64,${imageData}" alt="Comprobante completo" />
+                <img src="${imageUrl}" alt="Comprobante completo" />
             </body>
         </html>
     `);
@@ -41,10 +41,10 @@ export const ModalComprobante = ({ isOpen, closeModal, comprobantes, onDelete })
                                 {comprobantes.map(comprobante => (
                                     <div key={comprobante.id} className="comprobante-item">
                                         <img
-                                            src={`data:image/jpeg;base64,${comprobante.comprobante}`}
+                                            src={`http://localhost:3000/uploads/${comprobante.ruta_archivo}`}
                                             alt="Comprobante"
                                             className="comprobante-img-modal"
-                                            onClick={() => handleImageClick(comprobante.comprobante)}
+                                            onClick={() => handleImageClick(`http://localhost:3000/uploads/${comprobante.ruta_archivo}`)}
                                             style={{cursor: 'pointer'}}
                                         />
                                         <button

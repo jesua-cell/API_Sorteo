@@ -263,12 +263,13 @@ export const Sesion = () => {
             setEditingID(null);
             toast('Cambios Guardados',
                 {
-                    icon: '💾',
+                    icon: '✅',
                     style: {
                         borderRadius: '20px',
-                        background: '#9fb3ff',
-                        color: '#000467',
-                        padding: '8px'
+                        background: '#fff',
+                        color: '#102994',
+                        padding: '8px',
+                        fontWeight: '500'
                     },
                 }
             );
@@ -575,13 +576,14 @@ export const Sesion = () => {
             setEditValue(''); //Estado del input en Edicion
             toast('Cambios del valor del VES Guardados',
                 {
-                    icon: '💾',
+                    icon: '✅',
                     style: {
                         borderRadius: '20px',
-                        background: '#9fb3ff',
-                        color: '#000467',
+                        background: '#fff',
+                        color: '#000',
                         padding: '8px',
-                        textAlign: 'center'
+                        textAlign: 'center', 
+                        fontWeight: '500'
                     },
                 }
             );

@@ -204,8 +204,8 @@ export const CardPost = () => {
                     icon: '🗑️',
                     style: {
                         borderRadius: '10px',
-                        background: '#c7002c',
-                        color: '#ffe0e7',
+                        background: '#fff',
+                        color: '#fd0d0d',
                     },
                 }
             );
@@ -232,7 +232,7 @@ export const CardPost = () => {
         });
         //Mostrar imagenes en la previsualizacion
         if (card.imagen_pub) {
-            setEditPreviewImage(`data:image/*;base64,${card.imagen_pub}`);
+            setEditPreviewImage(`http://localhost:3000/cardpub/${card.imagen_pub}`);
         } else {
             setEditPreviewImage(null);
         };
@@ -287,8 +287,9 @@ export const CardPost = () => {
                     icon: '✅',
                     style: {
                         borderRadius: '10px',
-                        background: '#0035a3',
-                        color: '#e5eeff',
+                        background: '#fff',
+                        color: '#164aff',
+                        fontWeight: '500'
                     },
                 }
             );
@@ -477,7 +478,7 @@ export const CardPost = () => {
                                             <h1 className='title_sorteo_Pub'>{card.titulo_p}</h1>
                                             {card.imagen_pub && (
                                                 <img
-                                                    src={`data:image/*;base64,${card.imagen_pub}`}
+                                                    src={`http://localhost:3000/cardpub/${card.imagen_pub}`}
                                                     alt='Imagen del sorteo'
                                                     className='img_SorteoPub'
                                                 />

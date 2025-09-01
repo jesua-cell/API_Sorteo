@@ -48,7 +48,7 @@ export const Inicio = () => {
                         <div key={index} className='contContendido'>
                             <h1 className='titulo_sorteo'>{card.titulo_p}</h1>
                             <img
-                                src={`data:image/*;base64,${card.imagen_pub}`}
+                                src={`http://localhost:3000/cardpub/${card.imagen_pub}`}
                                 alt='Imagen del sorteo'
                             />
                             <h2>{card.subtitulo_p}</h2>
