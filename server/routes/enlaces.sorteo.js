@@ -45,15 +45,16 @@ const __dirname = dirname(__filename);
 //definir la ruta absoluta
 const UPLOADS_DIR = path.resolve(__dirname, '../uploads');
 const CARDPUB_DIR = path.resolve(__dirname, '../cardpub');
-console.log("Ruta de uploads", UPLOADS_DIR);
 
-//Comprobar la existencia de la carpeta
-if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-    console.log('Carpeta de "uploads/" creada');
-} else {
-    console.log('Ya existe la carpeta "/uploads"');
-}
+//Comprobar la existencia de la carpeta uploads
+/**
+ if (!fs.existsSync(UPLOADS_DIR)) {
+     fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+     console.log('Carpeta de "uploads/" creada');
+ } else {
+     console.log('Ya existe la carpeta "/uploads"');
+ }
+ */
 
 //crear carpeta para cardpub si no existe
 if (!fs.existsSync(CARDPUB_DIR)) {
@@ -101,6 +102,8 @@ const uploadCardPub = multer({
 const upload = multer({ storage });
 
 const router = express.Router();
+
+router.use('/cardpub', express.static(CARDPUB_DIR));
 
 router.get('/', mainSorteo);
 

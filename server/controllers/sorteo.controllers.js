@@ -5,13 +5,12 @@ import pool from '../config/db.js';
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken'
 import dotenv from "dotenv";
-import { assert, error } from "node:console";
-import { match } from "node:assert";
 
-//Configuracion del archivo UOLOADS_DIR:
+//Configuracion directorios
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename)
-const UPLOADS_DIR = path.resolve(__dirname, '../uploads')
+const __dirname = path.dirname(__filename);
+const UPLOADS_DIR = path.resolve(__dirname, '../uploads');
+const CARDPUB_DIR = path.resolve(__dirname, '../cardpub');
 
 dotenv.config();
 
@@ -68,7 +67,7 @@ export const getJugadores = async (req, res) => {
     `;
 
         const params = [];
-        
+
         // Filtro de Busquedad(con la configuracion de la normalizacion):
         if (normalizedSearchTerm) {
             query += `
@@ -103,12 +102,12 @@ export const getJugadores = async (req, res) => {
         };
 
         // Paginacion:
-        query += ` GROUP BY j.id ORDER BY j.id DESC LIMIT ? OFFSET ?`; 
+        query += ` GROUP BY j.id ORDER BY j.id DESC LIMIT ? OFFSET ?`;
         params.push(limit, offset);
 
         // Obtener jugadores con la configuracion del modo y el filtrado
         const [jugadores] = await pool.query(query, params);
-        
+
         // Convertir boletos a Arreglos:
         const poreccedJugadores = jugadores.map(jugador => ({
             ...jugador,
@@ -144,10 +143,10 @@ export const getJugadores = async (req, res) => {
             `;
 
             const searchPattern = `%${normalizedSearchTerm}%`;
-            for(let i = 0; i < 6; i++) countParams.push(searchPattern);
+            for (let i = 0; i < 6; i++) countParams.push(searchPattern);
             countParams.push(searchPattern);
         };
-        
+
         const [totalRows] = await pool.query(countQuery, countParams);
         const total = totalRows[0].total;
 
@@ -182,7 +181,6 @@ export const addJugadores = async (req, res) => {
             monto_total
         } = req.body;
 
-        // const comprobante_pago = req.file ? req.file.filename : null;
 
         //Validacion
         if (!nombres_apellidos || !cedula || !celular || !numeros) {
@@ -205,12 +203,14 @@ export const addJugadores = async (req, res) => {
 
         //Insertar comprobante si existe
         if (req.file) {
-            const filePath = path.join(UPLOADS_DIR, req.file.filename);
-            const imageBuffer = fs.readFileSync(filePath);
+            const fileName = `${Date.now()}-${req.file.originalname}`;
+            const filePath = path.join(UPLOADS_DIR, fileName);
+
+            fs.renameSync(req.file.path, filePath);
 
             await pool.query(
-                'INSERT INTO comprobantes (jugador_id, comprobante_pago) VALUES (?, ?)',
-                [jugadorResult.insertId, imageBuffer]
+                'INSERT INTO comprobantes (jugador_id, ruta_archivo) VALUES (?, ?)',
+                [jugadorResult.insertId, fileName]
             );
         };
 
@@ -246,15 +246,7 @@ export const addJugadores = async (req, res) => {
     }
 };
 
-// function saveImage(file) {
-//     const newPath = `./uploads${file.originalname}`;
-//     fs.renameSync(file.path, newPath);
-//     return newPath;
-// }
-
-
 //POST(Boletos)
-
 export const addBoletos = async (req, res) => {
 
     let { numero_boleto, jugador_id } = req.body;
@@ -397,13 +389,9 @@ export const deleteJugador = async (req, res) => {
     const { id } = req.params;
 
     try {
-        // const [jugadorRows] = await pool.query('SELECT comprobante_pago FROM jugador WHERE id = ?', [id]);
 
-        // if (jugadorRows.length === 0) {
-        //     return res.status(404).json({ error: "Jugador no encontrado" });
-        // }
-
-        // const jugador = jugadorRows[0];
+        // Obtener los comprobantes del jugador
+        const [comprobantes] = await pool.query('SELECT ruta_archivo FROM comprobantes WHERE jugador_id = ?', [id]);
 
         //eliminar comprobantes
         await pool.query('DELETE FROM comprobantes WHERE jugador_id = ?', [id]);
@@ -416,19 +404,17 @@ export const deleteJugador = async (req, res) => {
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: "Jugador no Encontrado" });
-        }
+        };
 
-        //Manejo de errores de la peticion:
-        // if (jugador.comprobante_pago && UPLOADS_DIR) {
-        //     try {
-        //         const comprobante = String(jugador.compare);
-        //         const filePath = path.join(UPLOADS_DIR, comprobante);
-        //     } catch (fileError) {
-        //         console.error("Error al eliminar el archivo", fileError);
-        //     }
-        // } else if (jugador.comprobante_pago) {
-        //     console.error("UPLOADS_DIR no existe")
-        // }
+        // Eliminar archivos fisicos:
+        comprobantes.forEach(comprobante => {
+            if(comprobante.ruta_archivo) {
+                const filePath = path.join(UPLOADS_DIR, comprobante.ruta_archivo);
+                if(fs.existsSync(filePath)){
+                    fs.unlinkSync(filePath);
+                };
+            };
+        });
 
         res.json({ success: true, message: "Jugador Eliminado" })
     } catch (error) {
@@ -505,21 +491,6 @@ export const updateJugador = async (req, res) => {
             ]
         );
 
-        //Eliminar Boletos existentes
-        // await connection.query(
-        //     'DELETE FROM numeros_boletos WHERE jugador_id = ?',
-        //     [id] 
-        // );
-
-        //Insertar nuevos boletos si hay
-        // if (boletosArray.length > 0) {
-        //     const valoresBoletos = boletosArray.map(num => [num.padStart(4, '0'), id]);
-        //     await connection.query(
-        //         'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
-        //         [valoresBoletos]
-        //     );
-        // }
-
         if (boletosArray.length > 0) {
             //obtener los boletos de la BD
             const [currentBoletos] = await connection.query(
@@ -588,14 +559,15 @@ export const getJugadorVerificador = async (req, res) => {
             GROUP BY j.id
             `);
 
-            res.json(rows);
+        res.json(rows);
     } catch (error) {
-        res.status(500).json({error: "Error al obtener los jugadores en el Verificador", error});
+        res.status(500).json({ error: "Error al obtener los jugadores en el Verificador", error });
     };
 };
 
 export const postCardPub = async (req, res) => {
     try {
+
         const {
             titulo_p,
             subtitulo_p,
@@ -605,20 +577,24 @@ export const postCardPub = async (req, res) => {
         const imagen_pub = req.file;
         console.log('Imagen recibida:', req.file);
 
+        // Validacion:
         if (!titulo_p || !subtitulo_p || !descripcion_p || !imagen_pub.path || !fecha_juego) {
             return res.status(404).json({ error: 'Error en los campos del CardPub' });
         };
 
-        const imageBuffer = fs.readFileSync(imagen_pub.path);
+        const fileName = `cardpub-${Date.now()}-${imagen_pub.originalname}`;
+        const filePath = path.join(CARDPUB_DIR, fileName);
+
+        fs.renameSync(imagen_pub.path, filePath);
 
         const [result] = await pool.query(
-            'INSERT INTO card_pub (titulo_p, subtitulo_p, descripcion_p, imagen_pub, fecha_juego) VALUES (?, ?, ?, ?, ?)',
-            [titulo_p, subtitulo_p, descripcion_p, imageBuffer, fecha_juego]
+            'INSERT INTO card_pub (titulo_p, subtitulo_p, descripcion_p, ruta_archivo, fecha_juego) VALUES (?, ?, ?, ?, ?)',
+            [titulo_p, subtitulo_p, descripcion_p, fileName, fecha_juego]
         );
 
         //Obtener el registro recien insertado 
         const [newValuesCard] = await pool.query(
-            'SELECT id, titulo_p, subtitulo_p, descripcion_p, imagen_pub, fecha_juego FROM card_pub WHERE id = ?',
+            'SELECT id, titulo_p, subtitulo_p, descripcion_p, ruta_archivo, fecha_juego FROM card_pub WHERE id = ?',
             [result.insertId]
         );
 
@@ -626,23 +602,16 @@ export const postCardPub = async (req, res) => {
             return res.status(500).json({ error: 'Error al obtener las publicacion recien subida' });
         };
 
-        //Manejo del campo imagen_pub
-        const card = newValuesCard[0];
-        let imageBase64 = null;
-        if (card.imagen_pub) {
-            imageBase64 = card.imagen_pub.toString('base64');
-        };
-
         //Retorno de datos del back al front
         res.status(201).json({
             success: true,
             message: 'Publicacion Guardada',
             id: result.insertId,
-            titulo_p: card.titulo_p,
-            subtitulo_p: card.subtitulo_p,
-            descripcion_p: card.descripcion_p,
-            imagen_pub: imageBase64,
-            fecha_juego: card.fecha_juego
+            titulo_p: titulo_p,
+            subtitulo_p: subtitulo_p,
+            descripcion_p: descripcion_p,
+            imagen_pub: fileName,
+            fecha_juego: fecha_juego
         });
 
     } catch (error) {
@@ -655,24 +624,21 @@ export const getCardPub = async (req, res) => {
     try {
         const { id } = req.params;
         const [rows] = await pool.query(
-            'SELECT titulo_p, subtitulo_p, descripcion_p, imagen_pub FROM card_pub WHERE id = ?',
+            'SELECT titulo_p, subtitulo_p, descripcion_p, ruta_archivo FROM card_pub WHERE id = ?',
             [id]
         );
 
-        if (!rows.length === 0 || !rows[0].imagen_pub) {
+        if (!rows.length === 0 || !rows[0].ruta_archivo) {
             return res.status(404).json({ error: 'Imagen no encontrada' });
         };
 
         const cardData = rows[0];
 
-        // const imageBuffer = rows[0].imagen_pub;
-        const imageBase64 = rows[0].imagen_pub.toString('base64');
-
         res.json({
             titulo_p: cardData.titulo_p,
             subtitulo_p: cardData.subtitulo_p,
             descripcion_p: cardData.descripcion_p,
-            imagen_pub: imageBase64
+            imagen_pub: cardData.ruta_archivo
         });
 
     } catch (error) {
@@ -684,23 +650,17 @@ export const getCardPub = async (req, res) => {
 export const getAllCardPub = async (req, res) => {
     try {
         const [rows] = await pool.query(
-            'SELECT id ,titulo_p, subtitulo_p, descripcion_p, imagen_pub, fecha_juego FROM card_pub'
+            'SELECT id ,titulo_p, subtitulo_p, descripcion_p, ruta_archivo, fecha_juego FROM card_pub'
         );
 
         const cards = rows.map(card => {
-
-            let imageBase64 = null;
-            if (card.imagen_pub) {
-                const buffer = Buffer.from(card.imagen_pub);
-                imageBase64 = buffer.toString('base64')
-            };
 
             return {
                 id: card.id,
                 titulo_p: card.titulo_p,
                 subtitulo_p: card.subtitulo_p,
                 descripcion_p: card.descripcion_p,
-                imagen_pub: imageBase64,
+                imagen_pub: card.ruta_archivo,
                 fecha_juego: card.fecha_juego
             };
         });
@@ -716,9 +676,11 @@ export const getAllCardPub = async (req, res) => {
 export const deleteCardPub = async (req, res) => {
     const { id } = req.params;
 
-    try {
+    try {   
+
+        // Obtener la ruta del archivos
         const [checkResult] = await pool.query(
-            'SELECT * FROM card_pub WHERE id = ?',
+            'SELECT ruta_archivo FROM card_pub WHERE id = ?',
             [id]
         );
 
@@ -726,10 +688,21 @@ export const deleteCardPub = async (req, res) => {
             return res.status(404).json({ error: 'No se encontraron publicaciones' })
         };
 
+        // Obtener el archivo
+        const ruta_archivo = checkResult[0].ruta_archivo;
+
+        // Eliminarlo de la BD
         await pool.query(
             'DELETE FROM card_pub WHERE id = ?',
             [id]
         );
+
+        if(ruta_archivo){
+            const filePath = path.join(CARDPUB_DIR, ruta_archivo);
+            if(fs.existsSync(filePath)){
+                fs.unlinkSync(filePath);
+            };
+        };
 
         res.json({
             success: true,
@@ -762,11 +735,20 @@ export const updateCardPub = async (req, res) => {
             fecha_juego
         };
 
-        //Si se subio una imagen; cambiarla
+        let oldFileName = null;
+
+        // Condicion: si se subio una nueva imagen, cambiar la vieja
         if (file) {
-            const imageBuffer = fs.readFileSync(file.path);
-            updateFields.imagen_pub = imageBuffer;
-            fs.unlinkSync(file.path);
+            const [current] = await pool.query('SELECT ruta_archivo FROM card_pub WHERE id = ?', [id]);
+
+            if (current.length > 0) {
+                oldFileName = current[0].ruta_archivo;
+            };
+
+            const fileName = `cardpub-${Date.now()}-${file.originalname}`;
+            const filePath = path.join(CARDPUB_DIR, fileName);
+            fs.renameSync(file.path, filePath);
+            updateFields.ruta_archivo = fileName;
         };
 
         const [result] = await pool.query(
@@ -778,9 +760,17 @@ export const updateCardPub = async (req, res) => {
             return res.status(500).json({ error: 'Publicacion no encontrada' });
         };
 
+        // Eliminar la imagen
+        if(file && oldFileName){
+            const oldFilePath = path.join(CARDPUB_DIR, oldFileName);
+            if(fs.existsSync(oldFilePath)){
+                fs.unlinkSync(oldFilePath);
+            };
+        };
+
         //Obtener el registro recien actualido
         const [newValuesCardPut] = await pool.query(
-            'SELECT id, titulo_p, subtitulo_p, descripcion_p, imagen_pub, fecha_juego FROM card_pub WHERE id = ?',
+            'SELECT id, titulo_p, subtitulo_p, descripcion_p, ruta_archivo, fecha_juego FROM card_pub WHERE id = ?',
             [id]
         );
 
@@ -788,12 +778,7 @@ export const updateCardPub = async (req, res) => {
             return res.status(500).json({ error: 'Error al recuperar la publicaion actualizada' });
         };
 
-        //Manejo de la imagen:pub
         const card = newValuesCardPut[0];
-        let imageBase64 = null;
-        if (card.imagen_pub) {
-            imageBase64 = card.imagen_pub.toString('base64');
-        };
 
         res.json({
             success: true,
@@ -802,7 +787,7 @@ export const updateCardPub = async (req, res) => {
             titulo_p: card.titulo_p,
             subtitulo_p: card.subtitulo_p,
             descripcion_p: card.descripcion_p,
-            imagen_pub: imageBase64,
+            imagen_pub: card.ruta_archivo,
             fecha_juego: card.fecha_juego
         });
 
@@ -910,14 +895,14 @@ export const UpdateEstadoPago = async (req, res) => {
         // obtener los boletos, para menejar el estado completo del jugador
         const [updateRows] = await pool.query(
             `SELECT j.*, 
-      (SELECT GROUP_CONCAT(nb.numero_boleto) 
-       FROM numeros_boletos nb 
-       WHERE nb.jugador_id = j.id) AS boletos,
-      (SELECT MIN(nb.fecha_asignacion)   
-       FROM numeros_boletos nb
-       WHERE nb.jugador_id = j.id) AS fecha_registro  
-     FROM jugador j 
-     WHERE j.id = ?`,
+            (SELECT GROUP_CONCAT(nb.numero_boleto) 
+            FROM numeros_boletos nb 
+            WHERE nb.jugador_id = j.id) AS boletos,
+            (SELECT MIN(nb.fecha_asignacion)   
+            FROM numeros_boletos nb
+            WHERE nb.jugador_id = j.id) AS fecha_registro  
+            FROM jugador j 
+            WHERE j.id = ?`,
             [id]
         );
 
@@ -1047,15 +1032,16 @@ export const addComprobantes = async (req, res) => {
 
     try {
 
-        const filePath = path.join(UPLOADS_DIR, file.filename);
-        const imageBuffer = fs.readFileSync(filePath);
+        const fileName = `${Date.now()}-${file.originalname}`;
+        const filePath = path.join(UPLOADS_DIR, fileName);
 
-        await pool.query('INSERT INTO comprobantes (jugador_id, comprobante_pago) VALUES (?, ?)', [id, imageBuffer]);
+        fs.renameSync(file.path, filePath);
+        await pool.query('INSERT INTO comprobantes (jugador_id, ruta_archivo) VALUES (?, ?)', [id, fileName]);
 
-        fs.unlinkSync(filePath);
         res.json({
             success: true,
-            message: "Archivo Subido"
+            message: "Archivo Subido",
+            fileName: fileName
         })
     } catch (error) {
         console.error('Error al agregar comprobante:', error);
@@ -1067,7 +1053,7 @@ export const getAllComprobantes = async (req, res) => {
     const { jugador_id } = req.params;
 
     try {
-        const [rows] = await pool.query('SELECT id, comprobante_pago FROM comprobantes WHERE jugador_id = ?', [jugador_id]);
+        const [rows] = await pool.query('SELECT id, ruta_archivo FROM comprobantes WHERE jugador_id = ?', [jugador_id]);
 
         if (rows.length === 0) {
             return res.json([]);
@@ -1075,7 +1061,7 @@ export const getAllComprobantes = async (req, res) => {
 
         const comprobantes = rows.map(row => ({
             id: row.id,
-            comprobante: row.comprobante_pago.toString('base64')
+            ruta_archivo: row.ruta_archivo
         }));
 
         res.json(comprobantes);
@@ -1090,20 +1076,35 @@ export const getComprobantes = async (req, res) => {
 
     try {
         const [rows] = await pool.query(
-            'SELECT comprobante_pago FROM comprobantes WHERE jugador_id = ?',
+            'SELECT ruta_archivo FROM comprobantes WHERE jugador_id = ?',
             [id]
         );
 
-        if (!rows.length || !rows[0].comprobante_pago) {
+        if (!rows.length || !rows[0].ruta_archivo) {
             return res.status(404).json({ error: "Comprobante no encontrado" });
         };
 
-        const imageBuffer = rows[0].comprobante_pago;
+        const filePath = path.join(UPLOADS_DIR, rows[0].ruta_archivo);
 
-        const mimeType = 'image/jpeg';
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: "Archivo no encontrado" });
+        };
+
+        // Determinar el tipo mime
+        const ext = path.extname(filePath).toLowerCase();
+        const mimeTypes = {
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.png': 'image/png',
+            '.gif': 'image/gif',
+            '.pdf': 'application/pdf'
+        };
+
+        const mimeType = mimeTypes[ext] || 'application/octet-stream' // mime generico
+
+        // Enviar al cliente:
         res.setHeader('Content-Type', mimeType);
-        res.end(imageBuffer);
-
+        res.sendFile(filePath);
     } catch (error) {
         console.error('Error al obtener imagen:', error);
         res.status(500).json({ error: 'Error al cargar imagen' });
@@ -1115,25 +1116,32 @@ export const updateComprobante = async (req, res) => {
     const { id } = req.params;
     const file = req.file;
 
+    // Validacion:
     if (!file) {
         res.status(400).json({ error: "No se ha subido ningún archivo" })
     };
 
     try {
-        const filePath = path.join(UPLOADS_DIR, file.filename);
-        const imageBuffer = fs.readFileSync(filePath);
+        const fileName = `${Date.now()}-${file.originalname}`;
+        const filePath = path.join(UPLOADS_DIR, fileName);
+
+        fs.renameSync(file.path, filePath);
 
         // Verificar si existe un comprobante
         const [existing] = await pool.query('SELECT * FROM comprobantes WHERE jugador_id = ?', [id]);
 
         if (existing.length > 0) {
-            await pool.query('UPDATE comprobantes SET comprobante_pago = ? WHERE jugador_id = ?', [imageBuffer, id]);
-        } else {
-            await pool.query('INSERT INTO comprobantes (jugador_id, comprobante_pago) VALUES (?, ?)', [id, imageBuffer]);
-        };
 
-        //eliminar archivo temporal
-        fs.unlinkSync(filePath);
+            // Condicion: Eliminar el archivo antiguo
+            const olfdFilePath = path.join(UPLOADS_DIR, existing[0].ruta_archivo);
+            if (fs.existsSync(olfdFilePath)) {
+                fs.unlinkSync(olfdFilePath);
+            };
+
+            await pool.query('UPDATE comprobantes SET ruta_archivo = ? WHERE jugador_id = ?', [fileName, id]);
+        } else {
+            await pool.query('INSERT INTO comprobantes (jugador_id, ruta_archivo) VALUES (?, ?)', [id, fileName]);
+        };
 
         res.json({
             success: true,
@@ -1152,11 +1160,21 @@ export const deleteComprobante = async (req, res) => {
 
     try {
 
+        const [rows] = await pool.query('SELECT ruta_archivo FROM comprobantes WHERE id = ?', [comprobanteId]);
+
         const [result] = await pool.query('DELETE FROM comprobantes WHERE id = ?', [comprobanteId]);
 
         if (result.affectedRows === 0) {
             return res.status(500).json({ error: "Comprobante no encontrado" })
         }
+
+        // Eliminar el archivo Fisico:
+        if (rows.length > 0 && rows[0].ruta_archivo) {
+            const filePath = path.join(UPLOADS_DIR, rows[0].ruta_archivo);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            };
+        };
 
         res.json({
             success: true,
@@ -1183,17 +1201,39 @@ export const deleteAllJugadores = async (req, res) => {
 
         await connection.beginTransaction();
 
-        await connection.query('DELETE from comprobantes');
+        // Obtener las rutas de las imagenes
+        const [comprobantes] = await connection.query('SELECT ruta_archivo FROM comprobantes');
+        const [cardPub] = await connection.query('SELECT ruta_archivo FROM card_pub');
 
-        await connection.query('DELETE from numeros_boletos');
-
-        await connection.query('DELETE from jugador');
+        // Eliminar el registro de la BD
+        await connection.query('DELETE FROM comprobantes');
+        await connection.query('DELETE FROM numeros_boletos');
+        await connection.query('DELETE FROM jugador');
 
         await connection.commit();
 
+        // Elimninar Archivos Fisicos_
+        comprobantes.forEach(comprobante => {
+            if (comprobante.ruta_archivo) {
+                const filePath = path.join(UPLOADS_DIR, comprobante.ruta_archivo);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                };
+            };
+        })
+
+        cardPub.forEach(card => {
+            if (card.ruta_archivo) {
+                const filePath = path.join(UPLOADS_DIR, card.ruta_archivo);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                };
+            };
+        })
+
         res.json({
             success: true,
-            message: "Todos los jugador fueron eliminados"
+            message: "Todos los jugadores fueron eliminados"
         });
     } catch (error) {
 
