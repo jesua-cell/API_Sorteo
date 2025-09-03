@@ -30,7 +30,10 @@ export const getJugadores = async (req, res) => {
 
         // Obtener el modo actual del modo del sorteo (100 o 1000)
         const [modoResult] = await pool.query('SELECT modo FROM configuracion_sorteo LIMIT 1');
+
         const modo = modoResult[0]?.modo || '1000'; // normalizar el numero: 0 → '00', 7 → '007'
+        
+        // Funcion para normalizar terminos de busquedad(numericos)
         const normalizeSearchTerm = (term, modo) => {
             if (!isNaN(term)) {
                 const num = parseInt(term);
@@ -49,32 +52,24 @@ export const getJugadores = async (req, res) => {
 
         const normalizedSearchTerm = searchTerm ? normalizeSearchTerm(searchTerm.trim(), modo) : '';
 
-        // Consulta:
+        // Consulta Principal:
         let query = `
             SELECT 
                 j.*,
-                (
-                SELECT GROUP_CONCAT(nb.numero_boleto) 
-                FROM numeros_boletos nb 
-                WHERE nb.jugador_id = j.id
-                ) AS boletos,
-                (
-                SELECT MIN(nb.fecha_asignacion)
-                FROM numeros_boletos nb
-                WHERE nb.jugador_id = j.id
-                ) AS fecha_registro
+                (SELECT GROUP_CONCAT(numero_boleto) FROM numeros_boletos WHERE jugador_id = j.id) AS boletos,
+                (SELECT MIN(fecha_asignacion) FROM numeros_boletos WHERE jugador_id = j.id) AS fecha_registro
             FROM jugador j
-    `;
+        `;
 
         const params = [];
 
         // Filtro de Busquedad(con la configuracion de la normalizacion):
         if (normalizedSearchTerm) {
             query += `
-            WHERE j.id IN (
-                SELECT DISTINCT jugador_id 
+            WHERE EXISTS (
+                SELECT 1 
                 FROM (
-                    SELECT id AS jugador_id 
+                    SELECT id AS jugador_id, nombres_apellidos, celular, cedula, pais_estado, metodo_pago, referenciaPago
                     FROM jugador
                     WHERE 
                         nombres_apellidos LIKE ? OR
@@ -84,12 +79,13 @@ export const getJugadores = async (req, res) => {
                         metodo_pago LIKE ? OR
                         referenciaPago LIKE ?
                     
-                    UNION
+                    UNION ALL
                     
-                    SELECT jugador_id
+                    SELECT jugador_id, NULL, NULL, NULL, NULL, NULL, NULL
                     FROM numeros_boletos
                     WHERE numero_boleto LIKE ?
-                ) AS subquery
+                ) AS filtered
+                WHERE filtered.jugador_id = j.id
             )
             `;
 
@@ -102,44 +98,49 @@ export const getJugadores = async (req, res) => {
         };
 
         // Paginacion:
-        query += ` GROUP BY j.id ORDER BY j.id DESC LIMIT ? OFFSET ?`;
+        query += ` ORDER BY j.id DESC LIMIT ? OFFSET ?`;
         params.push(limit, offset);
 
         // Obtener jugadores con la configuracion del modo y el filtrado
         const [jugadores] = await pool.query(query, params);
 
-        // Convertir boletos a Arreglos:
+        // Procesamientos de Resultados: Convertir boletos a Arreglos:
         const poreccedJugadores = jugadores.map(jugador => ({
             ...jugador,
             boletos: jugador.boletos ? jugador.boletos.split(',') : []
         }));
 
         // Consulta para el total de registos:
-        let countQuery = `SELECT COUNT(DISTINCT j.id) as total FROM jugador j`;
+        let countQuery = `
+            SELECT COUNT(DISTINCT j.id) as total 
+            FROM jugador j
+        `;
+
         const countParams = [];
 
         if (normalizedSearchTerm) {
             countQuery += `
-                            WHERE j.id IN (
-                    SELECT DISTINCT jugador_id 
-                    FROM (
-                        SELECT id AS jugador_id 
-                        FROM jugador
-                        WHERE 
+            WHERE EXISTS (
+                SELECT 1 
+                FROM (
+                    SELECT id AS jugador_id
+                    FROM jugador
+                    WHERE 
                         nombres_apellidos LIKE ? OR
                         celular LIKE ? OR
                         cedula LIKE ? OR
                         pais_estado LIKE ? OR
                         metodo_pago LIKE ? OR
                         referenciaPago LIKE ?
-                        
-                        UNION
-                        
-                        SELECT jugador_id
-                        FROM numeros_boletos
-                        WHERE numero_boleto LIKE ?
-                    ) AS subquery
-                    )
+                    
+                    UNION ALL
+                    
+                    SELECT jugador_id
+                    FROM numeros_boletos
+                    WHERE numero_boleto LIKE ?
+                ) AS filtered
+                WHERE filtered.jugador_id = j.id
+            )
             `;
 
             const searchPattern = `%${normalizedSearchTerm}%`;
@@ -163,8 +164,6 @@ export const getJugadores = async (req, res) => {
         res.status(500).json({ error: "Error al Obtener los Datos de los Jugadores" })
     }
 };
-
-
 
 //POST(Jugadores)
 export const addJugadores = async (req, res) => {
