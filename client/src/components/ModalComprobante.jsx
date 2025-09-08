@@ -29,7 +29,7 @@ export const ModalComprobante = ({ isOpen, closeModal, comprobantes, onDelete })
             <div className="contComprobantes">
 
                 <div className="boxComprobantes">
-                    <h2>{comprobantes.length} comprobantes:</h2>
+                    <h2 className="title_comprobante_modal">{comprobantes.length} comprobantes:</h2>
 
                     <div className="comprobantes">
                         <button className="close-button" onClick={closeModal}>×</button>
