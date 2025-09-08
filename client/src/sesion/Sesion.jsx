@@ -321,7 +321,8 @@ export const Sesion = () => {
     //Muestra el valor del VES al cargar el componente
     useEffect(() => {
         fetchValorVes();
-    }, []);
+    }, []); 
+    
 
     // funcion para cargar comprobantes
     const loadComprobantes = async (jugadorId) => {
@@ -749,13 +750,6 @@ export const Sesion = () => {
     const handlePageClick = (data) => {
         fetchJugadores(data.selected + 1, search);
     };
-
-    //TODO* Agregar un nuevo campo de pago en efectivo
-    //TODO* Colocar un boton de "pendiente" o "pago hecho" en el campo de monto total
-    //TODO* Crear una funcion que muestre 100 o 1000 numeros en el archivo Sorteo.jsx
-    //TODO* Agregar un componente de paginacion
-    //TODO* Configurar el filtro de busquedad para por medio de una funcion, busque los datos desde el back, y los muestre en el archivo
-
 
     return (
         <>

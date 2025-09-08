@@ -326,13 +326,13 @@ export const Sorteo = () => {
             hasError = true;
         };
 
-        if (!referenciaPago.trim()) {
+        if (activeTab !== 6 && !referenciaPago.trim()) {
             toast.error("Referencia de Pago Requerido");
             hasError = true;
         };
 
-        if (!selectedFile) {
-            toast.error("Foto o Captura de Pantalla Requerida");
+        if (activeTab !== 6 && !selectedFile) {
+            toast.error("Foto o Capruta de Pantalla Requerida");
             hasError = true;
         };
 
