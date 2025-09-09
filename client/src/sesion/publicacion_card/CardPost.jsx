@@ -133,11 +133,13 @@ export const CardPost = () => {
             formData.append('descripcion_p', descripcion);
             formData.append('imagen', selectedFile);
             formData.append('fecha_juego', fechaISO);
+            const token = localStorage.getItem('jwtToken');
             const response = await axios.post(
                 'http://localhost:3000/cardpub',
                 formData,
                 {
                     headers: {
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data'
                     }
                 }
@@ -160,8 +162,8 @@ export const CardPost = () => {
                     icon: '✅',
                     style: {
                         borderRadius: '10px',
-                        background: '#0035a3',
-                        color: '#e5eeff',
+                        background: '#fcfdffff',
+                        color: '#000000ff',
                     },
                 }
             );
@@ -195,8 +197,15 @@ export const CardPost = () => {
     //Consulta para eliminar 
     const handleDelete = async (id) => {
         try {
-
-            await axios.delete(`http://localhost:3000/cardpub/${id}`);
+            
+            const token = localStorage.getItem('jwtToken');
+            await axios.delete(`http://localhost:3000/cardpub/${id}`, 
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
             setCardData(cardData.filter(card => card.id !== id));
 
             toast('Publicacion Eliminada',
@@ -262,8 +271,14 @@ export const CardPost = () => {
                 formData.append('imagen', ediSelectedFile);
             };
 
+            const token = localStorage.getItem('jwtToken');
+
             const response = await axios.put(`http://localhost:3000/cardpub/${id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers:
+                {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
             });
 
             //Actualizar estado local
@@ -287,8 +302,8 @@ export const CardPost = () => {
                     icon: '✅',
                     style: {
                         borderRadius: '10px',
-                        background: '#fff',
-                        color: '#164aff',
+                        background: '#fffefeff',
+                        color: '#0f0f0fff',
                         fontWeight: '500'
                     },
                 }
@@ -473,7 +488,7 @@ export const CardPost = () => {
                                         </>
                                     ) : (
                                         // MODO VISUALIZACIÓN
-                                        <>  
+                                        <>
                                             <h2 className='indices_sorteoPub'>Titulo:</h2>
                                             <h1 className='title_sorteo_Pub'>{card.titulo_p}</h1>
                                             {card.imagen_pub && (
@@ -485,10 +500,10 @@ export const CardPost = () => {
                                             )}
                                             <h2 className='indices_sorteoPub'>Subtitulo:</h2>
                                             <h2 className='subt_sorteo_Pub'>{card.subtitulo_p}</h2>
-                                            
+
                                             <h2 className='indices_sorteoPub'>Descripcion:</h2>
                                             <p className='desc_sorteo_Pub'>{card.descripcion_p}</p>
-                                            
+
                                             <h2 className='indices_sorteoPub'>Fecha</h2>
                                             <p className='fecha_juego'>
                                                 {card.fecha_juego instanceof Date
