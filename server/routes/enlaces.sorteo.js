@@ -14,7 +14,6 @@ import {
     getBoletos,
     getAdmin,
     loginAdmins,
-    authToken,
     postCardPub,
     getCardPub,
     getAllCardPub,
@@ -36,6 +35,7 @@ import {
     deleteAllJugadores,
     getJugadorVerificador
 } from '../controllers/sorteo.controllers.js';
+import { authToken } from "../middleware/authToken.js";
 
 
 //obtner las rutas de los archivos
@@ -111,7 +111,7 @@ router.get('/jugadores', getJugadores);
 
 router.post('/nuevo_jugador', upload.single('comprobante_pago'), addJugadores);
 
-router.delete('/jugador/:id', deleteJugador);
+router.delete('/jugador/:id', authToken, deleteJugador);
 
 router.post('/nuevo_boletos', addBoletos);
 
@@ -121,19 +121,19 @@ router.get('/admins', getAdmin);
 
 router.post('/admin/login', loginAdmins);
 
-router.post('/cardpub', uploadCardPub.single('imagen'), postCardPub);
+router.post('/cardpub', authToken, uploadCardPub.single('imagen'), postCardPub);
 
 router.get('/cardpub/:id/image', getCardPub);
 
 router.get('/cardpub', getAllCardPub);
 
-router.delete('/cardpub/:id', deleteCardPub);
+router.delete('/cardpub/:id', authToken, deleteCardPub);
 
-router.put('/jugador/:id', updateJugador);
+router.put('/jugador/:id', authToken, updateJugador);
 
 router.get('/jugadorVerificador', getJugadorVerificador);
 
-router.put('/cardpub/:id', uploadCardPub.single('imagen'), updateCardPub);
+router.put('/cardpub/:id', authToken, uploadCardPub.single('imagen'), updateCardPub);
 
 router.post('/valor', postValorVes);
 
@@ -141,26 +141,39 @@ router.get('/valor', getValorVes);
 
 router.post('/valor', postValorVes);
 
-router.put('/valor', updateValores);
+router.put('/valor', authToken, updateValores);
 
-router.put('/jugador/:id/estado_pago', UpdateEstadoPago);
+router.put('/jugador/:id/estado_pago', authToken, UpdateEstadoPago);
 
 router.get('/modo_sorteo', getModoSorteo);
 
-router.put('/modo_sorteo', updateModoSorteo);
+router.put('/modo_sorteo', authToken, updateModoSorteo);
 
-router.put('/abonar/:id', abonarJugador);
+router.put('/abonar/:id', authToken, abonarJugador);
 
-router.delete('/delete-comprobante/:comprobanteId', deleteComprobante);
+router.delete('/delete-comprobante/:comprobanteId', authToken, deleteComprobante);
 
 router.get('/comprobante/:id', getComprobantes);
 
-router.post('/comprobante/:id', upload.single('comprobante'), addComprobantes);
+router.post('/comprobante/:id', authToken, upload.single('comprobante'), addComprobantes);
 
 router.get('/comprobantes/:jugador_id', getAllComprobantes);
 
 router.put('/comprobante/:id', upload.single('comprobante'), updateComprobante);
 
-router.delete('/delete-all-jugadores', deleteAllJugadores);
+router.delete('/delete-all-jugadores', authToken, deleteAllJugadores);
+
+/**
+ * router.put('/jugador/:id', authToken, updateJugador);
+router.delete('/jugador/:id', authToken, deleteJugador);
+router.put('/abonar/:id', authToken, abonarJugador);
+router.put('/jugador/:id/estado_pago', authToken, UpdateEstadoPago);
+router.put('/modo_sorteo', authToken, updateModoSorteo);
+router.delete('/delete-comprobante/:comprobanteId', authToken, deleteComprobante);
+router.delete('/delete-all-jugadores', authToken, deleteAllJugadores);
+router.post('/comprobante/:id', authToken, upload.single('comprobante'), addComprobantes);
+router.put('/valor', authToken, updateValores);
+ */
+
 
 export default router;
