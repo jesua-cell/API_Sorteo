@@ -148,15 +148,25 @@ export const getJugadores = async (req, res) => {
             countParams.push(searchPattern);
         };
 
+
         const [totalRows] = await pool.query(countQuery, countParams);
         const total = totalRows[0].total;
+
+        // Obtener toda la cantidad de jugadores y boletos:
+        const [totalJugadoresRows] = await pool.query('SELECT COUNT(*) as total FROM jugador'); // jugadores
+        const totalJugadores = totalJugadoresRows[0].total;
+
+        const [totalBoletosRows] = await pool.query('SELECT COUNT(*) as total FROM numeros_boletos'); // boletos
+        const totalBoletos = totalBoletosRows[0].total;
 
         // Respuesta al Client:
         res.json({
             jugadores: poreccedJugadores,
             totalPages: Math.ceil(total / limit),
             currentPage: page,
-            total
+            total,
+            totalJugadores,
+            totalBoletos
         });
 
     } catch (error) {
@@ -369,19 +379,6 @@ export const loginAdmins = async (req, res) => {
     }
 };
 
-// //middleware de autenticacion:
-// export const authToken = (req, res, next) => {
-//     const authHeader = req.headers['authorization'];
-//     const token = authHeader && authHeader.split(' ')[1];
-
-//     if (!token) return res.sendStatus(401);
-
-//     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-//         if (err) return res.sendStatus(403);
-//         req.user = user;
-//         next();
-//     })
-// };
 
 export const deleteJugador = async (req, res) => {
 
