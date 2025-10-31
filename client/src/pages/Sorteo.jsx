@@ -101,12 +101,6 @@ export const Sorteo = () => {
     setSearchTerm(searchValue);
     console.log(searchValue);
 
-    // if (listaRef.current) {
-    //     Array.from(listaRef.current.children).forEach(child => {
-    //         const numero = child.textContent;
-    //         child.style.display = searchValue === '' || numero.includes(searchValue) ? 'block' : 'none';
-    //     })
-    // };
   };
 
   const handleImageUpload = (file) => {
@@ -226,10 +220,14 @@ export const Sorteo = () => {
       return Array.from({ length: 100 }, (_, i) => {
         return i === 99 ? '00' : String(i + 1).padStart(2, '0');
       });
-    } else {
+    } else if (modoSorteo === '1000') {
       return Array.from({ length: 1000 }, (_, i) => {
         return String(i).padStart(3, '0')
       });
+    } else if (modoSorteo === '10000') {
+      return Array.from({ length: 10000 }, (_, i) => {
+        return String(i).padStart(4, '0')
+      })
     };
   };
 
@@ -241,8 +239,12 @@ export const Sorteo = () => {
     if (modoSorteo === '100') {
       if (num === 0 || numMostrado === '00') return '000';
       return String(num).padStart(3, '0');
-    }
-    return numMostrado.padStart(3, '0');
+    } else if (modoSorteo === '1000') {
+      return numMostrado.padStart(3, '0')
+    } else if (modoSorteo === '10000') {
+      return numMostrado.padStart(4, '0')
+    };
+    // return numMostrado.padStart(3, '0');
   };
 
   // Funcion para convertir de almacenamiento a visualizacion
@@ -251,8 +253,12 @@ export const Sorteo = () => {
       const num = parseInt(numAlmacenado);
       if (num === 0) return '00';
       return num <= 99 ? String(num).padStart(2, '0') : numAlmacenado
+    } else if (modoSorteo === '1000') {
+      return numAlmacenado.padStart(3, '0');
+    } else if (modoSorteo === '10000') {
+      return numAlmacenado.padStart(4, '0')
     }
-    return numAlmacenado.padStart(3, '0');
+    // return numAlmacenado.padStart(3, '0');
   };
 
   // Calculo total de boletos
@@ -450,14 +456,18 @@ export const Sorteo = () => {
             value={rawInput}
             onChange={handleSearch}
             min="1"
-            max="1000"
+            max={modoSorteo === '100' ? '100' : (modoSorteo === '1000' ? '1000' : '10000')}
             onWheel={(e) => e.target.blur()}
           />
 
 
 
           <div className='numUsedCount'>
-            <label className='usedNumSorteo'>Numeros disponibles: {modoSorteo === '100' ? 100 : 1000 - usedNumbers.length}</label>
+            <label className='usedNumSorteo'>Numeros disponibles: {
+              modoSorteo === '100' ? 100 :
+                modoSorteo === '1000' ? 1000 - usedNumbers.length :
+                  10000 - usedNumbers.length
+            }</label>
           </div>
           <div className="lista" ref={listaRef}>
             {triggerNum().map((numMostrado) => {

@@ -792,7 +792,7 @@ export const Sesion = () => {
             <div className="logoUsers">
               <h3 className="title_infoSorteo">Jugadores:</h3>
               <img src={users} className="img_users" />
-              <p className="infoSorteoText"><strong>{totalJugadoresGlobal}</strong> de 1000</p>
+              <p className="infoSorteoText"><strong>{totalJugadoresGlobal}</strong> de {modoSorteo}</p>
             </div>
             <div className="dataInventario">
               <p className="infoSorteoText">Jugadores Restantes: <strong>{Math.max(0, parseInt(modoSorteo) - totalJugadoresGlobal)}</strong></p>
@@ -803,7 +803,7 @@ export const Sesion = () => {
             <div className="logoPuestos">
               <h3 className="title_infoSorteo">Puestos:</h3>
               <img src={puestos} className="img_puestos" />
-              <p className="infoSorteoText"><strong>{totalBoletosGlobal}</strong> de 1000</p>
+              <p className="infoSorteoText"><strong>{totalBoletosGlobal}</strong> de {modoSorteo}</p>
             </div>
             <div className="dataInventario">
               <p className="infoSorteoText">Puestos disponibles: <strong>{Math.max(0, parseInt(modoSorteo) - totalBoletosGlobal)}</strong></p>
@@ -854,6 +854,12 @@ export const Sesion = () => {
               className={`btn_countPub_cien ${modoSorteo === '100' ? 'active' : ''}`}
               onClick={() => handleOpenModeModal('100')}
             >100
+            </button>
+
+            <button
+              className={`btn_countPub_cien ${modoSorteo === '10000' ? 'active' : ''}`}
+              onClick={() => handleOpenModeModal('10000')}
+            >10000
             </button>
           </div>
 
@@ -1138,10 +1144,11 @@ export const Sesion = () => {
                                 } else {
                                   numVisual = boleto.padStart(3, '0');
                                 }
-                              } else {
+                              } else if (modoSorteo === '1000') {
                                 numVisual = boleto.padStart(3, '0');
+                              } else if (modoSorteo === '10000') {
+                                numVisual = boleto.padStart(4, '0')
                               }
-
                               return (
                                 <div key={`${jugador.id}-boleto-${index}`} className="fila_num">
                                   {numVisual}
@@ -1480,9 +1487,11 @@ export const Sesion = () => {
                               } else {
                                 numVisual = boleto.padStart(3, '0');
                               }
-                            } else {
+                            } else if (modoSorteo === '1000') {
                               numVisual = boleto.padStart(3, '0');
-                            }
+                            } else if (modoSorteo === '10000') {
+                              numVisual = boleto.padStart(4, '0');
+                            };
 
                             return (
                               <div key={`${jugador.id}-boleto-${index}`} className="fila_num">

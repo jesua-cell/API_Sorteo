@@ -3608,12 +3608,13 @@ input[type="number"]::-webkit-outer-spin-button {
     .btn_countPub_cien {
         font-size: 17px;
         cursor: pointer;
-        margin-bottom: 0px;
+        margin-bottom: 5px;
     }
 
     .btn_countPub_mil {
         font-size: 17px;
         cursor: pointer;
+        margin-bottom: 5px;
     }
 
     .lista_btns {

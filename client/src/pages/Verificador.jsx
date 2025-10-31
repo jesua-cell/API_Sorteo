@@ -13,6 +13,7 @@ export const Verificador = () => {
     const [jugadorEncontrado, setJugadorEncontrado] = useState(null);
     const [errorVerificacion, setErrorVerificacion] = useState('');
 
+    // Obtener solo los campos de nombre, puestos, celular, y verificacion 
     useEffect(() => {
         const fetchJugadores = async () => {
 
