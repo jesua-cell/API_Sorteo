@@ -32,7 +32,7 @@ export const getJugadores = async (req, res) => {
         const [modoResult] = await pool.query('SELECT modo FROM configuracion_sorteo LIMIT 1');
 
         const modo = modoResult[0]?.modo || '1000'; // normalizar el numero: 0 → '00', 7 → '007'
-        
+
         // Funcion para normalizar terminos de busquedad(numericos)
         const normalizeSearchTerm = (term, modo) => {
             if (!isNaN(term)) {
@@ -43,9 +43,11 @@ export const getJugadores = async (req, res) => {
                     if (num === 0) return '00';
                     if (num <= 99) return String(num).padStart(2, '0');
                     return String(num).padStart(3, '0');
-                } else {
-                    return String(num).padStart(3, '0');
-                }
+                } else if (modo === '1000') {
+                    return String(num).padStart(3, '0')
+                } else if (modo === '10000') {
+                    return String(num).padStart(4, '0')
+                };
             }
             return term;
         };
@@ -307,9 +309,12 @@ export const getBoletos = async (req, res) => {
                 if (num === 0) return '00';
                 if (num <= 99) return String(num).padStart(2, '0');
                 return normalized.padStart(3, '0');
+            } else if (modo === '1000') {
+                return normalized.padStart(3, '0');
+            } else if (modo === '10000') {
+                return normalized.padStart(4, '0')
             };
 
-            return normalized.padStart(3, '0');
         });
 
         res.json(usedNumbers);
@@ -404,9 +409,9 @@ export const deleteJugador = async (req, res) => {
 
         // Eliminar archivos fisicos:
         comprobantes.forEach(comprobante => {
-            if(comprobante.ruta_archivo) {
+            if (comprobante.ruta_archivo) {
                 const filePath = path.join(UPLOADS_DIR, comprobante.ruta_archivo);
-                if(fs.existsSync(filePath)){
+                if (fs.existsSync(filePath)) {
                     fs.unlinkSync(filePath);
                 };
             };
@@ -672,7 +677,7 @@ export const getAllCardPub = async (req, res) => {
 export const deleteCardPub = async (req, res) => {
     const { id } = req.params;
 
-    try {   
+    try {
 
         // Obtener la ruta del archivos
         const [checkResult] = await pool.query(
@@ -693,9 +698,9 @@ export const deleteCardPub = async (req, res) => {
             [id]
         );
 
-        if(ruta_archivo){
+        if (ruta_archivo) {
             const filePath = path.join(CARDPUB_DIR, ruta_archivo);
-            if(fs.existsSync(filePath)){
+            if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             };
         };
@@ -757,9 +762,9 @@ export const updateCardPub = async (req, res) => {
         };
 
         // Eliminar la imagen
-        if(file && oldFileName){
+        if (file && oldFileName) {
             const oldFilePath = path.join(CARDPUB_DIR, oldFileName);
-            if(fs.existsSync(oldFilePath)){
+            if (fs.existsSync(oldFilePath)) {
                 fs.unlinkSync(oldFilePath);
             };
         };
