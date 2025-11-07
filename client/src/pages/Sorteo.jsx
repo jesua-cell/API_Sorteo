@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
+import { useVirtualizer } from "@tanstack/react-virtual";
 import axios, { toFormData } from "axios";
 //Imagenes:
 import zelle from '../assets/zelle.png'
@@ -34,6 +35,14 @@ export const Sorteo = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
+  // Obentener los valores y enviarlos al servidor
+  const [nombre, setNombre] = useState('');
+  const [celular, setCelular] = useState('')
+  const [paisEstado, setPaisEstado] = useState('')
+  const [referenciaPago, setReferenciaPago] = useState('')
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [cedula, setCedula] = useState('')
+
   //Estados para obtener los valores de la tabla valores_ves
   const [currentId, setCurrentId] = useState(null);
   const [valor, setValor] = useState(0);
@@ -47,171 +56,10 @@ export const Sorteo = () => {
   //estado de la publicacion del CardPub
   const [cardData, setCardData] = useState([]);
 
-  //Funcion para seleccionar y desseleccionar
-  const toggleNumberSelec = (numMostrado) => {
+  // ListaRef Virtualizada
+  const listaVirtualRef = useRef();
 
-    const numAlmacenar = convFormAlmacemiento(numMostrado)
-    setSelectNumbers(prev =>
-      prev.includes(numAlmacenar)
-        ? prev.filter(n => n !== numAlmacenar)
-        : [...prev, numAlmacenar]
-    );
-
-    setRawInput('');
-    setSearchTerm('');
-  };
-
-  //Funcion para bloquear los numeros elegidos
-  useEffect(() => {
-    const fetchUsedNumbers = async () => {
-      try {
-        const usedNumbers = await getUsedNumbers();
-        setUsedNumbers(usedNumbers);
-      } catch (error) {
-        console.log("error obteniedo los numeros usados", error);
-        setUsedNumbers([]);
-      }
-    };
-    fetchUsedNumbers();
-  }, [])
-
-  // Actualizar periodicamente los numeros
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getUsedNumbers().then(nums => setUsedNumbers(nums));
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [])
-
-  //Filtro(input) para buscar numeros de la "lista"
-  const handleSearch = (e) => {
-
-    const inputValue = e.target.value;
-
-    setRawInput(inputValue);
-
-    const searchValue = inputValue === '' ? '' : String(inputValue).padStart(3, '0');
-
-    // Solo 3 digitos y solo numeros
-    const valueClean = inputValue.replace(/\D/g, '').slice(0, 3);
-
-    setRawInput(valueClean);
-    setSearchTerm(valueClean);
-
-    setSearchTerm(searchValue);
-    console.log(searchValue);
-
-  };
-
-  const handleImageUpload = (file) => {
-    if (file && file instanceof Blob) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result)
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const removeImage = () => {
-    if (previewImage) URL.revokeObjectURL(previewImage);
-    setPreviewImage(null);
-    setSelectedFile(null);
-  };
-
-
-  const seleccionar = (index) => {
-    setActiveTab(index);
-  };
-
-  const removeNumSelect = () => {
-    setSelectNumbers([]);
-  };
-
-  // Funcion para traer los datos del CardPub
-  useEffect(() => {
-    const fetchCardData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/cardpub');
-        setCardData(response.data);
-      } catch (error) {
-        console.error('Error en la obtencion de datos del CardGet', error);
-      }
-    }
-    fetchCardData();
-  }, []);
-
-  const formaDate = (dateString) => {
-    if (!dateString) return 'Fecha no definifa';
-
-    try {
-      const date = new Date(dateString);
-      return format(date, "dd 'de' MMMM 'de' yyyy", { locale: es });
-    } catch (error) {
-      console.error("Error en el formato de la fecha", error);
-      return dateString;
-    }
-  };
-
-
-  // Obentener los valores y enviarlos al servidor
-  const [nombre, setNombre] = useState('');
-  const [celular, setCelular] = useState('')
-  const [paisEstado, setPaisEstado] = useState('')
-  const [referenciaPago, setReferenciaPago] = useState('')
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [cedula, setCedula] = useState('')
-
-  useEffect(() => {
-    let timer;
-    if (showModal) {
-      timer = setTimeout(() => setShowModal(false), 3000)
-    }
-    return () => clearTimeout(timer);
-  }, [showModal])
-
-  //Obtener valor del VES a la BD
-  const fetchValorVes = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/valor');
-      setValor(response.data.valor);
-      setCurrentId(response.data.id);
-    } catch (error) {
-      console.error('Error al obtener el valor del VES', error);
-    }
-  };
-
-  //Conversion del numero(VES)
-  const normalizarNumero = (valorStr) => {
-
-    if (!valorStr) return '';
-
-    const sinPuntos = valorStr.replace(/\,/g, '');
-
-    const conPuntoDecimal = sinPuntos.replace(',', '.');
-
-    return conPuntoDecimal;
-  };
-
-  useEffect(() => {
-    fetchValorVes();
-  }, [])
-
-  // Funcion para obtener el Modo al cargar
-  useEffect(() => {
-
-    const fetchModoSorteo = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/modo_sorteo');
-        setModoSorteo(response.data.modo || '1000');
-      } catch (error) {
-        console.error("Error obteniendo la cantidad de los puestos", error);
-      }
-    };
-
-    fetchModoSorteo();
-  }, [])
+  const [itemPerRow, setItemPerRow] = useState(5);
 
   // Funcion para generar numeros para mostrar
   const triggerNum = () => {
@@ -260,6 +108,226 @@ export const Sorteo = () => {
     }
     // return numAlmacenado.padStart(3, '0');
   };
+
+  // Manejo de disposicion de numeros en el contenedor '.lista'
+  useEffect(() => {
+    const handleResize = () => {
+
+      const width = window.innerWidth;
+      console.log('Ancho: ', width);
+
+      if (width >= 1420 && width <= 1430) {
+        setItemPerRow(16);
+      } else {
+        setItemPerRow(5);
+      };
+    }
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Funcion para los numeros visibles:
+  const visibleNumbers = useMemo(() => {
+    return triggerNum().filter(numMostrado => {
+      return searchTerm === '' ||
+        numMostrado.includes(searchTerm) ||
+        numMostrado.replace(/^0+/, '').includes(searchTerm);
+    });
+  }, [searchTerm, modoSorteo]);
+
+  // Constantes para las filas y columnas de la virtualizacion
+  const ROW_HEIGTH = 40;
+  const COLUMN_WIDTH = 52;
+  const ITEM_PER_ROW = 5;
+
+  const virtualizer = useVirtualizer({
+    count: (visibleNumbers.length / itemPerRow),
+    getScrollElement: () => listaVirtualRef.current,
+    estimateSize: () => ROW_HEIGTH,
+    overscan: 5
+  })
+
+  //Funcion para seleccionar y desseleccionar
+  const toggleNumberSelec = (numMostrado) => {
+    const numAlmacenar = convFormAlmacemiento(numMostrado)
+    setSelectNumbers(prev =>
+      prev.includes(numAlmacenar)
+        ? prev.filter(n => n !== numAlmacenar)
+        : [...prev, numAlmacenar]
+    );
+
+    setRawInput('');
+    setSearchTerm('');
+  };
+
+  //Funcion para bloquear los numeros elegidos
+  useEffect(() => {
+    const fetchUsedNumbers = async () => {
+      try {
+        const usedNumbers = await getUsedNumbers();
+        setUsedNumbers(usedNumbers);
+      } catch (error) {
+        console.log("error obteniedo los numeros usados", error);
+        setUsedNumbers([]);
+      }
+    };
+    fetchUsedNumbers();
+  }, [])
+
+  // Actualizar periodicamente los numeros
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getUsedNumbers().then(nums => setUsedNumbers(nums));
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [])
+
+  //Filtro(input) para buscar numeros de la "lista"
+  const handleSearch = (e) => {
+
+    const inputValue = e.target.value;
+
+    setRawInput(inputValue);
+
+    const searchValue = inputValue === '' ? '' : String(inputValue).padStart(4, '0');
+
+    // Solo 3 digitos y solo numeros
+    const valueClean = inputValue.replace(/\D/g, '').slice(0, 4);
+
+    setRawInput(valueClean);
+    setSearchTerm(valueClean);
+
+    setSearchTerm(searchValue);
+    console.log(searchValue);
+
+  };
+
+  const handleImageUpload = (file) => {
+    if (file && file instanceof Blob) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result)
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    if (previewImage) URL.revokeObjectURL(previewImage);
+    setPreviewImage(null);
+    setSelectedFile(null);
+  };
+
+  const seleccionar = (index) => {
+    setActiveTab(index);
+  };
+
+  const removeNumSelect = () => {
+    setSelectNumbers([]);
+  };
+
+  // Funcion para traer los datos del CardPub
+  useEffect(() => {
+    const fetchCardData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/cardpub');
+        setCardData(response.data);
+      } catch (error) {
+        console.error('Error en la obtencion de datos del CardGet', error);
+      }
+    }
+    fetchCardData();
+  }, []);
+
+  const formaDate = (dateString) => {
+    if (!dateString) return 'Fecha no definifa';
+
+    try {
+      const date = new Date(dateString);
+      return format(date, "dd 'de' MMMM 'de' yyyy", { locale: es });
+    } catch (error) {
+      console.error("Error en el formato de la fecha", error);
+      return dateString;
+    }
+  };
+
+  useEffect(() => {
+    let timer;
+   if (showModal) {
+     timer = setTimeout(() => setShowModal(false), 3000)
+   }
+    return () => clearTimeout(timer);
+  }, [showModal])
+
+  //Obtener valor del VES a la BD
+  const fetchValorVes = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/valor');
+      setValor(response.data.valor);
+      setCurrentId(response.data.id);
+    } catch (error) {
+      console.error('Error al obtener el valor del VES', error);
+    }
+  };
+
+  //Conversion del numero(VES)
+  const normalizarNumero = (valorStr) => {
+
+    if (!valorStr) return '';
+
+    const sinPuntos = valorStr.replace(/\,/g, '');
+
+    const conPuntoDecimal = sinPuntos.replace(',', '.');
+
+    return conPuntoDecimal;
+  };
+
+  useEffect(() => {
+    fetchValorVes();
+  }, [])
+
+  // Funcion para obtener el Modo al cargar
+  useEffect(() => {
+
+    const fetchModoSorteo = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/modo_sorteo');
+        setModoSorteo(response.data.modo || '1000');
+      } catch (error) {
+        console.error("Error obteniendo la cantidad de los puestos", error);
+      }
+    };
+
+    fetchModoSorteo();
+  }, [])
+
+  // Funcion para ver detalles de la lista
+  const analizeList = () => {
+    const elementosVisibles = visibleNumbers.length;
+    const elementosUsados = visibleNumbers.filter(num => {
+      const numAlmacenar = convFormAlmacemiento(num);
+      return usedNumbers.includes(convFormVisual(numAlmacenar));
+    }).length;
+    const elementosSeleccionados = visibleNumbers.filter(num => {
+      const numAlmacenar = convFormAlmacemiento(num);
+      return selectNumbers.includes(numAlmacenar);
+    }).length;
+
+    console.log('=== ANÁLISIS DETALLADO DE LISTA VIRTUALIZADA ===');
+    console.log(`Total elementos visibles: ${elementosVisibles}`);
+    console.log(`Usados: ${elementosUsados}`);
+    console.log(`Seleccionados: ${elementosSeleccionados}`);
+    console.log(`Disponibles: ${elementosVisibles - elementosUsados - elementosSeleccionados}`);
+    console.log(`Elementos virtualizados renderizados: ${virtualizer ? virtualizer.getVirtualItems().length : 0}`);
+    console.log('===================================');
+  };
+
+  analizeList();
 
   // Calculo total de boletos
 
@@ -469,27 +537,55 @@ export const Sorteo = () => {
                   10000 - usedNumbers.length
             }</label>
           </div>
-          <div className="lista" ref={listaRef}>
-            {triggerNum().map((numMostrado) => {
-              const numAlmacenar = convFormAlmacemiento(numMostrado);
-              const isUsed = usedNumbers.includes(convFormVisual(numAlmacenar));
-              const isSelected = selectNumbers.includes(numAlmacenar);
-              const isVisible =
-                searchTerm === '' ||
-                numMostrado.includes(searchTerm) ||
-                numMostrado.replace(/^0+/, '').includes(searchTerm);
 
-              return (
-                <div
-                  className={`listaNumero ${isUsed ? 'used' : ''} ${isSelected ? 'selected' : ''} ${!isVisible ? 'hidden' : ''}`}
-                  key={numMostrado}
-                  data-used={isUsed}
-                  onClick={() => !isUsed && toggleNumberSelec(numMostrado)}
-                >
-                  {numMostrado}
-                </div>
-              );
-            })}
+          <div className="lista" ref={listaVirtualRef}>
+            <div
+              style={{
+                height: `${virtualizer.getTotalSize()}px`,
+                width: '100%',
+                position: 'relative',
+              }}
+            >
+              {virtualizer.getVirtualItems().map((virtualItem) => {
+                const startIndex = virtualItem.index * itemPerRow;
+                const endIndex = Math.min(startIndex + itemPerRow, visibleNumbers.length);
+                const rowItems = visibleNumbers.slice(startIndex, endIndex);
+
+                return (
+                  <div
+                    key={virtualItem.index}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: `${virtualItem.size}px`,
+                      transform: `translateY(${virtualItem.start}px)`,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    {rowItems.map((numMostrado) => {
+                      const numAlmacenar = convFormAlmacemiento(numMostrado);
+                      const isUsed = usedNumbers.includes(convFormVisual(numAlmacenar));
+                      const isSelected = selectNumbers.includes(numAlmacenar);
+
+                      return (
+                        <div
+                          key={numMostrado}
+                          className={`listaNumero ${isUsed ? 'used' : ''} ${isSelected ? 'selected' : ''}`}
+                          data-used={isUsed}
+                          onClick={() => !isUsed && toggleNumberSelec(numMostrado)}
+                        >
+                          {numMostrado}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           <div className='numerosSeleccionados'>
@@ -724,13 +820,3 @@ export const Sorteo = () => {
     </>
   )
 }
-
-/**
- * *TODO: Colocar en un contenedor la cantidad de numeros seleccionados.
- * *TODO: Configurar el precio total por cada numero elegido dependiendo la modena de la entidad de pago
- * *TODO: Considerar guardar el total del pago en un string en el servidor
- * *TODO: Colocar un contenedor para que el usuario verifique su juego
- * TODO: Validación de formulario y feedback
- * //* TODO: Sistema de paginación para los números
- * //* TODO: Persistencia en LocalStorage
- */

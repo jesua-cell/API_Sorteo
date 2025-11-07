@@ -705,7 +705,10 @@ input[type="number"]::-webkit-outer-spin-button {
     overflow-y: scroll;
     overflow-x: hidden;
     background-color: #ffdefd;
-
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: scroll-position;
 }
 
 .lista::-webkit-scrollbar {
@@ -734,12 +737,11 @@ input[type="number"]::-webkit-outer-spin-button {
     align-items: center;
     text-align: center;
     background: var(--fondoNumerosLista);
-    font-size: 18px;
+    font-size: 16px;
     margin: 2px;
-    margin-bottom: 2px;
-    padding: 5px;
-    width: 48px;
-    height: 24px;
+    padding: 4px;
+    width: 45px;
+    height: 22px;
     border-radius: 5px;
     border: 1px solid #ae2e8c;
     font-weight: bold;
@@ -757,6 +759,10 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: #762121;
     color: #ffdede;
     cursor: not-allowed;
+    opacity: 0.3;
+    text-decoration: line-through;
+    text-decoration-color: #762121;
+    text-decoration-style: double;
 }
 
 .listaNumero.selected {
@@ -764,9 +770,9 @@ input[type="number"]::-webkit-outer-spin-button {
     color: #fff;
 }
 
-.listaNumero.hidden {
+/* .listaNumero.hidden {
     display: none !important;
-}
+} */
 
 .numerosSeleccionados {
     display: flex;
@@ -870,7 +876,11 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: 500;
     margin-bottom: 30px;
     width: 95%;
-
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+    contain: layout style;
 }
 
 .labelForm {
@@ -891,7 +901,7 @@ input[type="number"]::-webkit-outer-spin-button {
     border: 1px solid #583458;
     margin-left: 20px;
     width: 86%;
-    transition: border 0.3s ease, box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease-out;
 }
 
 .formDatos input::selection {
@@ -899,7 +909,6 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .formDatos input:focus {
-    border: 1px solid #050305;
     outline: none;
     box-shadow: 0 0 0 2px rgba(202, 4, 182, 0.3);
 }
@@ -1400,6 +1409,7 @@ input[type="number"]::-webkit-outer-spin-button {
     box-shadow: 0 20px 30px rgba(32, 32, 32, 0.4);
     width: 360px;
     height: 100px;
+    margin-top: 20px;
     margin-bottom: 30px;
     border-radius: 10px 10px 0px 0px;
 }
@@ -4012,7 +4022,7 @@ input[type="number"]::-webkit-outer-spin-button {
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
-        height: 100px;
+        height: auto;
         width: 280px;
     }
 
