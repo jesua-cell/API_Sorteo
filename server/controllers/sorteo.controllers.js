@@ -28,6 +28,9 @@ export const getJugadores = async (req, res) => {
         const offset = (page - 1) * limit;
         const searchTerm = req.query.search || '';
 
+        console.log('🔍 DEBUG - searchTerm recibido:', searchTerm, 'Tipo:', typeof searchTerm);
+        console.log('🔍 DEBUG - Parámetros completos:', req.query);
+
         // Obtener el modo actual del modo del sorteo (100 o 1000)
         const [modoResult] = await pool.query('SELECT modo FROM configuracion_sorteo LIMIT 1');
 
@@ -36,23 +39,31 @@ export const getJugadores = async (req, res) => {
         // Funcion para normalizar terminos de busquedad(numericos)
         const normalizeSearchTerm = (term, modo) => {
             if (!isNaN(term)) {
-                const num = parseInt(term);
+                const numSrt = term.toString().trim();
+                console.log('🔍 DEBUG - numSrt después de toString():', numSrt);
 
                 // Manejar caso especial para 0 en modo 100
                 if (modo === '100') {
-                    if (num === 0) return '00';
-                    if (num <= 99) return String(num).padStart(2, '0');
-                    return String(num).padStart(3, '0');
+                    /**
+                     if (num === 0) return '00';
+                     if (num <= 99) return String(num).padStart(2, '0');
+                     */
+                    if (numSrt === '0') return '00';
+                    if (numSrt.length === 1) return `0${numSrt}`;
+                    if (numSrt.length === 2) return numSrt
+                    return numSrt.padStart(3, '0');
                 } else if (modo === '1000') {
-                    return String(num).padStart(3, '0')
+                    return numSrt.padStart(3, '0')
                 } else if (modo === '10000') {
-                    return String(num).padStart(4, '0')
+                    return numSrt.padStart(4, '0')
                 };
             }
+            console.log('🔍 DEBUG - Retornando term original:', term);
             return term;
         };
 
         const normalizedSearchTerm = searchTerm ? normalizeSearchTerm(searchTerm.trim(), modo) : '';
+        console.log('🔍 DEBUG - normalizedSearchTerm final:', normalizedSearchTerm);
 
         // Consulta Principal:
         let query = `
@@ -198,6 +209,10 @@ export const addJugadores = async (req, res) => {
             return res.status(400).json({ error: "Faltan datos obligatorios" });
         };
 
+        // Obtener el modo
+        const [modoResult] = await pool.query('SELECT modo FROM configuracion_sorteo LIMIT 1');
+        const modo = modoResult[0]?.modo || '1000';
+
         //Insertar valorres (jugador)
         const [jugadorResult] = await pool.query(
             'INSERT INTO jugador SET ?',
@@ -228,15 +243,26 @@ export const addJugadores = async (req, res) => {
         //Insertat boletos
         const numerosArray = JSON.parse(numeros);
         const jugadorId = jugadorResult.insertId;
-
+        console.log('🔍 BACKEND DEBUG addJugadores - numerosArray recibido:', numerosArray);
+        console.log('🔍 BACKEND DEBUG addJugadores - Tipos:', numerosArray.map(n => typeof n));
         const valoresBoletos = numerosArray.map(num => {
-            const numInt = parseInt(num);
-            const numeroBoleto = isNaN(numInt)
-                ? num.padStart(3, '0')
-                : String(numInt).padStart(3, '0');
+            console.log('🔍 BACKEND DEBUG - Procesando:', num, 'Tipo:', typeof num);
 
+            let numeroBoleto;
+
+            if (modo === '100') {
+                numeroBoleto = num.padStart(2, '0');
+            } else if (modo === '1000') {
+                numeroBoleto = num.padStart(3, '0');
+            } else if (modo === '10000') {
+                numeroBoleto = num.padStart(4, '0');
+            } else {
+                numeroBoleto = num.padStart(3, '0');
+            }
+            console.log('🔍 BACKEND DEBUG - Después de padStart:', numeroBoleto);
             return [numeroBoleto, jugadorId]
         });
+        console.log('🔍 BACKEND DEBUG - valoresBoletos final:', valoresBoletos);
 
         await pool.query(
             'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
@@ -302,18 +328,26 @@ export const getBoletos = async (req, res) => {
         const [rows] = await pool.query('SELECT numero_boleto FROM numeros_boletos');
 
         const usedNumbers = rows.map(row => {
-            const num = parseInt(row.numero_boleto);
-            const normalized = isNaN(num) ? row.numero_boleto : String(num);
 
+            // Si el número ya tiene la longitud correcta, devolverlo tal cual
+            if (modo === '100' && row.numero_boleto.length === 2) {
+                return row.numero_boleto;
+            } else if (modo === '1000' && row.numero_boleto.length === 3) {
+                return row.numero_boleto;
+            } else if (modo === '10000' && row.numero_boleto.length === 4) {
+                return row.numero_boleto;
+            }
+
+            // Si no, aplicar padding según el modo
             if (modo === '100') {
-                if (num === 0) return '00';
-                if (num <= 99) return String(num).padStart(2, '0');
-                return normalized.padStart(3, '0');
+                return row.numero_boleto.padStart(2, '0');
             } else if (modo === '1000') {
-                return normalized.padStart(3, '0');
+                return row.numero_boleto.padStart(3, '0');
             } else if (modo === '10000') {
-                return normalized.padStart(4, '0')
-            };
+                return row.numero_boleto.padStart(4, '0');
+            }
+
+            return row.numero_boleto;
 
         });
 
