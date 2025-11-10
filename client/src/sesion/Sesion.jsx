@@ -216,6 +216,8 @@ export const Sesion = () => {
     // } else {
     //     fechtFilterData(search);
     // };
+    console.log('🔍 FRONTEND DEBUG - Buscando:', search, 'Tipo:', typeof search);
+    console.log('🔍 FRONTEND DEBUG - search.trim():', search.trim());
     fetchJugadores(1, search);
   };
 

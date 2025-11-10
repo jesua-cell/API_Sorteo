@@ -132,9 +132,25 @@ export const Sorteo = () => {
 
   // Funcion para los numeros visibles:
   const visibleNumbers = useMemo(() => {
-    return triggerNum().filter(numMostrado => {
-      return searchTerm === '' ||
-        numMostrado.includes(searchTerm) ||
+    // return triggerNum().filter(numMostrado => {
+    //   return searchTerm === '' ||
+    //     numMostrado.includes(searchTerm) ||
+    //     numMostrado.replace(/^0+/, '').includes(searchTerm);
+    // });
+
+    const todosNumeros = triggerNum();
+
+    if (searchTerm === '') {
+      return todosNumeros
+    };
+
+    if (modoSorteo === '10000' && searchTerm.length === 4) {
+      const exactMatch = todosNumeros.find(num => num === searchTerm);
+      return exactMatch ? [exactMatch] : [];
+    }
+
+    return todosNumeros.filter(numMostrado => {
+      return numMostrado.includes(searchTerm) ||
         numMostrado.replace(/^0+/, '').includes(searchTerm);
     });
   }, [searchTerm, modoSorteo]);
@@ -145,15 +161,19 @@ export const Sorteo = () => {
   const ITEM_PER_ROW = 5;
 
   const virtualizer = useVirtualizer({
-    count: (visibleNumbers.length / itemPerRow),
+
+    count: Math.ceil(visibleNumbers.length / itemPerRow),
     getScrollElement: () => listaVirtualRef.current,
     estimateSize: () => ROW_HEIGTH,
     overscan: 5
+
   })
 
   //Funcion para seleccionar y desseleccionar
   const toggleNumberSelec = (numMostrado) => {
+
     const numAlmacenar = convFormAlmacemiento(numMostrado)
+
     setSelectNumbers(prev =>
       prev.includes(numAlmacenar)
         ? prev.filter(n => n !== numAlmacenar)
@@ -189,22 +209,39 @@ export const Sorteo = () => {
   //Filtro(input) para buscar numeros de la "lista"
   const handleSearch = (e) => {
 
+    // const inputValue = e.target.value;
+
+    // setRawInput(inputValue);
+
+    // const searchValue = inputValue === '' ? '' : String(inputValue).padStart(4, '0');
+
+    // // Solo 3 digitos y solo numeros
+    // const valueClean = inputValue.replace(/\D/g, '').slice(0, 4);
+
+    // setRawInput(valueClean);
+    // setSearchTerm(valueClean);
+
+    // setSearchTerm(searchValue);
+    // console.log(searchValue);
+
     const inputValue = e.target.value;
 
-    setRawInput(inputValue);
-
-    const searchValue = inputValue === '' ? '' : String(inputValue).padStart(4, '0');
-
-    // Solo 3 digitos y solo numeros
     const valueClean = inputValue.replace(/\D/g, '').slice(0, 4);
 
     setRawInput(valueClean);
     setSearchTerm(valueClean);
-
-    setSearchTerm(searchValue);
-    console.log(searchValue);
-
   };
+
+  useEffect(() => {
+    console.log('=== ESTADO ACTUAL ===');
+    console.log('Modo sorteo:', modoSorteo);
+    console.log('SearchTerm:', searchTerm);
+    console.log('RawInput:', rawInput);
+    console.log('UsedNumbers count:', usedNumbers.length);
+    console.log('UsedNumbers ejemplos:', usedNumbers.slice(0, 5));
+    console.log('VisibleNumbers count:', visibleNumbers.length);
+    console.log('VisibleNumbers ejemplos:', visibleNumbers.slice(0, 5));
+  }, [searchTerm, visibleNumbers, usedNumbers, modoSorteo]);
 
   const handleImageUpload = (file) => {
     if (file && file instanceof Blob) {
@@ -258,9 +295,9 @@ export const Sorteo = () => {
 
   useEffect(() => {
     let timer;
-   if (showModal) {
-     timer = setTimeout(() => setShowModal(false), 3000)
-   }
+    if (showModal) {
+      timer = setTimeout(() => setShowModal(false), 3000)
+    }
     return () => clearTimeout(timer);
   }, [showModal])
 
@@ -318,6 +355,8 @@ export const Sorteo = () => {
       return selectNumbers.includes(numAlmacenar);
     }).length;
 
+    /**
+     * 
     console.log('=== ANÁLISIS DETALLADO DE LISTA VIRTUALIZADA ===');
     console.log(`Total elementos visibles: ${elementosVisibles}`);
     console.log(`Usados: ${elementosUsados}`);
@@ -325,6 +364,7 @@ export const Sorteo = () => {
     console.log(`Disponibles: ${elementosVisibles - elementosUsados - elementosSeleccionados}`);
     console.log(`Elementos virtualizados renderizados: ${virtualizer ? virtualizer.getVirtualItems().length : 0}`);
     console.log('===================================');
+     */
   };
 
   analizeList();
@@ -518,7 +558,8 @@ export const Sorteo = () => {
           <h3>Numeros de Boletos: </h3>
 
           <input
-            type="number"
+            type="text"
+            inputMode='numeric'
             placeholder='Buscar'
             className='btnBuscar'
             value={rawInput}
@@ -528,14 +569,18 @@ export const Sorteo = () => {
             onWheel={(e) => e.target.blur()}
           />
 
-
-
           <div className='numUsedCount'>
             <label className='usedNumSorteo'>Numeros disponibles: {
               modoSorteo === '100' ? 100 :
                 modoSorteo === '1000' ? 1000 - usedNumbers.length :
                   10000 - usedNumbers.length
             }</label>
+            <meter
+              className='meter'
+              min={0}
+              max={modoSorteo === '100' ? 100 : modoSorteo === '1000' ? 1000 : 10000}
+              value={usedNumbers.length}
+            ></meter>
           </div>
 
           <div className="lista" ref={listaVirtualRef}>
@@ -568,6 +613,7 @@ export const Sorteo = () => {
                   >
                     {rowItems.map((numMostrado) => {
                       const numAlmacenar = convFormAlmacemiento(numMostrado);
+                      const visualNumber = convFormVisual(numAlmacenar);
                       const isUsed = usedNumbers.includes(convFormVisual(numAlmacenar));
                       const isSelected = selectNumbers.includes(numAlmacenar);
 
