@@ -587,7 +587,10 @@ export const updateJugador = async (req, res) => {
 export const getJugadorVerificador = async (req, res) => {
     try {
         const [rows] = await pool.query(`
-            SELECT j.*, 
+            SELECT 
+                    j.nombres_apellidos,
+                    j.celular,
+                    j.estado_pago, 
                    GROUP_CONCAT(nb.numero_boleto) AS boletos
             FROM jugador j
             LEFT JOIN numeros_boletos nb ON j.id = nb.jugador_id
