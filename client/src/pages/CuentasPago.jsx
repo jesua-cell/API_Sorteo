@@ -14,12 +14,12 @@ export const CuentasPago = () => {
 
 
     const cuentas = {
-        zelle: "6153625428\nFrancisco Javier Caicedo",
-        nequi: "3223223329\nMaria Alejandra Garcia",
+        zelle: "6159318492\nLisbeth Sanchez",
+        nequi: "3107827089\nVanessa Rincon",
         bancolombia: "82000002819\nVanessa Rincón",
         paypal: "magc290598@gmail.com\nMaría Alejandra Garcia",
         pagomovil: "04147014646\nVanessa Rincón\n21453387",
-        bancovenezuela: "V-21453387\nVannesa Rincón"
+        bancovenezuela: "V-21453387\n04147014646\nVannesa Rincón"
     };
 
     return (
@@ -32,13 +32,13 @@ export const CuentasPago = () => {
                         <h2 className='titl_CuentaPago'>Zelle</h2>
                         <img src={zelle} className='img_cuentaPago' alt="Zelle" />
                         <h3 className='text_cuentaPago'>Cuenta:</h3>
-                        <h3 className='text_cuentaPago'>6153625428</h3>
+                        <h3 className='text_cuentaPago'>6159318492</h3>
                         <h3 className='text_cuentaPago'>Titular:</h3>
-                        <h3 className='text_cuentaPago'>Francisco Javier Caicedo</h3>
+                        <h3 className='text_cuentaPago'>Lisbeth Sanchez</h3>
                         <CopyToClipboard
                             text={cuentas.zelle}
                             onCopy={() => {
-                                toast.success('6153625428\nFrancisco Javier Caicedo', {
+                                toast.success('6159318492\nLisbeth Sanchez', {
                                     iconTheme: {
                                         primary: '#713200'
                                     }
@@ -55,13 +55,13 @@ export const CuentasPago = () => {
                         <h2 className='titl_CuentaPago'>Nequi</h2>
                         <img src={nequi} className='img_cuentaPago' alt="Zelle" />
                         <h3 className='text_cuentaPago'>Cuenta:</h3>
-                        <h3 className='text_cuentaPago'>3223223329</h3>
+                        <h3 className='text_cuentaPago'>3107827089</h3>
                         <h3 className='text_cuentaPago'>Titular:</h3>
-                        <h3 className='text_cuentaPago'>Maria Alejandra Garcia</h3>
+                        <h3 className='text_cuentaPago'>Vanessa Rincon</h3>
                         <CopyToClipboard
                             text={cuentas.nequi}
                             onCopy={() => {
-                                toast.success('3223223329\nMaria Alejandra Garcia', {
+                                toast.success('3107827089\nVanessa Rincon', {
                                     iconTheme: {
                                         primary: '#713200'
                                     }
@@ -150,12 +150,14 @@ export const CuentasPago = () => {
                         <img src={bancovenezuela} className='img_cuentaPago' alt="Zelle" />
                         <h3 className='text_cuentaPago'>Cuenta:</h3>
                         <h3 className='text_cuentaPago'>V-21453387</h3>
+                        <h3 className='text_cuentaPago'>Número:</h3>
+                        <h3 className='text_cuentaPago'>04147014646</h3>
                         <h3 className='text_cuentaPago'>Titular:</h3>
                         <h3 className='text_cuentaPago'>Vannesa Rincón</h3>
                         <CopyToClipboard
                             text={cuentas.bancovenezuela}
                             onCopy={() => {
-                                toast.success('V-21453387\nVannesa Rincón', {
+                                toast.success('V-21453387\n04147014646\nVannesa Rincón', {
                                     iconTheme: {
                                         primary: '#713200'
                                     }
