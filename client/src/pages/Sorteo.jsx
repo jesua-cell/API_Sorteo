@@ -231,7 +231,7 @@ export const Sorteo = () => {
     setRawInput(valueClean);
     setSearchTerm(valueClean);
   };
-
+  /**
   useEffect(() => {
     console.log('=== ESTADO ACTUAL ===');
     console.log('Modo sorteo:', modoSorteo);
@@ -242,6 +242,7 @@ export const Sorteo = () => {
     console.log('VisibleNumbers count:', visibleNumbers.length);
     console.log('VisibleNumbers ejemplos:', visibleNumbers.slice(0, 5));
   }, [searchTerm, visibleNumbers, usedNumbers, modoSorteo]);
+   */
 
   const handleImageUpload = (file) => {
     if (file && file instanceof Blob) {
@@ -321,7 +322,7 @@ export const Sorteo = () => {
 
     const conPuntoDecimal = sinPuntos.replace(',', '.');
 
-    return conPuntoDecimal;
+    return conPuntoDecimal; dd
   };
 
   useEffect(() => {
@@ -343,6 +344,7 @@ export const Sorteo = () => {
     fetchModoSorteo();
   }, [])
 
+  /**
   // Funcion para ver detalles de la lista
   const analizeList = () => {
     const elementosVisibles = visibleNumbers.length;
@@ -354,9 +356,7 @@ export const Sorteo = () => {
       const numAlmacenar = convFormAlmacemiento(num);
       return selectNumbers.includes(numAlmacenar);
     }).length;
-
-    /**
-     * 
+ 
     console.log('=== ANÁLISIS DETALLADO DE LISTA VIRTUALIZADA ===');
     console.log(`Total elementos visibles: ${elementosVisibles}`);
     console.log(`Usados: ${elementosUsados}`);
@@ -364,10 +364,10 @@ export const Sorteo = () => {
     console.log(`Disponibles: ${elementosVisibles - elementosUsados - elementosSeleccionados}`);
     console.log(`Elementos virtualizados renderizados: ${virtualizer ? virtualizer.getVirtualItems().length : 0}`);
     console.log('===================================');
-     */
   };
 
   analizeList();
+   */
 
   // Calculo total de boletos
 
@@ -384,14 +384,14 @@ export const Sorteo = () => {
         break;
       case 1: //Nequi
       case 2: //Bancolombia
-        montoTotal = (cantidadNumeros * 35000);
+        montoTotal = (cantidadNumeros * 3700);
         break;
       case 4: //PagoMovil
       case 5: //Banco Venezuela
         montoTotal = (cantidadNumeros * valor);
         break;
       case 6:
-        montoTotal = (cantidadNumeros * 35000);
+        montoTotal = (cantidadNumeros * 3700);
         break;
       default:
         return montoTotal = 0;
@@ -664,7 +664,7 @@ export const Sorteo = () => {
             </div>
 
             <div className="precioNumbers">
-              {`COP: ${(selectNumbers.length * 35000).toLocaleString('es-CO')}`}
+              {`COP: ${(selectNumbers.length * 3700).toLocaleString('es-CO')}`}
             </div>
           </div>
 
@@ -747,12 +747,12 @@ export const Sorteo = () => {
                 <div className="modoPago">
                   <h4 className='nombrePago'>Zelle</h4>
                   <h4 className='cuenta'>Cuenta:</h4>
-                  <h4 className='numeroCuenta'>6153625428</h4>
+                  <h4 className='numeroCuenta'>6159318492</h4>
                   <h4 className='titular'>Titular:</h4>
-                  <h4 className='remitente'>Francisco Javier Caicedo</h4>
+                  <h4 className='remitente'>Lisbeth Sanchez</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 9).toLocaleString('es-US')}`}
+                    {`$${(selectNumbers.length * 1).toLocaleString('es-US')}`}
                   </div>
                 </div>
               }
@@ -760,12 +760,12 @@ export const Sorteo = () => {
                 <div className="modoPago">
                   <h4 className='nombrePago'>Nequi</h4>
                   <h4 className='cuenta'>Cuenta:</h4>
-                  <h4 className='numeroCuenta'>3223223329</h4>
+                  <h4 className='numeroCuenta'>3107827089</h4>
                   <h4 className='titular'>Titular:</h4>
-                  <h4 className='remitente'>Maria Alejandra Garcia</h4>
+                  <h4 className='remitente'>Vanessa Rincon</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 35000).toLocaleString('es-CO')}`}
+                    {`$${(selectNumbers.length * 3700).toLocaleString('es-CO')}`}
                   </div>
                 </div>
               }
@@ -778,7 +778,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>Vanessa Rincón</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 35000).toLocaleString('es-CO')}`}
+                    {`$${(selectNumbers.length * 3700).toLocaleString('es-CO')}`}
                   </div>
                 </div>
               }
@@ -791,7 +791,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>María Alejandra Garcia</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${selectNumbers.length * 9}`}
+                    {`$${selectNumbers.length * 1}`}
                   </div>
                 </div>
               }{activeTab === 4 &&
@@ -814,6 +814,8 @@ export const Sorteo = () => {
                   <h4 className='nombrePago'>Banco de Venezuela</h4>
                   <h4 className='cuenta'>Cuenta:</h4>
                   <h4 className='numeroCuenta'>21453387</h4>
+                  <h4 className='titular'>Número</h4>
+                  <h4 className='remitente'>04147014646</h4>
                   <h4 className='titular'>Titular:</h4>
                   <h4 className='remitente'>Vanessa Rincón</h4>
                   <div className="preciosConversionNumbers">
@@ -828,7 +830,7 @@ export const Sorteo = () => {
 
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 35000).toLocaleString('es-CO')}`}
+                    {`$${(selectNumbers.length * 3700).toLocaleString('es-CO')}`}
                   </div>
                 </div>
               }
