@@ -30,10 +30,12 @@ export const Verificador = () => {
     fetchJugadores();
   }, [])
 
-  useEffect(() => {
-    console.log(jugadores);
-  }, [jugadores])
-
+  /**
+   useEffect(() => {
+     console.log(jugadores);
+   }, [jugadores])
+   * 
+   */
 
   const verificacionBoleto = async () => {
 

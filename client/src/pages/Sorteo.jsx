@@ -497,19 +497,19 @@ export const Sorteo = () => {
       console.error("Error en el envio", error);
     };
 
-    console.log({
-      jugador: {
-        username: nombre,
-        celular: celular,
-        pais_estado: paisEstado,
-        referenciaPago: referenciaPago,
-        numerosBoletos: selectNumbers,
-        metodo_pago: metodoPago,
-        comprobante_pago: selectedFile,
-        monto_total: montoTotal,
-        cedula: cedula
-      }
-    });
+    // console.log({
+    //   jugador: {
+    //     username: nombre,
+    //     celular: celular,
+    //     pais_estado: paisEstado,
+    //     referenciaPago: referenciaPago,
+    //     numerosBoletos: selectNumbers,
+    //     metodo_pago: metodoPago,
+    //     comprobante_pago: selectedFile,
+    //     monto_total: montoTotal,
+    //     cedula: cedula
+    //   }
+    // });
   };
 
   const resetForm = () => {
