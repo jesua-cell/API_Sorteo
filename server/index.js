@@ -25,10 +25,10 @@ const __dirname = path.dirname(__filename);
 const PUERTO = process.env.PORT || 3000
 
 // Rutas
-app.use('/', sorteoRoutes)
+app.use('/api', sorteoRoutes)
 
 //Subir imagenes
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')))
 
 app.listen(PUERTO, () => {
     console.log(`Servidor Ejecutandose en: http://localhost:${PUERTO}`);
