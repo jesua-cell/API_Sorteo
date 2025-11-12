@@ -384,14 +384,14 @@ export const Sorteo = () => {
         break;
       case 1: //Nequi
       case 2: //Bancolombia
-        montoTotal = (cantidadNumeros * 3700);
+        montoTotal = (cantidadNumeros * 4000);
         break;
       case 4: //PagoMovil
       case 5: //Banco Venezuela
         montoTotal = (cantidadNumeros * valor);
         break;
       case 6:
-        montoTotal = (cantidadNumeros * 3700);
+        montoTotal = (cantidadNumeros * 4000);
         break;
       default:
         return montoTotal = 0;
@@ -664,7 +664,7 @@ export const Sorteo = () => {
             </div>
 
             <div className="precioNumbers">
-              {`COP: ${(selectNumbers.length * 3700).toLocaleString('es-CO')}`}
+              {`COP: ${(selectNumbers.length * 4000).toLocaleString('es-CO')}`}
             </div>
           </div>
 
@@ -765,7 +765,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>Vanessa Rincon</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 3700).toLocaleString('es-CO')}`}
+                    {`$${(selectNumbers.length * 4000).toLocaleString('es-CO')}`}
                   </div>
                 </div>
               }
@@ -778,7 +778,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>Vanessa Rincón</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 3700).toLocaleString('es-CO')}`}
+                    {`$${(selectNumbers.length * 4000).toLocaleString('es-CO')}`}
                   </div>
                 </div>
               }
@@ -830,7 +830,7 @@ export const Sorteo = () => {
 
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 3700).toLocaleString('es-CO')}`}
+                    {`$${(selectNumbers.length * 4000).toLocaleString('es-CO')}`}
                   </div>
                 </div>
               }
