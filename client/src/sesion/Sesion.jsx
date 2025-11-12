@@ -808,7 +808,7 @@ export const Sesion = () => {
               <p className="infoSorteoText"><strong>{totalBoletosGlobal}</strong> de {modoSorteo}</p>
             </div>
             <div className="dataInventario">
-              <p className="infoSorteoText">Puestos disponibles: <strong>{Math.max(0, parseInt(modoSorteo) - totalBoletosGlobal)}</strong></p>
+              <p className="infoSorteoText">Puestos disponibles: <strong>{Math.max(0, parseInt(modoSorteo) - totalBoletosGlobal )}</strong></p>
             </div>
           </div>
 

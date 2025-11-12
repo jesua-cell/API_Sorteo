@@ -573,7 +573,7 @@ export const Sorteo = () => {
             <label className='usedNumSorteo'>Numeros disponibles: {
               modoSorteo === '100' ? 100 :
                 modoSorteo === '1000' ? 1000 - usedNumbers.length :
-                  10000 - usedNumbers.length
+                  9999 - usedNumbers.length
             }</label>
             <meter
               className='meter'
