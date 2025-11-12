@@ -269,11 +269,11 @@ export const Sorteo = () => {
     setSelectNumbers([]);
   };
 
-  // Funcion para traer los datos del CardPub
+  // Funcion para traer los datos del CardPud
   useEffect(() => {
     const fetchCardData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/cardpub');
+        const response = await axios.get('/api/cardpub');
         setCardData(response.data);
       } catch (error) {
         console.error('Error en la obtencion de datos del CardGet', error);
@@ -305,7 +305,7 @@ export const Sorteo = () => {
   //Obtener valor del VES a la BD
   const fetchValorVes = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/valor');
+      const response = await axios.get('/api/valor');
       setValor(response.data.valor);
       setCurrentId(response.data.id);
     } catch (error) {
@@ -334,7 +334,7 @@ export const Sorteo = () => {
 
     const fetchModoSorteo = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/modo_sorteo');
+        const response = await axios.get('/api/modo_sorteo');
         setModoSorteo(response.data.modo || '1000');
       } catch (error) {
         console.error("Error obteniendo la cantidad de los puestos", error);
@@ -540,7 +540,7 @@ export const Sorteo = () => {
                 {card.imagen_pub && (
                   <div className="contImageSorteoPub">
                     <img
-                      src={`http://localhost:3000/cardpub/${card.imagen_pub}`}
+                      src={`/api/cardpub/${card.imagen_pub}`}
                       className='img_pubSorteo'
                       alt="Publicidad del sorteo"
                     />

@@ -3,11 +3,11 @@ import borrar from "../assets/borrar.png";
 
 export const ModalComprobante = ({ isOpen, closeModal, comprobantes, onDelete }) => {
 
-    if (!isOpen) return;
+  if (!isOpen) return;
 
-    const handleImageClick = (imageUrl) => {
-        const newWindow = window.open("", "_blank");
-        newWindow.document.write(`
+  const handleImageClick = (imageUrl) => {
+    const newWindow = window.open("", "_blank");
+    newWindow.document.write(`
         <html>
             <head>
                 <title>Comprobante</title>
@@ -22,44 +22,44 @@ export const ModalComprobante = ({ isOpen, closeModal, comprobantes, onDelete })
         </html>
     `);
     newWindow.document.close();
-    };
+  };
 
-    return (
-        <>
-            <div className="contComprobantes">
+  return (
+    <>
+      <div className="contComprobantes">
 
-                <div className="boxComprobantes">
-                    <h2 className="title_comprobante_modal">{comprobantes.length} comprobantes:</h2>
+        <div className="boxComprobantes">
+          <h2 className="title_comprobante_modal">{comprobantes.length} comprobantes:</h2>
 
-                    <div className="comprobantes">
-                        <button className="close-button" onClick={closeModal}>×</button>
+          <div className="comprobantes">
+            <button className="close-button" onClick={closeModal}>×</button>
 
-                        {comprobantes.length === 0 ? (
-                            <p>No hay comprobantes</p>
-                        ) : (
-                            <div className="comprobantes-container">
-                                {comprobantes.map(comprobante => (
-                                    <div key={comprobante.id} className="comprobante-item">
-                                        <img
-                                            src={`http://localhost:3000/uploads/${comprobante.ruta_archivo}`}
-                                            alt="Comprobante"
-                                            className="comprobante-img-modal"
-                                            onClick={() => handleImageClick(`http://localhost:3000/uploads/${comprobante.ruta_archivo}`)}
-                                            style={{cursor: 'pointer'}}
-                                        />
-                                        <button
-                                            className="btn-eliminar-modal"
-                                            onClick={() => onDelete(comprobante.id)}
-                                        >
-                                            <img src={borrar} alt="borrar" />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-        </>
-    )
+            {comprobantes.length === 0 ? (
+              <p>No hay comprobantes</p>
+            ) : (
+              <div className="comprobantes-container">
+                {comprobantes.map(comprobante => (
+                  <div key={comprobante.id} className="comprobante-item">
+                    <img
+                      src={`/api/uploads/${comprobante.ruta_archivo}`}
+                      alt="Comprobante"
+                      className="comprobante-img-modal"
+                      onClick={() => handleImageClick(`/api/uploads/${comprobante.ruta_archivo}`)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                    <button
+                      className="btn-eliminar-modal"
+                      onClick={() => onDelete(comprobante.id)}
+                    >
+                      <img src={borrar} alt="borrar" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  )
 }

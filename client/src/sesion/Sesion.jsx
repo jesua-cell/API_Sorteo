@@ -141,7 +141,7 @@ export const Sesion = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('jwtToken');                       // lee el Token guarado
-      const response = await axios.get('http://localhost:3000/jugadores', { // Peticion GET 
+      const response = await axios.get('/api/jugadores', { // Peticion GET 
         params: { page, limit: itemsPerPage, search: searchTerm },        // Parametros: Busquedad y paginacion
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -174,7 +174,7 @@ export const Sesion = () => {
     const fetchModoSorteo = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        const response = await axios.get('http://localhost:3000/modo_sorteo', {
+        const response = await axios.get('/api/modo_sorteo', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setModoSorteo(response.data.modo || '1000')
@@ -192,7 +192,7 @@ export const Sesion = () => {
       setLoading(true);
       const token = localStorage.getItem('jwtToken');
       const response = await axios.get(
-        `http://localhost:3000/jugadores`,
+        `/api/jugadores`,
         {
           params: { search: searchTerm },
           headers: { Authorization: `Bearer ${token}` }
@@ -242,7 +242,7 @@ export const Sesion = () => {
   const handleguardarCambios = async (id) => {
     try {
       const token = localStorage.getItem('jwtToken');
-      await axios.put(`http://localhost:3000/jugador/${id}`, tempData, {
+      await axios.put(`/api/jugador/${id}`, tempData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -300,7 +300,7 @@ export const Sesion = () => {
     try {
 
       const token = localStorage.getItem('jwtToken');
-      await axios.delete(`http://localhost:3000/jugador/${id}`,
+      await axios.delete(`/api/jugador/${id}`,
         {
           headers:
           {
@@ -327,7 +327,7 @@ export const Sesion = () => {
   //Obtener valor del VES a la BD
   const fetchValorVes = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/valor');
+      const response = await axios.get('/api/valor');
       setValor(response.data.valor);
       setCurrentId(response.data.id);
     } catch (error) {
@@ -345,7 +345,7 @@ export const Sesion = () => {
   const loadComprobantes = async (jugadorId) => {
     try {
       const token = localStorage.getItem('jwtToken');
-      const response = await axios.get(`http://localhost:3000/comprobantes/${jugadorId}`,
+      const response = await axios.get(`/api/comprobantes/${jugadorId}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -377,7 +377,7 @@ export const Sesion = () => {
       formData.append('comprobante', file);
 
       const token = localStorage.getItem('jwtToken');
-      await axios.post(`http://localhost:3000/comprobante/${jugadorId}`, formData,
+      await axios.post(`/api/comprobante/${jugadorId}`, formData,
         {
           headers:
           {
@@ -415,7 +415,7 @@ export const Sesion = () => {
 
       // obtener el comprobante unico, no la copia
       if (!isNaN(comprobanteId)) {
-        await axios.delete(`http://localhost:3000/delete-comprobante/${comprobanteId}`,
+        await axios.delete(`/api/delete-comprobante/${comprobanteId}`,
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -436,7 +436,7 @@ export const Sesion = () => {
 
       const token = localStorage.getItem('jwtToken');
       await axios.delete(
-        'http://localhost:3000/delete-all-jugadores',
+        '/api/delete-all-jugadores',
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -467,7 +467,7 @@ export const Sesion = () => {
 
       //enviar al back-bd
       await axios.post(
-        'http://localhost:3000/valor',
+        '/api/valor',
         { valor: valorNumerico }
       );
 
@@ -507,7 +507,7 @@ export const Sesion = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/abonar/${jugadorId}`,
+        `/api/abonar/${jugadorId}`,
         { monto_abonado: montoAbono },
         {
           headers: {
@@ -584,7 +584,7 @@ export const Sesion = () => {
       const token = localStorage.getItem('jwtToken');
 
       await axios.put(
-        `http://localhost:3000/valor`,
+        `/api/valor`,
         { valor: valorNumerico },
         {
           headers:
@@ -638,7 +638,7 @@ export const Sesion = () => {
     try {
       const token = localStorage.getItem('jwtToken');
       const response = await axios.put(
-        `http://localhost:3000/jugador/${modalEstadoPago.jugadorId}/estado_pago`,
+        `/api/jugador/${modalEstadoPago.jugadorId}/estado_pago`,
         { estado_pago: modalEstadoPago.nuevoEstado },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -685,7 +685,7 @@ export const Sesion = () => {
     try {
       const token = localStorage.getItem('jwtToken');
       await axios.put(
-        'http://localhost:3000/modo_sorteo',
+        '/api/modo_sorteo',
         { modo: nuevoModo },
         { headers: { Authorization: `Bearer ${token}` } }
       );
