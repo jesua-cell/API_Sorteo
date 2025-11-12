@@ -13,6 +13,9 @@ export const Verificador = () => {
   const [jugadorEncontrado, setJugadorEncontrado] = useState(null);
   const [errorVerificacion, setErrorVerificacion] = useState('');
 
+  //Estado para un Delay de la verificacion
+  const [verification, setVerification] = useState(false);
+
   // Obtener solo los campos de nombre, puestos, celular, y verificacion 
   useEffect(() => {
     const fetchJugadores = async () => {
@@ -32,7 +35,7 @@ export const Verificador = () => {
   }, [jugadores])
 
 
-  const verificacionBoleto = () => {
+  const verificacionBoleto = async () => {
 
     const vacio = Busquedad.trim();
 
@@ -42,6 +45,12 @@ export const Verificador = () => {
       setJugadorEncontrado(null);
       return;
     };
+
+    setVerification(true);
+    setJugadorEncontrado(null);
+    setErrorVerificacion('');
+
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     const busquedaNormalizada = Busquedad.trim().toLocaleLowerCase().replace(/\s+/g, '');
 
@@ -64,6 +73,7 @@ export const Verificador = () => {
       setJugadorEncontrado(null);
       setErrorVerificacion('Jugador no existe')
     };
+    setVerification(false);
   };
 
   const formatearCelular = (celular) => {
@@ -99,10 +109,18 @@ export const Verificador = () => {
         <button
           onClick={verificacionBoleto}
           className="btn_verificador"
-        >Verificar
+          disabled={verification}
+        >
+          {verification ? 'Verificando...' : 'Verificar'}
         </button>
 
-        {jugadorEncontrado && jugadorEncontrado !== false && (
+        {verification && (
+          <div className="contResultado">
+            <h4 className="verificando-mensaje">Verificando...</h4>
+          </div>
+        )}
+
+        {!verification && jugadorEncontrado && (
           <div className="contResultado">
 
             <h4 className="h4_verificador">Resultado:</h4>
@@ -130,7 +148,7 @@ export const Verificador = () => {
           </div>
         )}
 
-        {errorVerificacion && (
+        {!verification && errorVerificacion && (
           <div className="contResultado">
             <h4 className="verificador_false">{errorVerificacion}</h4>
           </div>
