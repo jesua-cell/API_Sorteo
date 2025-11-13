@@ -28,9 +28,6 @@ export const getJugadores = async (req, res) => {
         const offset = (page - 1) * limit;
         const searchTerm = req.query.search || '';
 
-        console.log('🔍 DEBUG - searchTerm recibido:', searchTerm, 'Tipo:', typeof searchTerm);
-        console.log('🔍 DEBUG - Parámetros completos:', req.query);
-
         // Obtener el modo actual del modo del sorteo (100 o 1000)
         const [modoResult] = await pool.query('SELECT modo FROM configuracion_sorteo LIMIT 1');
 
@@ -40,7 +37,6 @@ export const getJugadores = async (req, res) => {
         const normalizeSearchTerm = (term, modo) => {
             if (!isNaN(term)) {
                 const numSrt = term.toString().trim();
-                console.log('🔍 DEBUG - numSrt después de toString():', numSrt);
 
                 // Manejar caso especial para 0 en modo 100
                 if (modo === '100') {
@@ -58,12 +54,10 @@ export const getJugadores = async (req, res) => {
                     return numSrt.padStart(4, '0')
                 };
             }
-            console.log('🔍 DEBUG - Retornando term original:', term);
             return term;
         };
 
         const normalizedSearchTerm = searchTerm ? normalizeSearchTerm(searchTerm.trim(), modo) : '';
-        console.log('🔍 DEBUG - normalizedSearchTerm final:', normalizedSearchTerm);
 
         // Consulta Principal:
         let query = `
@@ -243,10 +237,7 @@ export const addJugadores = async (req, res) => {
         //Insertat boletos
         const numerosArray = JSON.parse(numeros);
         const jugadorId = jugadorResult.insertId;
-        console.log('🔍 BACKEND DEBUG addJugadores - numerosArray recibido:', numerosArray);
-        console.log('🔍 BACKEND DEBUG addJugadores - Tipos:', numerosArray.map(n => typeof n));
         const valoresBoletos = numerosArray.map(num => {
-            console.log('🔍 BACKEND DEBUG - Procesando:', num, 'Tipo:', typeof num);
 
             let numeroBoleto;
 
@@ -259,10 +250,8 @@ export const addJugadores = async (req, res) => {
             } else {
                 numeroBoleto = num.padStart(3, '0');
             }
-            console.log('🔍 BACKEND DEBUG - Después de padStart:', numeroBoleto);
             return [numeroBoleto, jugadorId]
         });
-        console.log('🔍 BACKEND DEBUG - valoresBoletos final:', valoresBoletos);
 
         await pool.query(
             'INSERT INTO numeros_boletos (numero_boleto, jugador_id) VALUES ?',
