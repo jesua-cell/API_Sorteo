@@ -128,8 +128,6 @@ router.post('/valor', postValorVes);
 
 router.get('/valor', getValorVes);
 
-router.post('/valor', postValorVes);
-
 router.put('/valor', updateValores);
 
 router.put('/jugador/:id/estado_pago', UpdateEstadoPago);

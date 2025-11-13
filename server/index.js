@@ -34,9 +34,13 @@ app.use('/api', sorteoRoutes)
 //Subir imagenes
 app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')))
 
-// app.use(express.static(join(__dirName, '../client/dist')));
+app.use(express.static(join(__dirName, '../client/dist')));
 
 console.log(__dirName)
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirName, '../client/dist/index.html'))
+})
 
 app.listen(PUERTO, () => {
     console.log(`Servidor Ejecutandose en: http://localhost:${PUERTO}`);
