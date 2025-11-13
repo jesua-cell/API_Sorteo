@@ -14,20 +14,23 @@ export const Navbar = () => {
   const [adminName, setAdminName] = useState('');
   const [privadoVisible, setPrivadoVisible] = useState(true);
 
+  // Manejo del token
   useEffect(() => {
-
-    //verificar sesion
-    const savedAdmin = localStorage.getItem('adminSession');
-    try {
-
-      if (savedAdmin) {
-        const { nombre } = JSON.parse(savedAdmin);
+    const checkSession = () => {
+      const saveAdmin = localStorage.getItem('adminSession');
+      if (saveAdmin) {
+        const { nombre } = JSON.parse(saveAdmin);
         setAdminName(nombre);
       }
-    } catch (error) {
-      console.error("Error en el AdminSession del NabVar", error)
     };
 
+    checkSession();
+    window.addEventListener('adminLoggedIn', checkSession);
+
+    return () => window.removeEventListener('adminLoggedIn', checkSession);
+  }, []);
+
+  useEffect(() => {
     //Menu hamburguesa
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -39,6 +42,7 @@ export const Navbar = () => {
       document.body.style.overflow = 'unset'
     }
   }, [isOpen])
+
 
   const closeMenu = () => setIsOpen(false);
 
@@ -106,7 +110,7 @@ export const Navbar = () => {
 
               </div>
 
-              <div className={`privados_toggle ${!privadoVisible ? 'position_top' : ' '}` } onClick={() => setPrivadoVisible(!privadoVisible)}>
+              <div className={`privados_toggle ${!privadoVisible ? 'position_top' : ' '}`} onClick={() => setPrivadoVisible(!privadoVisible)}>
                 <img src={flecha_arriba_med}
                   alt='toggle menu'
                   className={`toggle_icon ${!privadoVisible ? 'rotated' : ''}`}

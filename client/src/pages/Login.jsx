@@ -7,7 +7,7 @@ export const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('')
     const [error, setError] = useState('');
-    const navigate = useNavigate();
+    const navigate = useNavigate();  
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,6 +23,7 @@ export const Login = () => {
                 nombre: response.data.nombre
             }));
             console.log("Contreña: ", password);
+            window.dispatchEvent(new Event('adminLoggedIn'));
             navigate('/sesion');
         } catch (error) {
             setError('Credenciales Incorrectas');
