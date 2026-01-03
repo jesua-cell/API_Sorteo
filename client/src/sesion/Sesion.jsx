@@ -44,8 +44,17 @@ export const Sesion = () => {
   const [tempData, setTempData] = useState({});
 
   //Estados del Input VALOR_VES
-  const [valor, setValor] = useState(0);
+  const [valores, setValores] = useState({
+    valor_ves: 0,
+    valor_cop: 0,
+    valor_usd: 0
+  });
   const [inputValor, setInputValor] = useState('');
+  const [editValues, setEditValues] = useState({
+    valor_ves: '',
+    valor_cop: '',
+    valor_usd: ''
+  });
 
   //Estados de VALOR_VES
   const [isEditing, setIsEditing] = useState(false);
@@ -325,19 +334,23 @@ export const Sesion = () => {
   };
 
   //Obtener valor del VES a la BD
-  const fetchValorVes = async () => {
+  const fetchValores = async () => {
     try {
-      const response = await axios.get('/api/valor');
-      setValor(response.data.valor);
+      const response = await axios.get('/api/valores');
+      setValores({
+        valor_ves: response.data.valor_ves,
+        valor_cop: response.data.valor_cop,
+        valor_usd: response.data.valor_usd
+      });
       setCurrentId(response.data.id);
     } catch (error) {
-      console.error('Error al obtener el valor del VES', error);
+      console.error('Error al obtener los valores de las monedas', error);
     }
   };
 
   //Muestra el valor del VES al cargar el componente
   useEffect(() => {
-    fetchValorVes();
+    fetchValores();
   }, []);
 
 
@@ -571,33 +584,40 @@ export const Sesion = () => {
   //Funcion para actulizar el  valor del VALOR_VES
   const handleUpdate = async () => {
     try {
+      // Convertir valores
+      const valorVes = parseFloat(normalizarNumero(editValues.valor_ves));
+      const valorCop = parseFloat(normalizarNumero(editValues.valor_cop));
+      const valorUsd = parseFloat(normalizarNumero(editValues.valor_usd));
 
-      //Valor de la actualizacion: valor(UPDATE)
-      const valorNormalizado = normalizarNumero(editValue)
-
-      const valorNumerico = parseFloat(valorNormalizado); //Convertir a decimal
-      if (isNaN(valorNumerico)) {
-        console.error('Valor no numerico');
+      if (isNaN(valorVes) || isNaN(valorCop) || isNaN(valorUsd)) {
+        console.error('Valores no numéricos');
         return;
       };
 
       const token = localStorage.getItem('jwtToken');
 
       await axios.put(
-        `/api/valor`,
-        { valor: valorNumerico },
+        `/api/valores`,
         {
-          headers:
-          {
+          valor_ves: valorVes,
+          valor_cop: valorCop,
+          valor_usd: valorUsd
+        },
+        {
+          headers: {
             'Authorization': `Bearer ${token}`
           }
         }
       );
 
-      setValor(valorNumerico); //Estado del valor editado
+      setValores({
+        valor_ves: valorVes,
+        valor_cop: valorCop,
+        valor_usd: valorUsd
+      });
       setIsEditing(false);
-      setEditValue(''); //Estado del input en Edicion
-      toast('Cambios del valor del VES Guardados',
+      setEditValues({ valor_ves: '', valor_cop: '', valor_usd: '' });
+      toast('Valores actualizados correctamente',
         {
           icon: '✅',
           style: {
@@ -611,7 +631,7 @@ export const Sesion = () => {
         }
       );
     } catch (error) {
-      console.error('Error en la actualizacion del valor', error);
+      console.error('Error en la actualización de los valores', error);
     }
   };
 
@@ -808,20 +828,39 @@ export const Sesion = () => {
               <p className="infoSorteoText"><strong>{totalBoletosGlobal}</strong> de {modoSorteo}</p>
             </div>
             <div className="dataInventario">
-              <p className="infoSorteoText">Puestos disponibles: <strong>{Math.max(0, parseInt(modoSorteo) - totalBoletosGlobal )}</strong></p>
+              <p className="infoSorteoText">Puestos disponibles: <strong>{Math.max(0, parseInt(modoSorteo) - totalBoletosGlobal)}</strong></p>
             </div>
           </div>
 
           <div className="boxValor">
             {isEditing ? (
               <div className="conntValorVef">
+                <label className="moneda_sty">Ves</label>
                 <input
                   type="number"
                   className="input_bcv"
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
+                  value={editValues.valor_ves}
+                  onChange={(e) => setEditValues({ ...editValues, valor_ves: e.target.value })}
                   placeholder="Nuevo Valor del VES"
-                  style={{ marginBottom: '14px', marginTop: '15px' }}
+                  style={{ marginBottom: '10px'}}
+                />
+                <label className="moneda_sty">Cop</label>
+                <input
+                  type="number"
+                  className="input_bcv"
+                  value={editValues.valor_cop}
+                  onChange={(e) => setEditValues({ ...editValues, valor_cop: e.target.value })}
+                  placeholder="Nuevo Valor del COP"
+                  style={{ marginBottom: '10px' }}
+                />
+                <label className="moneda_sty">Usd</label>
+                <input
+                  type="number"
+                  className="input_bcv"
+                  value={editValues.valor_usd}
+                  onChange={(e) => setEditValues({ ...editValues, valor_usd: e.target.value })}
+                  placeholder="Nuevo Valor del USD"
+                  style={{ marginBottom: '10px' }}
                 />
                 <div className="btns_vef">
                   <button onClick={handleUpdate} className="btn_save_ves">Guardar</button>
@@ -830,10 +869,16 @@ export const Sesion = () => {
               </div>
             ) : (
               <div className="conntValorVef">
-                <label className="label_valor">Valor del VES: <strong>{formatoLatino(valor)}</strong></label>
+                <label className="label_valor">Valor del VES: <strong>{formatoLatino(valores.valor_ves)}</strong></label>
+                <label className="label_valor">Valor del COP: <strong>{formatoLatino(valores.valor_cop)}</strong></label>
+                <label className="label_valor">Valor del USD: <strong>{formatoLatino(valores.valor_usd)}</strong></label>
                 <button
                   onClick={() => {
-                    setEditValue(valor.toString());
+                    setEditValues({
+                      valor_ves: valores.valor_ves.toString(),
+                      valor_cop: valores.valor_cop.toString(),
+                      valor_usd: valores.valor_usd.toString()
+                    });
                     setIsEditing(true);
                   }}
                   className="btn_edit_ves"

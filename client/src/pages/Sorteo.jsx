@@ -46,6 +46,11 @@ export const Sorteo = () => {
   //Estados para obtener los valores de la tabla valores_ves
   const [currentId, setCurrentId] = useState(null);
   const [valor, setValor] = useState(0);
+  const [valores, setValores] = useState({
+    valor_ves: 0,
+    valor_cop: 30000,
+    valor_usd: 7
+  });
 
   //Estados de los numeros usados
   const [usedNumbers, setUsedNumbers] = useState([]);
@@ -116,7 +121,7 @@ export const Sorteo = () => {
       const width = window.innerWidth;
       console.log('Ancho: ', width);
 
-      if (width >= 1420 && width <= 1430) {
+      if (width >= 1397) {
         setItemPerRow(16);
       } else {
         setItemPerRow(5);
@@ -303,13 +308,16 @@ export const Sorteo = () => {
   }, [showModal])
 
   //Obtener valor del VES a la BD
-  const fetchValorVes = async () => {
+  const fetchValores = async () => {
     try {
-      const response = await axios.get('/api/valor');
-      setValor(response.data.valor);
-      setCurrentId(response.data.id);
+      const response = await axios.get('/api/valores');
+      setValores({
+        valor_ves: response.data.valor_ves,
+        valor_cop: response.data.valor_cop,
+        valor_usd: response.data.valor_usd
+      });
     } catch (error) {
-      console.error('Error al obtener el valor del VES', error);
+      console.error('Error al obtener los valores de las monedas', error);
     }
   };
 
@@ -322,12 +330,13 @@ export const Sorteo = () => {
 
     const conPuntoDecimal = sinPuntos.replace(',', '.');
 
-    return conPuntoDecimal; dd
+    return conPuntoDecimal; 
   };
 
   useEffect(() => {
-    fetchValorVes();
-  }, [])
+    fetchValores();
+  }, []);
+
 
   // Funcion para obtener el Modo al cargar
   useEffect(() => {
@@ -380,18 +389,18 @@ export const Sorteo = () => {
     switch (activeTab) {
       case 0: //Zelle
       case 3: //Paypal
-        montoTotal = (cantidadNumeros * 9);
+        montoTotal = (cantidadNumeros * valores.valor_usd);
         break;
       case 1: //Nequi
       case 2: //Bancolombia
-        montoTotal = (cantidadNumeros * 4000);
+        montoTotal = (cantidadNumeros * valores.valor_cop);
         break;
       case 4: //PagoMovil
       case 5: //Banco Venezuela
-        montoTotal = (cantidadNumeros * valor);
+        montoTotal = (cantidadNumeros * valores.valor_ves);
         break;
       case 6:
-        montoTotal = (cantidadNumeros * 4000);
+        montoTotal = (cantidadNumeros * valores.valor_cop);
         break;
       default:
         return montoTotal = 0;
@@ -664,7 +673,7 @@ export const Sorteo = () => {
             </div>
 
             <div className="precioNumbers">
-              {`COP: ${(selectNumbers.length * 4000).toLocaleString('es-CO')}`}
+              {`COP: ${(selectNumbers.length * valores.valor_cop).toLocaleString('es-CO')}`}
             </div>
           </div>
 
@@ -752,7 +761,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>Lisbeth Sanchez</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 1).toLocaleString('es-US')}`}
+                    {`$${(selectNumbers.length * valores.valor_usd).toLocaleString('es-US')}`}
                   </div>
                 </div>
               }
@@ -765,7 +774,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>Vanessa Rincon</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 4000).toLocaleString('es-CO')}`}
+                    {`$${(selectNumbers.length * valores.valor_cop).toLocaleString('es-CO')}`}
                   </div>
                 </div>
               }
@@ -778,7 +787,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>Vanessa Rincón</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 4000).toLocaleString('es-CO')}`}
+                    {`$${(selectNumbers.length * valores.valor_cop).toLocaleString('es-CO')}`}
                   </div>
                 </div>
               }
@@ -791,7 +800,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>María Alejandra Garcia</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${selectNumbers.length * 1}`}
+                    {`$${selectNumbers.length * valores.valor_usd}`}
                   </div>
                 </div>
               }{activeTab === 4 &&
@@ -805,7 +814,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>21453387</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${selectNumbers.length * normalizarNumero(valor)}`}
+                    {`$${selectNumbers.length * normalizarNumero(valores.valor_ves)}`}
                   </div>
                 </div>
               }
@@ -820,7 +829,7 @@ export const Sorteo = () => {
                   <h4 className='remitente'>Vanessa Rincón</h4>
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${selectNumbers.length * normalizarNumero(valor)}`}
+                    {`$${selectNumbers.length * normalizarNumero(valores.valor_ves)}`}
                   </div>
                 </div>
               }
@@ -830,7 +839,7 @@ export const Sorteo = () => {
 
                   <div className="preciosConversionNumbers">
                     <h4>Pago:</h4>
-                    {`$${(selectNumbers.length * 4000).toLocaleString('es-CO')}`}
+                    {`$${(selectNumbers.length * valores.valor_cop).toLocaleString('es-CO')}`}
                   </div>
                 </div>
               }

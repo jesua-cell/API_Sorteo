@@ -1884,7 +1884,11 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 10px;
     background-color: #fafafa;
     width: 94%;
-    height: 130px;
+    height: auto;
+}
+
+.moneda_sty {
+    font-weight: 800;
 }
 
 .conntValorVef {
@@ -1908,7 +1912,7 @@ input[type="number"]::-webkit-outer-spin-button {
     width: 100px;
     margin-bottom: 18px;
     padding: 8px 20px;
-    margin-top: -2px;
+    margin-top: 5px;
 }
 
 .btns_vef {
@@ -1944,7 +1948,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .label_valor {
-    margin: 15px 0px;
+    margin: 8px 0px;
 }
 
 .input_bcv {
