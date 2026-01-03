@@ -1,6 +1,6 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import express from "express";
+import express, { Router } from "express";
 import multer from "multer";
 import path from "path";
 
@@ -20,9 +20,9 @@ import {
     deleteCardPub,
     updateJugador,
     updateCardPub,
-    postValorVes,
-    getValorVes,
-    updateValores,
+    // postValorVes,
+    // getValorVes,
+    // updateValores,
     UpdateEstadoPago,
     getModoSorteo,
     updateModoSorteo,
@@ -33,7 +33,9 @@ import {
     getAllComprobantes,
     deleteComprobante,
     deleteAllJugadores,
-    getJugadorVerificador
+    getJugadorVerificador,
+    getValoresMonedas,
+    updateValoresMonedas
 } from '../controllers/sorteo.controllers.js';
 import { authToken } from "../middleware/authToken.js";
 
@@ -89,7 +91,7 @@ const storageCardPub = multer.diskStorage({
 
 const uploadCardPub = multer({
     storage: storageCardPub,
-    limits: { fileSize: 10 * 1024 * 1024 },
+    limits: { fileSize: 50 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true)
@@ -135,13 +137,18 @@ router.get('/jugadorVerificador', getJugadorVerificador);
 
 router.put('/cardpub/:id', authToken, uploadCardPub.single('imagen'), updateCardPub);
 
-router.post('/valor', postValorVes);
 
-router.get('/valor', getValorVes);
+router.get('/valores', getValoresMonedas);
 
-router.post('/valor', postValorVes);
+router.put('/valores/', authToken, updateValoresMonedas);
 
-router.put('/valor', authToken, updateValores);
+// router.post('/valor', postValorVes);
+
+// router.get('/valor', getValorVes);
+
+// router.post('/valor', postValorVes);
+
+// router.put('/valor', authToken, updateValores);
 
 router.put('/jugador/:id/estado_pago', authToken, UpdateEstadoPago);
 

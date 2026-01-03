@@ -848,51 +848,80 @@ export const postValorVes = async (req, res) => {
 
 };
 
-export const getValorVes = async (req, res) => {
+export const getValoresMonedas = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT valor FROM valor_ves ORDER BY id DESC LIMIT 1');
+        const [rows] = await pool.query('SELECT id, valor_ves, valor_cop, valor_usd FROM valores_monedas ORDER BY id DESC LIMIT 1');
 
         if (rows.length === 0) {
-            return res.status(404).json({ error: 'No hay valores regitrados' })
+            // Insertar valores por defecto si no existen
+            await pool.query(
+                'INSERT INTO valores_monedas (valor_ves, valor_cop, valor_usd) VALUES (?, ?, ?)',
+                [330.00, 30000, 7]
+            );
+            const [newRows] = await pool.query('SELECT id, valor_ves, valor_cop, valor_usd FROM valores_monedas ORDER BY id DESC LIMIT 1');
+
+            res.json({
+                id: newRows[0].id,
+                valor_ves: newRows[0].valor_ves,
+                valor_cop: newRows[0].valor_cop,
+                valor_usd: newRows[0].valor_usd
+            });
+            return;
         };
 
         res.json({
-            valor: rows[0].valor,
-            id: rows[0].valor
+            id: rows[0].id,
+            valor_ves: rows[0].valor_ves,
+            valor_cop: rows[0].valor_cop,
+            valor_usd: rows[0].valor_usd
         });
 
     } catch (error) {
-        res.status(500).json({ error: 'Error en la obtencion del valor del VES' })
+        console.error('Error al obtener los valores de las monedas', error);
+        res.status(500).json({ error: 'Error al obtener los valores de las monedas' })
     }
 };
 
-export const updateValores = async (req, res) => {
-    const { valor } = req.body;
+export const updateValoresMonedas = async (req, res) => {
+    const { valor_ves, valor_cop, valor_usd } = req.body;
 
-    if (valor === undefined) {
-        return res.status(400).json({ error: 'Valor Requerido' });
+    if (valor_ves === undefined || valor_cop === undefined || valor_usd === undefined) {
+        return res.status(400).json({ error: 'Todos los valores son requeridos' });
     };
 
     try {
+        // Verificar si existe algún registro
+        const [checkRows] = await pool.query('SELECT COUNT(*) as count FROM valores_monedas');
 
-        //Verificar si el registro existe; solo uno
-        const [result] = await pool.query(
-            'UPDATE valor_ves SET valor = ?',
-            [valor]
-        );
+        let result;
+        if (checkRows[0].count === 0) {
+            // Insertar si no hay registros
+            [result] = await pool.query(
+                'INSERT INTO valores_monedas (valor_ves, valor_cop, valor_usd) VALUES (?, ?, ?)',
+                [valor_ves, valor_cop, valor_usd]
+            );
+        } else {
+            // Actualizar el primer registro (asumiendo que solo hay uno)
+            [result] = await pool.query(
+                'UPDATE valores_monedas SET valor_ves = ?, valor_cop = ?, valor_usd = ? LIMIT 1',
+                [valor_ves, valor_cop, valor_usd]
+            );
+        }
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Registro no encontrado' });
+            return res.status(404).json({ error: 'No se pudo actualizar los valores' });
         };
 
         res.json({
-            message: 'Valor Actualizado Correctamente',
-            valor_actualizado: valor
+            message: 'Valores actualizados correctamente',
+            valor_ves,
+            valor_cop,
+            valor_usd
         });
 
     } catch (error) {
-        console.error('Error en la actualizacion del valor', error);
-        res.status(500).json({ error: 'Error en la actualizacion del valor' })
+        console.error('Error en la actualización de los valores', error);
+        res.status(500).json({ error: 'Error en la actualización de los valores' })
     }
 };
 
