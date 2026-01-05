@@ -110,6 +110,7 @@ npm run dev
 # Aplicación disponible en: http://localhost:5173
 
 ## 📁 Estructura del Proyecto
+```directorios
 API_Sorteo/
 ├── client/                    # Aplicación React (Frontend)
 │   ├── public/               # Archivos estáticos
