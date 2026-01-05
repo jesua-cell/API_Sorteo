@@ -6,7 +6,7 @@ Plataforma web completa para publicar, gestionar y participar en sorteos con val
 
 ### 🎨 Frontend - Interfaz de Usuario
 
-**Para Participantes:**
+**Para Jugadores:**
 - ✅ Publicación de Sorteos: Visualización de sorteos activos con detalles de cantidad de boletos y puestos disponibles
 - ✅ Verificador de Participaciones: Sistema para que los clientes verifiquen el estado de validación, número asignado y cantidad de puestos adquiridos
 - ✅ Sistema de Pagos: Enlace dedicado con medios de pago disponibles y procesamiento seguro
@@ -70,7 +70,7 @@ Plataforma web completa para publicar, gestionar y participar en sorteos con val
 - Git
 
 ### 1. Clonar el Repositorio
-```bash
+
 git clone https://github.com/jesua-cell/API_Sorteo.git
 cd API_Sorteo
 
@@ -83,8 +83,6 @@ CREATE DATABASE sorteo;
 -- BO_Sorteo_LaOrquidea/sorteo.sql
 
 **Configurar Backend**
-bash
-Copy
 
 # Acceder al directorio del backend
 cd server
@@ -100,8 +98,6 @@ npm run dev
 # Servidor disponible en: http://localhost:3000
 
  **Configurar Frontend**
-bash
-Copy
 
 # En otra terminal, acceder al directorio del frontend
 cd client
