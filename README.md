@@ -73,3 +73,98 @@ Plataforma web completa para publicar, gestionar y participar en sorteos con val
 ```bash
 git clone https://github.com/jesua-cell/API_Sorteo.git
 cd API_Sorteo
+
+**Configurar Base de Datos**
+-- Abrir el cliente de MySql
+-- Crear una BD con el nombre 'sorteo'
+CREATE DATABASE sorteo;
+
+-- Luego importar el archivo SQL ubicado en:
+-- BO_Sorteo_LaOrquidea/sorteo.sql
+
+**Configurar Backend**
+bash
+Copy
+
+# Acceder al directorio del backend
+cd server
+
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+# Crear archivo .env basado en las variables indicadas abajo
+
+# Iniciar servidor en desarrollo
+npm run dev
+# Servidor disponible en: http://localhost:3000
+
+ **Configurar Frontend**
+bash
+Copy
+
+# En otra terminal, acceder al directorio del frontend
+cd client
+
+# Instalar dependencias
+npm install
+
+# Iniciar aplicación en desarrollo
+npm run dev
+# Aplicación disponible en: http://localhost:5173
+
+**Estructura del Proyecto**
+API_Sorteo/
+├── client/                    # Aplicación React (Frontend)
+│   ├── public/               # Archivos estáticos
+│   ├── src/
+│   │   ├── api/              # Configuración de API
+│   │   ├── assets/           # Imágenes, iconos, recursos
+│   │   ├── components/       # Componentes reutilizables
+│   │   ├── context/          # Contextos de React (Auth)
+│   │   ├── pages/            # Páginas principales
+│   │   ├── routes/           # Configuración de rutas
+│   │   ├── sesion/           # Componentes de sesión
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── .gitignore
+│   ├── README.md
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   └── vite.config.js
+│
+├── server/                    # API del servidor (Backend)
+│   ├── cardpub/              # Imágenes de sorteos
+│   ├── config/               # Configuración de base de datos
+│   ├── controllers/          # Controladores de lógica
+│   ├── middleware/           # Middlewares (autenticación)
+│   ├── routes/               # Rutas de la API
+│   ├── uploads/              # Archivos subidos
+│   ├── utils/                # Utilidades (JWT, etc.)
+│   ├── .gitignore
+│   ├── index.js              # Punto de entrada
+│   ├── package-lock.json
+│   └── package.json
+│
+├── uploads/                   # Archivos subidos (global)
+├── .gitignore
+├── README.md
+├── package-lock.json
+└── package.json
+
+**Variables de Entorno**
+
+PORT=3000
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=sorteo
+DB_USER=root
+DB_PASSWORD=
+JWT_SECRET=longanch_782317_erasmusQ321_win
+
