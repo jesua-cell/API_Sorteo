@@ -82,7 +82,7 @@ CREATE DATABASE sorteo;
 -- Luego importar el archivo SQL ubicado en:
 -- BO_Sorteo_LaOrquidea/sorteo.sql
 
-## Configurar Backend
+### Configurar Backend
 
 # Acceder al directorio del backend
 cd server
@@ -97,7 +97,7 @@ npm install
 npm run dev
 # Servidor disponible en: http://localhost:3000
 
- ## Configurar Frontend
+ ### Configurar Frontend
 
 # En otra terminal, acceder al directorio del frontend
 cd client
@@ -109,7 +109,7 @@ npm install
 npm run dev
 # Aplicación disponible en: http://localhost:5173
 
-## 📁 Estructura del Proyecto
+### 📁 Estructura del Proyecto
 ```directorios
 API_Sorteo/
 ├── client/                    # Aplicación React (Frontend)
@@ -118,10 +118,21 @@ API_Sorteo/
 │   │   ├── api/              # Configuración de API
 │   │   ├── assets/           # Imágenes, iconos, recursos
 │   │   ├── components/       # Componentes reutilizables
-│   │   ├── context/          # Contextos de React (Auth)
-│   │   ├── pages/            # Páginas principales
-│   │   ├── routes/           # Configuración de rutas
-│   │   ├── sesion/           # Componentes de sesión
+│   │   ├── context/          # Contextos de React (Para el manejo de la barra de navegacion de los admins)
+│   │   ├── pages             # Páginas principales
+│   │   │   ├── Contacto.jsx
+│   │   │   ├── CuentasPago.jsx
+│   │   │   ├── Inicio.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── NotFound.jsx
+│   │   │   ├── Sorteo.jsx
+│   │   │   └── Verificador.jsx           
+│   │   ├── routes          # Rutas del frontd
+│   │   │   └── Rutas.jsx
+│   │   ├── sesion          # enlaces exclusivos(admins)
+│   │   │   ├── publicacion_card
+│   │   │   │   └── CardPost.jsx
+│   │   │   └── Sesion.jsx        
 │   │   ├── App.css
 │   │   ├── App.jsx
 │   │   ├── Footer.jsx
@@ -143,20 +154,20 @@ API_Sorteo/
 │   ├── middleware/           # Middlewares (autenticación)
 │   ├── routes/               # Rutas de la API
 │   ├── uploads/              # Archivos subidos
-│   ├── utils/                # Utilidades (JWT, etc.)
+│   ├── utils/                # Utilidades (JWT, y actualizacion y conddiguracion de admins)
 │   ├── .gitignore
 │   ├── index.js              # Punto de entrada
 │   ├── package-lock.json
 │   └── package.json
 │
-├── uploads/                   # Archivos subidos (global)
+├── uploads/                   # Archivos subidos 
 ├── .gitignore
 ├── README.md
 ├── package-lock.json
 └── package.json
 
 ##  Variables de Entorno
-```env
+
 PORT=3000
 DB_HOST=localhost
 DB_PORT=3306
