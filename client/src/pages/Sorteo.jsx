@@ -236,18 +236,6 @@ export const Sorteo = () => {
     setRawInput(valueClean);
     setSearchTerm(valueClean);
   };
-  /**
-  useEffect(() => {
-    console.log('=== ESTADO ACTUAL ===');
-    console.log('Modo sorteo:', modoSorteo);
-    console.log('SearchTerm:', searchTerm);
-    console.log('RawInput:', rawInput);
-    console.log('UsedNumbers count:', usedNumbers.length);
-    console.log('UsedNumbers ejemplos:', usedNumbers.slice(0, 5));
-    console.log('VisibleNumbers count:', visibleNumbers.length);
-    console.log('VisibleNumbers ejemplos:', visibleNumbers.slice(0, 5));
-  }, [searchTerm, visibleNumbers, usedNumbers, modoSorteo]);
-   */
 
   const handleImageUpload = (file) => {
     if (file && file instanceof Blob) {
@@ -307,7 +295,7 @@ export const Sorteo = () => {
     return () => clearTimeout(timer);
   }, [showModal])
 
-  //Obtener valor del VES a la BD
+  //Obtener valor de los puestos de la BD
   const fetchValores = async () => {
     try {
       const response = await axios.get('/api/valores');
@@ -321,7 +309,7 @@ export const Sorteo = () => {
     }
   };
 
-  //Conversion del numero(VES)
+  //Conversion de los valores de los puestos
   const normalizarNumero = (valorStr) => {
 
     if (!valorStr) return '';
@@ -505,20 +493,6 @@ export const Sorteo = () => {
     } catch (error) {
       console.error("Error en el envio", error);
     };
-
-    // console.log({
-    //   jugador: {
-    //     username: nombre,
-    //     celular: celular,
-    //     pais_estado: paisEstado,
-    //     referenciaPago: referenciaPago,
-    //     numerosBoletos: selectNumbers,
-    //     metodo_pago: metodoPago,
-    //     comprobante_pago: selectedFile,
-    //     monto_total: montoTotal,
-    //     cedula: cedula
-    //   }
-    // });
   };
 
   const resetForm = () => {
