@@ -82,7 +82,7 @@ CREATE DATABASE sorteo;
 -- Luego importar el archivo SQL ubicado en:
 -- BO_Sorteo_LaOrquidea/sorteo.sql
 
-# Configurar Backend
+## Configurar Backend
 
 # Acceder al directorio del backend
 cd server
@@ -97,7 +97,7 @@ npm install
 npm run dev
 # Servidor disponible en: http://localhost:3000
 
- # Configurar Frontend
+ ## Configurar Frontend
 
 # En otra terminal, acceder al directorio del frontend
 cd client
@@ -109,7 +109,7 @@ npm install
 npm run dev
 # Aplicación disponible en: http://localhost:5173
 
-# Estructura del Proyecto
+## 📁 Estructura del Proyecto
 API_Sorteo/
 ├── client/                    # Aplicación React (Frontend)
 │   ├── public/               # Archivos estáticos
@@ -154,8 +154,8 @@ API_Sorteo/
 ├── package-lock.json
 └── package.json
 
-# Variables de Entorno
-
+##  Variables de Entorno
+```env
 PORT=3000
 DB_HOST=localhost
 DB_PORT=3306
